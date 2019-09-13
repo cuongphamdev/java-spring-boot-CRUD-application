@@ -1,0 +1,55 @@
+.container {
+    background-color: white;
+}
+
+.relative {
+    position: relative;
+    background-color: lightwhite;
+}
+
+.container.relative {
+    min-height: 30rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+}
+
+.form--absolute{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.form-group {
+    display flex;
+    align-items: center;
+}
+
+.form-group + .form-group {
+    margin-top: 0.5rem;
+}
+
+.form-group > .label {
+    flex: 2;
+}
+
+.form-group > .input {
+    flex: 8;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+}
