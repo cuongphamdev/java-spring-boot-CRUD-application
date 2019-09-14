@@ -1,24 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Login page</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" >
 </head>
 <body>
-    <div class="container">
-        <form action="" class="form">
+    <div class="container relative">
+        <form action="#" modelAttribute="loginForm" th-action="@{/login}" th:object="${seedStarter}" method="post" class="form form--absolute">
             <h2>Login form</h2>
             <div class="form-group">
                 <label for="email" class="label">Email: </label>
-                <input type="text" class="input" name="email" id="email">
+                <input type="text" class="input full-width" name="email" id="email" >
             </div>
             <div class="form-group">
                 <label for="password" class="label">Password: </label>
-                <input type="password" class="input" name="password" id="password">
+                <input type="password" class="input full-width" name="password" id="password" >
             </div>
+            <p class="text-center error" th:text="${message}"></p>
             <div class="form-group">
-                <label for="rememberMe" class="label">Remember me</label>
-                <input type="checkbox" class="input input__checkbox" name="rememberMe" id="rememberMe">
+                <input type="submit" class="input input__submit" name="submit" id="submit" value="submit">
             </div>
         </form>
     </div>
