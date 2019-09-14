@@ -6,22 +6,25 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" >
 </head>
 <body>
-    <div class="container relative">
-        <form action="#" modelAttribute="loginForm" th-action="@{/login}" th:object="${seedStarter}" method="post" class="form form--absolute">
-            <h2>Login form</h2>
-            <div class="form-group">
-                <label for="email" class="label">Email: </label>
-                <input type="text" class="input full-width" name="email" id="email" >
-            </div>
-            <div class="form-group">
-                <label for="password" class="label">Password: </label>
-                <input type="password" class="input full-width" name="password" id="password" >
-            </div>
-            <p class="text-center error" th:text="${message}"></p>
-            <div class="form-group">
-                <input type="submit" class="input input__submit" name="submit" id="submit" value="submit">
-            </div>
-        </form>
-    </div>
+<div class="container container--background relative">
+    <form autocomplete="off" th-action="@{/login}" method="post" action="#" class="form form--center absolute" id="login-form">
+        <h1 class="title text--center">Login Form</h1>
+        <div class="form-group">
+            <label for="email" class="label required" >Email: </label>
+            <input type="text" id="email" name="email" class="input" placeholder="Input the email" th:value="${email !=null ? email : ''}">
+        </div>
+        <span class="message error text--center" id="email-error"></span>
+        <div class="form-group">
+            <label for="password" class="label required">Password: </label>
+            <input id="password" type="password" name="password" class="input" placeholder="Input the password">
+        </div>
+        <span class="message error text--center" id="password-error"></span>
+        <span class="message error text--center" id="error-message" th:text="${message != null ? message : ''}"></span>
+        <div class="form-group flex-x--end">
+            <button class="btn btn-primary" id="btn-submit" type="button">Submit</button>
+        </div>
+    </form>
+</div>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>
