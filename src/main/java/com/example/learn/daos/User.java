@@ -1,6 +1,7 @@
 package com.example.learn.daos;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -18,6 +19,9 @@ public class User {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @OneToMany(mappedBy="user")
+    private Set<Post> posts;
 
     public User() {}
 
@@ -72,5 +76,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
     }
 }
