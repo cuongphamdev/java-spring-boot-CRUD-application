@@ -1,55 +1,79 @@
-.container {
-    background-color: white;
-}
-
 .relative {
     position: relative;
-    background-color: lightwhite;
 }
 
-.container.relative {
-    min-height: 30rem;
+.container {
+    min-height: 40rem;
+}
+.container--background {
+    background-color: lighter;
 }
 
-.form {
-    display: flex;
-    flex-direction: column;
-    min-width: 320px;
-}
-
-.form--absolute{
+.absolute {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
 }
 
-.form-group {
-    display flex;
+.flex {
+    display: flex;
     align-items: center;
 }
-
-.form-group + .form-group {
-    margin-top: 0.5rem;
+.flex-x--end {
+    justify-content: flex-end;
 }
 
-.form-group > .label {
-    flex: 2;
+.form--center {
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40rem;
 }
-
-.form-group > .input {
-    flex: 8;
-}
-
-.full-width {
+.form-group {
+    display: flex;
+    align-items: flex-end;
     width: 100%;
+    margin-bottom: 0.5rem;
 }
-
-.text-center {
-    text-align: center;
+.form .label {
+    flex: 2.5;
 }
-
-.error {
+.form .label.required::after {
+    content: '*';
     color: red;
-    font-size: 14px;
+}
+.form .input {
+    flex: 7.5;
+    border: 0;
+    border-bottom: 1px solid lightskyblue;
+    padding-left: 0.5rem;
+    height: 1.5rem;
+    outline: none;
+    transition: border-color 0.4s;
+}
+.form .input.error {
+    border-color: red;
+}
+.form .btn {
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.5rem;
+    outline: none;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.6s;
+    border: 0;
+}
+.form .btn:hover {
+    opacity: 0.8;
+}
+.form .btn-primary {
+    background-color: blue;
+    color: white;
+}
+
+.message.error {
+    display: block;
+    color: red;
+}
+
+.text--center {
+    text-align: center;
 }

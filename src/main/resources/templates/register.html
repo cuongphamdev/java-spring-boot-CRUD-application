@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Register page</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" >
+</head>
+<body>
+<div class="container container--background relative">
+    <form autocomplete="off" th-action="@{/register}" method="post" action="#" class="form form--center absolute" id="register-form">
+        <h1 class="title text--center">Register Form</h1>
+        <div class="form-group">
+            <label for="name" class="label required" >Name: </label>
+            <input type="text" id="name" name="name" class="input" placeholder="Input the name">
+        </div>
+        <span class="message error text--center" id="name-error"></span>
+        <div class="form-group">
+            <label for="email" class="label required" >Email: </label>
+            <input type="text" id="email" name="email" class="input" placeholder="Input the email">
+        </div>
+        <span class="message error text--center" id="email-error"></span>
+        <div class="form-group">
+            <label for="password" class="label required">Password: </label>
+            <input id="password" type="password" name="password" class="input" placeholder="Input the password">
+        </div>
+        <span class="message error text--center" id="password-error"></span>
+        <div class="form-group">
+            <label for="confirm-password" class="label required">Confirm Password: </label>
+            <input id="confirm-password" type="password" name="confirmPassword" class="input" placeholder="Input the confirm password">
+        </div>
+        <span class="message error text--center" id="confirm-password-error"></span>
+        <span class="message error text--center" id="error-message"></span>
+        <div class="form-group flex-x--end">
+            <button class="btn btn-primary" id="btn-submit" type="button">Submit</button>
+        </div>
+    </form>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

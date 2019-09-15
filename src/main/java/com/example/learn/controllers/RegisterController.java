@@ -6,41 +6,43 @@ import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
-public class LoginController {
+public class RegisterController {
 
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/login")
-    public ModelAndView login (HttpServletRequest request) {
-        if (userService.checkAuthentication(request)) {
-            return new ModelAndView("redirect:/");
-        }
-        return new ModelAndView("login");
+    @RequestMapping("/register")
+    public ModelAndView getRegisterForm () {
+        return new ModelAndView("register");
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ModelAndView doLogin (@ModelAttribute User user, HttpServletRequest request) {
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public Object createNewUser (@ModelAttribute User user, HttpServletRequest request) {
+        String name = user.getName();
         String email = user.getEmail();
         String password = user.getPassword();
-        User loginUser = userService.loginByEmailAndPassword(email, password);
-        if (loginUser == null) {
-            String message = "The input information is incorrect";
-            ModelAndView modelAndView = new ModelAndView("login");
+
+        try{
+            userService.createNewUser(name, email, password);
+            userService.setAuthenticate(request, email);
+        } catch (Exception e) {
+            String message = "";
+            ModelAndView modelAndView = new ModelAndView("/register");
             modelAndView.addObject("message", message);
             modelAndView.addObject("email", email);
+            modelAndView.addObject("name", name);
             return modelAndView;
         }
+
         userService.setAuthenticate(request, email);
         return new ModelAndView("redirect:/");
     }

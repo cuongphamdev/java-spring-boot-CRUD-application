@@ -1,4 +1,4 @@
-package com.example.learn.models;
+package com.example.learn.daos;
 
 import javax.persistence.*;
 
@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "name", nullable = false)
