@@ -2,6 +2,7 @@ package com.example.learn.controllers;
 
 import com.example.learn.daos.User;
 import com.example.learn.repositories.UserRepository;
+import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,12 +19,11 @@ import java.util.Map;
 public class LoginController {
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @RequestMapping(value = "/login")
     public ModelAndView login (HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-        if (session.getAttribute("loginSession") != null) {
+        if (userService.checkAuthentication(request)) {
             return new ModelAndView("redirect:/");
         }
         return new ModelAndView("login");
@@ -33,7 +33,7 @@ public class LoginController {
     public ModelAndView doLogin (@ModelAttribute User user, HttpServletRequest request) {
         String email = user.getEmail();
         String password = user.getPassword();
-        User loginUser = userRepository.findUserByEmailAndPassword(email, password);
+        User loginUser = userService.loginByEmailAndPassword(email, password);
         if (loginUser == null) {
             String message = "The input information is incorrect";
             ModelAndView modelAndView = new ModelAndView("login");
@@ -41,8 +41,7 @@ public class LoginController {
             modelAndView.addObject("email", email);
             return modelAndView;
         }
-        HttpSession session = request.getSession(true);
-        session.setAttribute("loginSession", email);
+        userService.setAuthenticate(request, email);
         return new ModelAndView("redirect:/");
     }
 }
