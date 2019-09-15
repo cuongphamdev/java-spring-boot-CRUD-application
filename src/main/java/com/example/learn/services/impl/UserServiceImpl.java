@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createNewUser(String name, String email, String password) {
-
+        userRepository.createNewUser(name, email, password);
     }
 
     @Override
