@@ -1,7 +1,6 @@
 package com.example.learn.controllers;
 
-import com.example.learn.daos.User;
-import com.example.learn.repositories.UserRepository;
+import com.example.learn.dtos.User;
 import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class LoginController {
@@ -41,7 +37,7 @@ public class LoginController {
             modelAndView.addObject("email", email);
             return modelAndView;
         }
-        userService.setAuthenticate(request, email);
+        userService.setAuthenticate(request, loginUser);
         return new ModelAndView("redirect:/");
     }
 }

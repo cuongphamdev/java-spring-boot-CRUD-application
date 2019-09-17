@@ -1,14 +1,16 @@
-package com.example.learn.daos;
+package com.example.learn.dtos;
+
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "posts")
-public class Post {
+public class Post extends AuditModel{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -16,26 +18,23 @@ public class Post {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "created_at", nullable = false)
-    private String createdAt;
-
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 
     public Post(){}
 
-    public Post(String title, String content, String createdAt) {
+    public Post(String title, String content, User user) {
         this.title = title;
         this.content = content;
-        this.createdAt = createdAt;
+        this.user = user;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -55,19 +54,21 @@ public class Post {
         this.content = content;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", user=" + user +
+                '}';
     }
 }
