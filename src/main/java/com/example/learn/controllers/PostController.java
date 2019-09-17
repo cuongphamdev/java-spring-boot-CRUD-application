@@ -1,6 +1,8 @@
 package com.example.learn.controllers;
 
+import com.example.learn.dtos.Comment;
 import com.example.learn.dtos.Post;
+import com.example.learn.services.CommentService;
 import com.example.learn.services.PostService;
 import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/posts")
@@ -18,6 +21,9 @@ public class PostController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    CommentService commentService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public long deletePostById (@PathVariable(value = "id") long postId) {
@@ -35,7 +41,14 @@ public class PostController {
 
     @RequestMapping(value = "/{id}")
     public ModelAndView getPostById (@PathVariable(value = "id") long postId) {
-        return new ModelAndView("post", "post", postService.findPostById(postId));
+        Post currentPost = postService.findPostById(postId);
+        List<Comment> commentLists = commentService.findAllRootCommentByPostId(postId);
+        ModelAndView modelAndView = new ModelAndView("post");
+
+        modelAndView.addObject("post", currentPost);
+        modelAndView.addObject("comments", commentLists);
+
+        return modelAndView;
     }
 
     @RequestMapping( method = RequestMethod.POST)

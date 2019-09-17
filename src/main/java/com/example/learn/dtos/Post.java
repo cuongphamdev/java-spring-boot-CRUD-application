@@ -1,7 +1,5 @@
 package com.example.learn.dtos;
 
-import org.springframework.data.annotation.CreatedDate;
-
 import javax.persistence.*;
 
 @Entity
@@ -21,6 +19,9 @@ public class Post extends AuditModel{
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private User user;
+
+//    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+//    private Set<Comment> comments;
 
     public Post(){}
 
