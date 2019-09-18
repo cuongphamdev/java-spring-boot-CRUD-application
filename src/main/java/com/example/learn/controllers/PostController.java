@@ -1,7 +1,7 @@
 package com.example.learn.controllers;
 
-import com.example.learn.dtos.Comment;
-import com.example.learn.dtos.Post;
+import com.example.learn.models.Comment;
+import com.example.learn.models.Post;
 import com.example.learn.services.CommentService;
 import com.example.learn.services.PostService;
 import com.example.learn.services.UserService;

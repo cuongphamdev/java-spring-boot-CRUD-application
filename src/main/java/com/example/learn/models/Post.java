@@ -1,6 +1,7 @@
-package com.example.learn.dtos;
+package com.example.learn.models;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "posts")
@@ -16,12 +17,12 @@ public class Post extends AuditModel{
     @Column(name = "content", nullable = false)
     private String content;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 
-//    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-//    private Set<Comment> comments;
+    @ManyToMany(mappedBy = "posts", cascade = CascadeType.REMOVE)
+    private Set<Tag> tags;
 
     public Post(){}
 
@@ -61,6 +62,14 @@ public class Post extends AuditModel{
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override

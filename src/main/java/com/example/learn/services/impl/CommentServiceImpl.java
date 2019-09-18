@@ -1,8 +1,8 @@
 package com.example.learn.services.impl;
 
-import com.example.learn.dtos.Comment;
-import com.example.learn.dtos.Post;
-import com.example.learn.dtos.User;
+import com.example.learn.models.Comment;
+import com.example.learn.models.Post;
+import com.example.learn.models.User;
 import com.example.learn.repositories.CommentRepository;
 import com.example.learn.repositories.PostRepository;
 import com.example.learn.repositories.UserRepository;

@@ -1,6 +1,6 @@
 package com.example.learn.repositories;
 
-import com.example.learn.dtos.Comment;
+import com.example.learn.models.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,7 +1,6 @@
 package com.example.learn.services;
 
-import com.example.learn.dtos.Comment;
-import org.springframework.stereotype.Service;
+import com.example.learn.models.Comment;
 
 import java.util.List;
 

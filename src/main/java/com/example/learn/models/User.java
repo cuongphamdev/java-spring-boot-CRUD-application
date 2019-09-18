@@ -1,4 +1,4 @@
-package com.example.learn.dtos;
+package com.example.learn.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -23,8 +23,11 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="user", cascade = CascadeType.REMOVE)
     private Set<Post> posts;
+
+    @OneToMany(mappedBy="user", cascade = CascadeType.REMOVE)
+    private Set<Comment> comments;
 
     public User() {}
 

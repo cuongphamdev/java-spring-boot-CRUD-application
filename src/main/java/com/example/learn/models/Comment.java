@@ -1,9 +1,6 @@
-package com.example.learn.dtos;
-
-import org.hibernate.annotations.ColumnDefault;
+package com.example.learn.models;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,20 +14,19 @@ public class Comment extends AuditModel{
     @Column(name = "content", nullable = false)
     private String content;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-//    @ManyToOne(fetch = FetchType.LAZY, optional=true)
-    @ManyToOne(cascade={CascadeType.ALL})
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "parent_id", columnDefinition = "int8 default 0")
     private Comment parent;
 
-    @OneToMany(mappedBy="parent", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Comment> childComments;
 
     public Comment () {}
