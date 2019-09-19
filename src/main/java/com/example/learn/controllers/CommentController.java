@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
     @Autowired
-    CommentService commentService;
-//
-//    public Comment createComment (String content, long postId, long userId) {
-////        return commentService.createComment(content, postId, userId);
-//    }
+    private CommentService commentService;
 
 }

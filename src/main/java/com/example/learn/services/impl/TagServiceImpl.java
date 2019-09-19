@@ -11,7 +11,7 @@ import java.util.Optional;
 public class TagServiceImpl implements TagService {
 
     @Autowired
-    TagRepository tagRepository;
+    private TagRepository tagRepository;
 
     @Override
     public Tag createNewTag(String name) {
