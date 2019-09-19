@@ -17,13 +17,13 @@ import java.util.List;
 public class PostController {
 
     @Autowired
-    PostService postService;
+    private PostService postService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    CommentService commentService;
+    private CommentService commentService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public long deletePostById (@PathVariable(value = "id") long postId) {

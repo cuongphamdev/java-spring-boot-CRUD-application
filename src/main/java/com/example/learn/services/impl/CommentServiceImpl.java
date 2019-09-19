@@ -18,16 +18,13 @@ import java.util.Optional;
 public class CommentServiceImpl implements CommentService {
 
     @Autowired
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
 
     @Autowired
-    UserRepository userRepository;
-
-
-    EntityManager entityManager;
+    private UserRepository userRepository;
 
     @Override
     public List<Comment> findAllComments() {

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 public class RegisterController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @RequestMapping("/register")
     public ModelAndView getRegisterForm () {
