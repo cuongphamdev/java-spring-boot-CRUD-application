@@ -1,6 +1,6 @@
 package com.example.learn.services;
 
-import com.example.learn.dtos.User;
+import com.example.learn.models.User;
 
 import javax.servlet.http.HttpServletRequest;
 

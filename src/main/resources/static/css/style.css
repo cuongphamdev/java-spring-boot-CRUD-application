@@ -223,3 +223,21 @@
 .modal.show {
     display: block;
 }
+
+.media-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+.media-body, .media-left, .media-right {
+    display: table-cell;
+    vertical-align: top;
+}
+
+.media-body {
+    margin-left: 1rem;
+}
+
+.img-circle {
+    border-radius: 50%;
+}

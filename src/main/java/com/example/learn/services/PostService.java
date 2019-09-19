@@ -1,6 +1,6 @@
 package com.example.learn.services;
 
-import com.example.learn.dtos.Post;
+import com.example.learn.models.Post;
 
 import java.util.List;
 

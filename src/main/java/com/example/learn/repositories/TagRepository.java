@@ -1,7 +1,7 @@
 package com.example.learn.repositories;
 
-import com.example.learn.models.Post;
+import com.example.learn.models.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface TagRepository extends JpaRepository<Tag, Long> {
 }
