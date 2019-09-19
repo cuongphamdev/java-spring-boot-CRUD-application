@@ -2,6 +2,7 @@ package com.example.learn.services.impl;
 
 import com.example.learn.models.Post;
 import com.example.learn.models.User;
+import com.example.learn.repositories.CommentRepository;
 import com.example.learn.repositories.PostRepository;
 import com.example.learn.repositories.UserRepository;
 import com.example.learn.services.PostService;
@@ -19,6 +20,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
 
     @Override
     public List<Post> findAllPosts() {
@@ -68,6 +72,7 @@ public class PostServiceImpl implements PostService {
     public void deletePost(long postId) {
         Optional<Post> postOptional= postRepository.findById(postId);
         if (postOptional.isPresent()) {
+            commentRepository.deleteCommentsByPostId(postId);
             postRepository.delete(postOptional.get());
         }
     }

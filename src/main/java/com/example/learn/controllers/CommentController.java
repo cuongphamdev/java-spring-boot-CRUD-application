@@ -11,7 +11,9 @@ public class CommentController {
 
     @Autowired
     CommentService commentService;
-
-//    public Comment createComment (String content, long postId, long userId
+//
+//    public Comment createComment (String content, long postId, long userId) {
+////        return commentService.createComment(content, postId, userId);
+//    }
 
 }

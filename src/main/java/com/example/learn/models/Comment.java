@@ -5,7 +5,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "comments")
-public class Comment extends AuditModel{
+public class Comment{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,45 +15,41 @@ public class Comment extends AuditModel{
     private String content;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    @Column(name = "user_id", nullable = false)
+    private long userId;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "parent_id", columnDefinition = "int8 default 0")
+    @JoinColumn(name = "post_id", insertable = false, updatable = false)
+    private Post post;
+
+    @Column (name = "post_id", nullable = false)
+    private long postId;
+
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
     private Comment parent;
+
+    @Column (name = "parent_id", nullable = false, columnDefinition = "int8 default 0")
+    private long parentId;
 
     @OneToMany(mappedBy="parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Comment> childComments;
 
     public Comment () {}
 
-    public Comment(String content, User user, Post post, Comment parent) {
+    public Comment(String content, long postId, long userId, long parentId) {
         this.content = content;
-        this.user = user;
-        this.post = post;
-        this.parent = parent;
-    }
-
-    public Comment(String content, User user, Post post) {
-        this.content = content;
-        this.user = user;
-        this.post = post;
+        this.userId = userId;
+        this.postId = postId;
+        this.parentId = parentId;
     }
 
     public Comment getParent() {
         return parent;
     }
-
-    private void postLoad() {
-        if (this.parent == null ) {
-            this.parent.setId(0);
-        }
-    }
-
 
     public void setParent(Comment parent) {
         this.parent = parent;

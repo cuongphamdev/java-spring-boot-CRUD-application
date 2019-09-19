@@ -18,8 +18,11 @@ public class Post extends AuditModel{
     private String content;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name="user_id", nullable=false)
+    @JoinColumn(name="user_id", insertable = false, updatable = false)
     private User user;
+
+    @Column(name = "user_id", nullable = false)
+    private long userId;
 
     @ManyToMany(mappedBy = "posts", cascade = CascadeType.REMOVE)
     private Set<Tag> tags;
@@ -30,6 +33,12 @@ public class Post extends AuditModel{
         this.title = title;
         this.content = content;
         this.user = user;
+    }
+
+    public Post(String title, String content, long userId) {
+        this.title = title;
+        this.content = content;
+        this.userId = userId;
     }
 
     public long getId() {

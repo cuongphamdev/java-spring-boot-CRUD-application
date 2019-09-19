@@ -10,6 +10,7 @@ import com.example.learn.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     UserRepository userRepository;
+
+
+    EntityManager entityManager;
 
     @Override
     public List<Comment> findAllComments() {
@@ -51,23 +55,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment createComment(String content, long postId, long userId, long parentId) {
-        Optional<User> userFindOptional =  userRepository.findById(userId);
-        User user = userFindOptional.isPresent() ? userFindOptional.get() : null;
-
-        Optional<Post> postFindOptional =  postRepository.findById(userId);
-        Post post = postFindOptional.isPresent() ? postFindOptional.get() : null;
-
-        Optional<Comment> commentFindOptional =  commentRepository.findById(parentId);
-        Comment parent = commentFindOptional.isPresent() ? commentFindOptional.get() : null;
-
-        Comment newComment = new Comment(content, user, post);
-
-        if (parent != null) {
-            newComment.setParent(parent);
-        }
-
-        Comment createdComment = commentRepository.save(newComment);
-        return createdComment;
+        Comment comment = new Comment(content, postId, userId, parentId);
+        return commentRepository.save(comment);
     }
 
     @Override
