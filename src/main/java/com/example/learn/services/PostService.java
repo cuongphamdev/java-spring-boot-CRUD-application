@@ -9,5 +9,5 @@ public interface PostService {
     public Post findPostById(long postId);
     public Post createNewPost (String title, String content, long userId);
     public Post updatePost (long postId, String title, String content);
-    public void deletePost (long postId);
+    public long deletePost (long postId);
 }

@@ -27,8 +27,7 @@ public class PostController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public long deletePostById (@PathVariable(value = "id") long postId) {
-        postService.deletePost(postId);
-        return postId;
+        return postService.deletePost(postId);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
@@ -43,10 +42,9 @@ public class PostController {
     public ModelAndView getPostById (@PathVariable(value = "id") long postId) {
         Post currentPost = postService.findPostById(postId);
         List<Comment> commentLists = commentService.findAllRootCommentByPostId(postId);
-        commentService.createComment("test", 1, 1, 1);
         ModelAndView modelAndView = new ModelAndView("post");
         modelAndView.addObject("post", currentPost);
-        modelAndView.addObject("comments", commentLists);
+        modelAndView.addObject("comments", commentLists.size() > 0 ? commentLists : null);
 
         return modelAndView;
     }

@@ -21,11 +21,12 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
 
     @Override
-    public User createNewUser(String name, String email, String password) {
+    public User createNewUser(String name, String email, String password, long roleId) {
         User user = new User();
         user.setEmail(email);
         user.setName(name);
         user.setPassword(password);
+        user.setRoleId(roleId);
         long loginUserId = userDAO.create(user);
         return userDAO.findById(loginUserId);
     }

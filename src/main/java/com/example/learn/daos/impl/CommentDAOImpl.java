@@ -3,6 +3,8 @@ package com.example.learn.daos.impl;
 import com.example.learn.daos.CommentDAO;
 import com.example.learn.models.Comment;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,7 @@ public class CommentDAOImpl implements CommentDAO {
   }
 
   @Override
+  @Transactional
   public long update(Comment comment) {
     try {
       String hql = "UPDATE Comment SET content = :content " +
@@ -49,6 +52,7 @@ public class CommentDAOImpl implements CommentDAO {
   }
 
   @Override
+  @Transactional
   public long delete(long commentId) {
     try {
       String hql = "DELETE FROM Comment WHERE id = :commentId";
@@ -63,8 +67,9 @@ public class CommentDAOImpl implements CommentDAO {
   @Override
   public List<Comment> listRootCommentByPostId(long postId) {
     try {
-      String hql = "FROM Comment WHERE parentId != null";
-      List<Comment> comments = entityManager.createQuery(hql).getResultList();
+      String hql = "FROM Comment WHERE parentId != null AND postId = :postId";
+      List<Comment> comments = entityManager.createQuery(hql)
+                                .setParameter("postId", postId).getResultList();
       return comments;
     } catch (Exception e) {
       return null;

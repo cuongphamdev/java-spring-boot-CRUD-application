@@ -6,11 +6,13 @@ import com.example.learn.models.Post;
 import com.example.learn.models.User;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Repository
 public class PostDAOImpl implements PostDAO {
@@ -33,6 +35,7 @@ public class PostDAOImpl implements PostDAO {
               .setParameter("postId", id);
       return (Post) query.getSingleResult();
     } catch (Exception e) {
+      System.out.println("Error: " + e.toString());
       return null;
     }
   }
@@ -49,6 +52,7 @@ public class PostDAOImpl implements PostDAO {
   }
 
   @Override
+  @Transactional
   public long update(Post post) {
     try {
       String hql = "UPDATE Post SET title = :title, content = :content " +
@@ -63,9 +67,10 @@ public class PostDAOImpl implements PostDAO {
   }
 
   @Override
+  @Transactional
   public long delete(long postId) {
     try {
-      String hql = "DELETE FROM Post WHERE id = :postId";
+      String hql = "DELETE FROM Post p WHERE p.id = :postId";
       Query query = entityManager.createQuery(hql).setParameter("postId", postId);
       return query.executeUpdate();
     } catch (Exception e) {

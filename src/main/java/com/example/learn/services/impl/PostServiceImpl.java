@@ -2,6 +2,7 @@ package com.example.learn.services.impl;
 
 import com.example.learn.daos.CommentDAO;
 import com.example.learn.daos.PostDAO;
+import com.example.learn.daos.UserDAO;
 import com.example.learn.models.Post;
 import com.example.learn.models.User;
 import com.example.learn.repositories.CommentRepository;
@@ -29,6 +30,9 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostDAO postDAO;
 
+    @Autowired
+    private UserDAO userDAO;
+
     @Override
     public List<Post> findAllPosts() {
         return postDAO.findAll();
@@ -41,10 +45,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post createNewPost(String title, String content, long userId) {
-        Optional<User> authorOptional = userRepository.findById(userId);
-
-        if (authorOptional.isPresent()) {
-            Post post = new Post(title, content, authorOptional.get());
+        User author = userDAO.findById(userId);
+        if (author != null) {
+            Post post = new Post(title, content, author.getId());
             long postCreatedId= postDAO.create(post);
             return postDAO.findById(postCreatedId);
         }
@@ -53,20 +56,19 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post updatePost(long postId, String title, String content) {
-        Optional<Post> postOptional= postRepository.findById(postId);
+        Post postFound= postDAO.findById(postId);
 
-        if (postOptional.isPresent()) {
-            Post postUpdate = postOptional.get();
-            postUpdate.setTitle(title);
-            postUpdate.setContent(content);
-            long updatedPostId = postDAO.create(postUpdate);
+        if (postFound != null) {
+            postFound.setTitle(title);
+            postFound.setContent(content);
+            long updatedPostId = postDAO.update(postFound);
             return postDAO.findById(updatedPostId);
         }
         return null;
     }
 
     @Override
-    public void deletePost(long postId) {
-        postDAO.delete(postId);
+    public long deletePost(long postId) {
+        return postDAO.delete(postId);
     }
 }

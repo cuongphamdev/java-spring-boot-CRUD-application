@@ -22,6 +22,8 @@ public class Tag {
     )
     private Set<Post> posts;
 
+    public Tag () {}
+
     public Tag(String name) {
         this.name = name;
     }
@@ -54,4 +56,5 @@ public class Tag {
     public void setName(String name) {
         this.name = name;
     }
+
 }

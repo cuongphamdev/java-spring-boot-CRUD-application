@@ -81,6 +81,14 @@ public class Post extends AuditModel{
         this.tags = tags;
     }
 
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "Post{" +

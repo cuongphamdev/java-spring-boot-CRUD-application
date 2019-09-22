@@ -33,12 +33,18 @@ public class Comment{
     private Comment parent;
 
     @Column (name = "parent_id", nullable = false, columnDefinition = "int8 default 0")
-    private long parentId;
+    private Long parentId;
 
     @OneToMany(mappedBy="parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Comment> childComments;
 
     public Comment () {}
+
+    public Comment(String content, long postId, long userId) {
+        this.content = content;
+        this.userId = userId;
+        this.postId = postId;
+    }
 
     public Comment(String content, long postId, long userId, long parentId) {
         this.content = content;
@@ -93,5 +99,29 @@ public class Comment{
 
     public void setChildComments(Set<Comment> childComments) {
         this.childComments = childComments;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getPostId() {
+        return postId;
+    }
+
+    public void setPostId(long postId) {
+        this.postId = postId;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 }
