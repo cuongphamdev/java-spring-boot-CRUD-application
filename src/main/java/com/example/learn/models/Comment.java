@@ -3,7 +3,7 @@ package com.example.learn.models;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity
+@Entity(name = "Comment")
 @Table(name = "comments")
 public class Comment{
 

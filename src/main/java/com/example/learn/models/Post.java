@@ -3,7 +3,7 @@ package com.example.learn.models;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity
+@Entity(name = "Post")
 @Table(name = "posts")
 public class Post extends AuditModel{
 

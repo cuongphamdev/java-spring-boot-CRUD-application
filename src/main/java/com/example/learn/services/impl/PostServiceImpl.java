@@ -1,5 +1,7 @@
 package com.example.learn.services.impl;
 
+import com.example.learn.daos.CommentDAO;
+import com.example.learn.daos.PostDAO;
 import com.example.learn.models.Post;
 import com.example.learn.models.User;
 import com.example.learn.repositories.CommentRepository;
@@ -24,19 +26,17 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private PostDAO postDAO;
+
     @Override
     public List<Post> findAllPosts() {
-        return postRepository.findAll();
+        return postDAO.findAll();
     }
 
     @Override
     public Post findPostById(long postId) {
-        Optional<Post> postOptional = postRepository.findById(postId);
-
-        if (postOptional.isPresent()) {
-            return postOptional.get();
-        }
-        return null;
+        return postDAO.findById(postId);
     }
 
     @Override
@@ -45,10 +45,9 @@ public class PostServiceImpl implements PostService {
 
         if (authorOptional.isPresent()) {
             Post post = new Post(title, content, authorOptional.get());
-            Post postCreated = postRepository.save(post);
-            return postCreated;
+            long postCreatedId= postDAO.create(post);
+            return postDAO.findById(postCreatedId);
         }
-
         return null;
     }
 
@@ -60,20 +59,14 @@ public class PostServiceImpl implements PostService {
             Post postUpdate = postOptional.get();
             postUpdate.setTitle(title);
             postUpdate.setContent(content);
-
-            Post updatePost = postRepository.save(postUpdate);
-            return updatePost;
+            long updatedPostId = postDAO.create(postUpdate);
+            return postDAO.findById(updatedPostId);
         }
-
         return null;
     }
 
     @Override
     public void deletePost(long postId) {
-        Optional<Post> postOptional= postRepository.findById(postId);
-        if (postOptional.isPresent()) {
-            commentRepository.deleteCommentsByPostId(postId);
-            postRepository.delete(postOptional.get());
-        }
+        postDAO.delete(postId);
     }
 }

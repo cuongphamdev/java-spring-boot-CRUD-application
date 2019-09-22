@@ -1,5 +1,6 @@
 package com.example.learn.services.impl;
 
+import com.example.learn.daos.UserDAO;
 import com.example.learn.models.User;
 import com.example.learn.repositories.UserRepository;
 import com.example.learn.services.UserService;
@@ -16,11 +17,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserDAO userDAO;
+
     @Override
     public User createNewUser(String name, String email, String password) {
-        User user = new User(name, email, password);
-        User loginUser = userRepository.save(user);
-        return loginUser;
+        User user = new User();
+        user.setEmail(email);
+        user.setName(name);
+        user.setPassword(password);
+        long loginUserId = userDAO.create(user);
+        return userDAO.findById(loginUserId);
     }
 
     @Override
@@ -38,17 +45,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            return userOptional.get();
-        }
-        return null;
+        return userDAO.findById(userId);
     }
 
     @Override
     public User loginByEmailAndPassword(String email, String password) {
-        User loginUser = userRepository.findUserByEmailAndPassword(email, password);
-        return loginUser;
+        return userDAO.findByEmailAndPassword(email, password);
     }
 
     @Override

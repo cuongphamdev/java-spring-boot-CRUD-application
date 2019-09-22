@@ -1,5 +1,6 @@
 package com.example.learn.controllers;
 
+import com.example.learn.daos.UserDAO;
 import com.example.learn.models.User;
 import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,8 @@ public class RegisterController {
         String name = user.getName();
         String email = user.getEmail();
         String password = user.getPassword();
-        User loginUser = new User();
         try{
-            loginUser = userService.createNewUser(name, email, password);
+            User loginUser = userService.createNewUser(name, email, password);
             userService.setAuthenticate(request, loginUser);
         } catch (Exception e) {
             String message = "";
