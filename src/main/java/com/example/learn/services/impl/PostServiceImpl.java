@@ -4,9 +4,6 @@ import com.example.learn.daos.PostDAO;
 import com.example.learn.daos.UserDAO;
 import com.example.learn.models.Post;
 import com.example.learn.models.User;
-import com.example.learn.repositories.CommentRepository;
-import com.example.learn.repositories.PostRepository;
-import com.example.learn.repositories.UserRepository;
 import com.example.learn.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,15 +12,6 @@ import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
-
-  @Autowired
-  private PostRepository postRepository;
-
-  @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
-  private CommentRepository commentRepository;
 
   @Autowired
   private PostDAO postDAO;

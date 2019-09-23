@@ -2,7 +2,6 @@ package com.example.learn.services.impl;
 
 import com.example.learn.daos.UserDAO;
 import com.example.learn.models.User;
-import com.example.learn.repositories.UserRepository;
 import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,9 +11,6 @@ import javax.servlet.http.HttpSession;
 
 @Service
 public class UserServiceImpl implements UserService {
-
-  @Autowired
-  private UserRepository userRepository;
 
   @Autowired
   private UserDAO userDAO;
