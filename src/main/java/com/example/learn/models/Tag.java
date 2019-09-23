@@ -1,5 +1,7 @@
 package com.example.learn.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -14,6 +16,7 @@ public class Tag {
   @Column(name = "name", nullable = false)
   private String name;
 
+  @JsonIgnore
   @ManyToMany(cascade = CascadeType.REMOVE)
   @JoinTable(
           name = "tag_posts",

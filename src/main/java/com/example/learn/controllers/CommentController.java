@@ -20,14 +20,23 @@ public class CommentController {
   private UserService userService;
 
   @RequestMapping(value = "/{postId}/comments/{commentId}", method = RequestMethod.PUT)
-  public Comment updateComment(@PathVariable(value = "commentId") long commentId, @ModelAttribute Comment commentUpdate) {
+  public Comment updateComment(@PathVariable(value = "commentId") long commentId, @ModelAttribute Comment commentUpdate, HttpServletRequest request) {
+    long currentUserId = userService.getCurrentUserId(request);
+    Comment foundComment = commentService.findCommentById(commentId);
+    if (foundComment.getUserId() != currentUserId) {
+      return null;
+    }
     String content = commentUpdate.getContent();
-    Comment commentUpdated = commentService.updateComment(commentId, content);
-    return commentUpdated;
+    return commentService.updateComment(commentId, content);
   }
 
   @RequestMapping(value = "/{postId}/comments/{commentId}", method = RequestMethod.DELETE)
-  public long deleteComment(@PathVariable(value = "commentId") long commentId) {
+  public long deleteComment(@PathVariable(value = "commentId") long commentId, HttpServletRequest request) {
+    long currentUserId = userService.getCurrentUserId(request);
+    Comment foundComment = commentService.findCommentById(commentId);
+    if (foundComment.getUserId() != currentUserId) {
+      return 0;
+    }
     commentService.deleteComment(commentId);
     return commentId;
   }
@@ -37,7 +46,9 @@ public class CommentController {
     String content = newComment.getContent();
     long parentId = newComment.getParentId();
     long userId = userService.getCurrentUserId(request);
-    commentService.createComment(content, postId, userId, parentId);
+    if (userId != 0) {
+      commentService.createComment(content, postId, userId, parentId);
+    }
     return new ModelAndView("redirect:/posts/" + postId);
   }
 }

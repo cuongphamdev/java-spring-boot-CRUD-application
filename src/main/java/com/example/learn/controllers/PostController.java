@@ -26,12 +26,22 @@ public class PostController {
   private CommentService commentService;
 
   @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-  public long deletePostById(@PathVariable(value = "id") long postId) {
+  public long deletePostById(@PathVariable(value = "id") long postId, HttpServletRequest request) {
+    long currentUserId = userService.getCurrentUserId(request);
+    Post foundPost = postService.findPostById(postId);
+    if (foundPost.getUserId() != currentUserId) {
+      return 0;
+    }
     return postService.deletePost(postId);
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-  public Post updatePost(@PathVariable(value = "id") long postId, @ModelAttribute Post post) {
+  public Post updatePost(@PathVariable(value = "id") long postId, @ModelAttribute Post post, HttpServletRequest request) {
+    long currentUserId = userService.getCurrentUserId(request);
+    Post foundPost = postService.findPostById(postId);
+    if (foundPost.getUserId() != currentUserId) {
+      return null;
+    }
     String title = post.getTitle();
     String content = post.getContent();
     Post postUpdated = postService.updatePost(postId, title, content);
@@ -54,7 +64,9 @@ public class PostController {
     String title = post.getTitle();
     String content = post.getContent();
     long userId = userService.getCurrentUserId(request);
-    postService.createNewPost(title, content, userId);
+    if (userId != 0) {
+      postService.createNewPost(title, content, userId);
+    }
     return new ModelAndView("redirect:/");
   }
 }

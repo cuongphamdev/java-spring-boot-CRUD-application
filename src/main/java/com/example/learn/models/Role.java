@@ -1,5 +1,7 @@
 package com.example.learn.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -14,6 +16,7 @@ public class Role {
   @Column(name = "name", nullable = false)
   private String name;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "role", cascade = CascadeType.REMOVE)
   private Set<User> users;
 

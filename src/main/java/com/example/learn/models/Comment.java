@@ -1,5 +1,7 @@
 package com.example.learn.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -21,6 +23,7 @@ public class Comment {
   @Column(name = "user_id", nullable = false)
   private long userId;
 
+  @JsonIgnore
   @ManyToOne(cascade = CascadeType.REMOVE)
   @JoinColumn(name = "post_id", insertable = false, updatable = false)
   private Post post;
@@ -28,6 +31,7 @@ public class Comment {
   @Column(name = "post_id", nullable = false)
   private long postId;
 
+  @JsonIgnore
   @ManyToOne(cascade = CascadeType.REMOVE)
   @JoinColumn(name = "parent_id", insertable = false, updatable = false)
   private Comment parent;
@@ -35,6 +39,7 @@ public class Comment {
   @Column(name = "parent_id", nullable = false, columnDefinition = "int8 default 0")
   private Long parentId;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   private Set<Comment> childComments;
 
