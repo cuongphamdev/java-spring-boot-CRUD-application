@@ -3,7 +3,6 @@ package com.example.learn.daos.impl;
 import com.example.learn.daos.UserDAO;
 import com.example.learn.models.User;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

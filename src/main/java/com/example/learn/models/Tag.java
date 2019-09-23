@@ -7,54 +7,55 @@ import java.util.Set;
 @Table(name = "tags")
 public class Tag {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+  @Column(name = "name", nullable = false)
+  private String name;
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
-    @JoinTable(
-            name = "tag_posts",
-            joinColumns = { @JoinColumn(name = "tag_id") },
-            inverseJoinColumns = { @JoinColumn(name = "post_id") }
-    )
-    private Set<Post> posts;
+  @ManyToMany(cascade = CascadeType.REMOVE)
+  @JoinTable(
+          name = "tag_posts",
+          joinColumns = {@JoinColumn(name = "tag_id")},
+          inverseJoinColumns = {@JoinColumn(name = "post_id")}
+  )
+  private Set<Post> posts;
 
-    public Tag () {}
+  public Tag() {
+  }
 
-    public Tag(String name) {
-        this.name = name;
-    }
+  public Tag(String name) {
+    this.name = name;
+  }
 
-    public Tag(String name, Set<Post> posts) {
-        this.name = name;
-        this.posts = posts;
-    }
+  public Tag(String name, Set<Post> posts) {
+    this.name = name;
+    this.posts = posts;
+  }
 
-    public long getId() {
-        return id;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  public void setId(long id) {
+    this.id = id;
+  }
 
-    public Set<Post> getPosts() {
-        return posts;
-    }
+  public Set<Post> getPosts() {
+    return posts;
+  }
 
-    public void setPosts(Set<Post> posts) {
-        this.posts = posts;
-    }
+  public void setPosts(Set<Post> posts) {
+    this.posts = posts;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
 }

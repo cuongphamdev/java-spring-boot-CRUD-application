@@ -3,8 +3,6 @@ package com.example.learn.daos.impl;
 import com.example.learn.daos.CommentDAO;
 import com.example.learn.models.Comment;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,9 +65,9 @@ public class CommentDAOImpl implements CommentDAO {
   @Override
   public List<Comment> listRootCommentByPostId(long postId) {
     try {
-      String hql = "FROM Comment WHERE parentId != null AND postId = :postId";
+      String hql = "FROM Comment WHERE parentId = null AND postId = :postId";
       List<Comment> comments = entityManager.createQuery(hql)
-                                .setParameter("postId", postId).getResultList();
+              .setParameter("postId", postId).getResultList();
       return comments;
     } catch (Exception e) {
       return null;

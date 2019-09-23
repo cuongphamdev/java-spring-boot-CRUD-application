@@ -232,14 +232,19 @@ if (document.getElementById("post-detail")) {
     let listActionUpdateNodes = document.querySelectorAll('#comment-update-button');
     listActionUpdateNodes.forEach(item =>
         item.addEventListener('click', async function(event) {
-            console.log('update click');
+          let commentId = event.target.getAttribute('comment-id');
+          let postId = event.target.getAttribute('post-id');
+          let content = "";
+          sendAjax(`/posts/${postId}/comments/${commentId}`, content, "PUT",  (response) => {
+            // $(`#comment${commentId}>`)
+          })
         })
     );
 
     let listActionRemoveNodes = document.querySelectorAll('#comment-delete-button');
     listActionRemoveNodes.forEach(item =>
         item.addEventListener('click', async function(event) {
-            console.log('delete click');
+            
         })
     );
 }

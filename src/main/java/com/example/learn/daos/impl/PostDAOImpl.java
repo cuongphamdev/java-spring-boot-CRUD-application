@@ -1,9 +1,7 @@
 package com.example.learn.daos.impl;
 
 import com.example.learn.daos.PostDAO;
-import com.example.learn.models.Comment;
 import com.example.learn.models.Post;
-import com.example.learn.models.User;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Repository
 public class PostDAOImpl implements PostDAO {

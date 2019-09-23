@@ -5,123 +5,124 @@ import java.util.Set;
 
 @Entity(name = "Comment")
 @Table(name = "comments")
-public class Comment{
+public class Comment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @Column(name = "content", nullable = false)
-    private String content;
+  @Column(name = "content", nullable = false)
+  private String content;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private User user;
+  @ManyToOne(cascade = CascadeType.REMOVE)
+  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+  private User user;
 
-    @Column(name = "user_id", nullable = false)
-    private long userId;
+  @Column(name = "user_id", nullable = false)
+  private long userId;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "post_id", insertable = false, updatable = false)
-    private Post post;
+  @ManyToOne(cascade = CascadeType.REMOVE)
+  @JoinColumn(name = "post_id", insertable = false, updatable = false)
+  private Post post;
 
-    @Column (name = "post_id", nullable = false)
-    private long postId;
+  @Column(name = "post_id", nullable = false)
+  private long postId;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
-    private Comment parent;
+  @ManyToOne(cascade = CascadeType.REMOVE)
+  @JoinColumn(name = "parent_id", insertable = false, updatable = false)
+  private Comment parent;
 
-    @Column (name = "parent_id", nullable = false, columnDefinition = "int8 default 0")
-    private Long parentId;
+  @Column(name = "parent_id", nullable = false, columnDefinition = "int8 default 0")
+  private Long parentId;
 
-    @OneToMany(mappedBy="parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private Set<Comment> childComments;
+  @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  private Set<Comment> childComments;
 
-    public Comment () {}
+  public Comment() {
+  }
 
-    public Comment(String content, long postId, long userId) {
-        this.content = content;
-        this.userId = userId;
-        this.postId = postId;
-    }
+  public Comment(String content, long postId, long userId) {
+    this.content = content;
+    this.userId = userId;
+    this.postId = postId;
+  }
 
-    public Comment(String content, long postId, long userId, long parentId) {
-        this.content = content;
-        this.userId = userId;
-        this.postId = postId;
-        this.parentId = parentId;
-    }
+  public Comment(String content, long postId, long userId, long parentId) {
+    this.content = content;
+    this.userId = userId;
+    this.postId = postId;
+    this.parentId = parentId;
+  }
 
-    public Comment getParent() {
-        return parent;
-    }
+  public Comment getParent() {
+    return parent;
+  }
 
-    public void setParent(Comment parent) {
-        this.parent = parent;
-    }
+  public void setParent(Comment parent) {
+    this.parent = parent;
+  }
 
-    public long getId() {
-        return id;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  public void setId(long id) {
+    this.id = id;
+  }
 
-    public String getContent() {
-        return content;
-    }
+  public String getContent() {
+    return content;
+  }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+  public void setContent(String content) {
+    this.content = content;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+  public void setUser(User user) {
+    this.user = user;
+  }
 
-    public Post getPost() {
-        return post;
-    }
+  public Post getPost() {
+    return post;
+  }
 
-    public void setPost(Post post) {
-        this.post = post;
-    }
+  public void setPost(Post post) {
+    this.post = post;
+  }
 
-    public Set<Comment> getChildComments() {
-        return childComments;
-    }
+  public Set<Comment> getChildComments() {
+    return childComments;
+  }
 
-    public void setChildComments(Set<Comment> childComments) {
-        this.childComments = childComments;
-    }
+  public void setChildComments(Set<Comment> childComments) {
+    this.childComments = childComments;
+  }
 
-    public long getUserId() {
-        return userId;
-    }
+  public long getUserId() {
+    return userId;
+  }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
+  public void setUserId(long userId) {
+    this.userId = userId;
+  }
 
-    public long getPostId() {
-        return postId;
-    }
+  public long getPostId() {
+    return postId;
+  }
 
-    public void setPostId(long postId) {
-        this.postId = postId;
-    }
+  public void setPostId(long postId) {
+    this.postId = postId;
+  }
 
-    public Long getParentId() {
-        return parentId;
-    }
+  public Long getParentId() {
+    return parentId;
+  }
 
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
+  }
 }
