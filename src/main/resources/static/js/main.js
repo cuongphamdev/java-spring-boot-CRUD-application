@@ -234,17 +234,39 @@ if (document.getElementById("post-detail")) {
         item.addEventListener('click', async function(event) {
           let commentId = event.target.getAttribute('comment-id');
           let postId = event.target.getAttribute('post-id');
-          let content = "";
+          let commentEl = document.getElementById(`comment${commentId}`);
+          document.getElementById('modal-update-comment').classList.add('show');
+          let commentContentEl = null;
+          if (commentEl.childNodes[i].className == 'media-body') {
+            for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) { 
+              if (commentEl.childNodes[i].childNodes[j].className == 'media-body') {
+                commentContentEl = commentEl.childNodes[i].childNodes[j];
+              } 
+            }
+          }
           sendAjax(`/posts/${postId}/comments/${commentId}`, content, "PUT",  (response) => {
-            // $(`#comment${commentId}>`)
-          })
+            for (let i = 0; i < commentEl.childNodes.length; i++) {
+              if (commentEl.childNodes[i].className == 'media-body') {
+                for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) { 
+                  if (commentEl.childNodes[i].childNodes[j].className == 'media-body') {
+                    commentEl.childNodes[i].childNodes[j].innerHTML = response.content;
+                  } 
+                }
+              }
+            }
+          });
         })
     );
 
     let listActionRemoveNodes = document.querySelectorAll('#comment-delete-button');
     listActionRemoveNodes.forEach(item =>
         item.addEventListener('click', async function(event) {
-            
+          let commentId = event.target.getAttribute('comment-id');
+          let postId = event.target.getAttribute('post-id');
+          sendAjax(`/posts/${postId}/comments/${commentId}`, null, "DELETE",  (response) => {
+            let commentEl = document.getElementById(`comment${commentId}`);
+            commentEl.remove();
+          })
         })
     );
 }

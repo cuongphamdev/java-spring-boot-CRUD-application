@@ -26,6 +26,12 @@ public class CommentController {
     return commentUpdated;
   }
 
+  @RequestMapping(value = "/{postId}/comments/{commentId}", method = RequestMethod.DELETE)
+  public long deleteComment(@PathVariable(value = "commentId") long commentId) {
+    commentService.deleteComment(commentId);
+    return commentId;
+  }
+
   @RequestMapping(value = "/{postId}/comments", method = RequestMethod.POST)
   public ModelAndView createComment(@PathVariable(value = "postId") long postId, @ModelAttribute Comment newComment, HttpServletRequest request) {
     String content = newComment.getContent();
