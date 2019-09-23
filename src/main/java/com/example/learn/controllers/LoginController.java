@@ -1,5 +1,4 @@
 package com.example.learn.controllers;
-
 import com.example.learn.models.User;
 import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
