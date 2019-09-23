@@ -1,5 +1,7 @@
 package com.example.learn.services.impl;
 
+import com.example.learn.daos.PostDAO;
+import com.example.learn.daos.UserDAO;
 import com.example.learn.models.Post;
 import com.example.learn.models.User;
 import com.example.learn.repositories.CommentRepository;
@@ -10,70 +12,61 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PostServiceImpl implements PostService {
 
-    @Autowired
-    private PostRepository postRepository;
+  @Autowired
+  private PostRepository postRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired
+  private UserRepository userRepository;
 
-    @Autowired
-    private CommentRepository commentRepository;
+  @Autowired
+  private CommentRepository commentRepository;
 
-    @Override
-    public List<Post> findAllPosts() {
-        return postRepository.findAll();
+  @Autowired
+  private PostDAO postDAO;
+
+  @Autowired
+  private UserDAO userDAO;
+
+  @Override
+  public List<Post> findAllPosts() {
+    return postDAO.findAll();
+  }
+
+  @Override
+  public Post findPostById(long postId) {
+    return postDAO.findById(postId);
+  }
+
+  @Override
+  public Post createNewPost(String title, String content, long userId) {
+    User author = userDAO.findById(userId);
+    if (author != null) {
+      Post post = new Post(title, content, author.getId());
+      long postCreatedId = postDAO.create(post);
+      return postDAO.findById(postCreatedId);
     }
+    return null;
+  }
 
-    @Override
-    public Post findPostById(long postId) {
-        Optional<Post> postOptional = postRepository.findById(postId);
+  @Override
+  public Post updatePost(long postId, String title, String content) {
+    Post postFound = postDAO.findById(postId);
 
-        if (postOptional.isPresent()) {
-            return postOptional.get();
-        }
-        return null;
+    if (postFound != null) {
+      postFound.setTitle(title);
+      postFound.setContent(content);
+      long updatedPostId = postDAO.update(postFound);
+      return postDAO.findById(updatedPostId);
     }
+    return null;
+  }
 
-    @Override
-    public Post createNewPost(String title, String content, long userId) {
-        Optional<User> authorOptional = userRepository.findById(userId);
-
-        if (authorOptional.isPresent()) {
-            Post post = new Post(title, content, authorOptional.get());
-            Post postCreated = postRepository.save(post);
-            return postCreated;
-        }
-
-        return null;
-    }
-
-    @Override
-    public Post updatePost(long postId, String title, String content) {
-        Optional<Post> postOptional= postRepository.findById(postId);
-
-        if (postOptional.isPresent()) {
-            Post postUpdate = postOptional.get();
-            postUpdate.setTitle(title);
-            postUpdate.setContent(content);
-
-            Post updatePost = postRepository.save(postUpdate);
-            return updatePost;
-        }
-
-        return null;
-    }
-
-    @Override
-    public void deletePost(long postId) {
-        Optional<Post> postOptional= postRepository.findById(postId);
-        if (postOptional.isPresent()) {
-            commentRepository.deleteCommentsByPostId(postId);
-            postRepository.delete(postOptional.get());
-        }
-    }
+  @Override
+  public long deletePost(long postId) {
+    return postDAO.delete(postId);
+  }
 }

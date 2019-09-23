@@ -5,90 +5,122 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity
+@Entity(name = "User")
 @Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+  @Column(name = "name", nullable = false)
+  private String name;
 
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
+  @Column(name = "email", nullable = false, unique = true)
+  private String email;
 
-    @Column(name = "password", nullable = false)
-    @JsonIgnore
-    private String password;
+  @Column(name = "password", nullable = false)
+  @JsonIgnore
+  private String password;
 
-    @OneToMany(mappedBy="user", cascade = CascadeType.REMOVE)
-    private Set<Post> posts;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+  private Set<Post> posts;
 
-    @OneToMany(mappedBy="user", cascade = CascadeType.REMOVE)
-    private Set<Comment> comments;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+  private Set<Comment> comments;
 
-    public User() {}
+  @ManyToOne(cascade = CascadeType.REMOVE)
+  @JoinColumn(name = "role_id", insertable = false, updatable = false)
+  private Role role;
 
-    public User (String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
+  @Column(name = "role_id", nullable = false)
+  private long roleId;
 
-    public User (String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
+  public User() {
+  }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
+  public User(String email, String password) {
+    this.email = email;
+    this.password = password;
+  }
 
-    public long getId() {
-        return id;
-    }
+  public User(String name, String email, String password) {
+    this.name = name;
+    this.email = email;
+    this.password = password;
+  }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  @Override
+  public String toString() {
+    return "User{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", email='" + email + '\'' +
+            ", password='" + password + '\'' +
+            '}';
+  }
 
-    public String getName() {
-        return name;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setId(long id) {
+    this.id = id;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public Set<Post> getPosts() {
-        return posts;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public void setPosts(Set<Post> posts) {
-        this.posts = posts;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public Set<Post> getPosts() {
+    return posts;
+  }
+
+  public void setPosts(Set<Post> posts) {
+    this.posts = posts;
+  }
+
+  public Role getRole() {
+    return role;
+  }
+
+  public void setRole(Role role) {
+    this.role = role;
+  }
+
+  public long getRoleId() {
+    return roleId;
+  }
+
+  public void setRoleId(long roleId) {
+    this.roleId = roleId;
+  }
+
+  public Set<Comment> getComments() {
+    return comments;
+  }
+
+  public void setComments(Set<Comment> comments) {
+    this.comments = comments;
+  }
 }

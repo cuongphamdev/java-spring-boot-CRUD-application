@@ -13,21 +13,21 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 public class LearnApplication implements CommandLineRunner {
 
-	@Autowired
-	UserService userService;
+  @Autowired
+  UserService userService;
 
-	@Autowired
-	PostService postService;
+  @Autowired
+  PostService postService;
 
-	@Autowired
-	CommentService commentService;
+  @Autowired
+  CommentService commentService;
 
-	public static void main(String[] args) {
-		SpringApplication.run(LearnApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(LearnApplication.class, args);
+  }
 
-	@Override
-	public void run(String... args) {
+  @Override
+  public void run(String... args) {
 //		userService.createNewUser("Cuong", "cuongpham.dev@gmail.com", "123456");
 //		userService.createNewUser("test", "test@gmail.com", "123456");
 //		postService.createNewPost("Post title 1", "post content post content post content post content post content post content post content post content post content post content post content post content post content post content", 1);
@@ -39,5 +39,5 @@ public class LearnApplication implements CommandLineRunner {
 //		postService.createNewPost("Post title 7", "post content post content post content post content post content post content post content post content post content post content post content post content post content post content", 1);
 //		postService.createNewPost("Post title 8", "post content post content post content post content post content post content post content post content post content post content post content post content post content post content", 2);
 //		commentService.createComment("This is comment", 1, 1, 0);
-	}
+  }
 }

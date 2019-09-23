@@ -10,46 +10,46 @@ import java.util.Optional;
 
 public class TagServiceImpl implements TagService {
 
-    @Autowired
-    private TagRepository tagRepository;
+  @Autowired
+  private TagRepository tagRepository;
 
-    @Override
-    public Tag createNewTag(String name) {
-        Tag tag = new Tag(name);
-        Tag createdTag = tagRepository.save(tag);
-        return createdTag;
+  @Override
+  public Tag createNewTag(String name) {
+    Tag tag = new Tag(name);
+    Tag createdTag = tagRepository.save(tag);
+    return createdTag;
+  }
+
+  @Override
+  public Tag updateTag(long tagId, String name) {
+    Optional<Tag> findTag = tagRepository.findById(tagId);
+
+    if (!findTag.isPresent()) {
+      return null;
     }
+    Tag updateTag = findTag.get();
+    updateTag.setName(name);
 
-    @Override
-    public Tag updateTag(long tagId, String name) {
-        Optional<Tag> findTag = tagRepository.findById(tagId);
+    return tagRepository.save(updateTag);
+  }
 
-        if (!findTag.isPresent()) {
-            return null;
-        }
-        Tag updateTag = findTag.get();
-        updateTag.setName(name);
+  @Override
+  public List<Tag> getAllTags() {
+    return tagRepository.findAll();
+  }
 
-        return tagRepository.save(updateTag);
+  @Override
+  public void deleteTag(long tagId) {
+    Optional<Tag> findTag = tagRepository.findById(tagId);
+    if (findTag.isPresent()) {
+      Tag deleteTag = findTag.get();
+      tagRepository.delete(deleteTag);
     }
+  }
 
-    @Override
-    public List<Tag> getAllTags() {
-        return tagRepository.findAll();
-    }
+  @Override
+  public void createNewPostTag(long tagId, long postId) {
+    Optional<Tag> findTag = tagRepository.findById(tagId);
 
-    @Override
-    public void deleteTag(long tagId) {
-        Optional<Tag> findTag = tagRepository.findById(tagId);
-        if (findTag.isPresent()) {
-            Tag deleteTag = findTag.get();
-            tagRepository.delete(deleteTag);
-        }
-    }
-
-    @Override
-    public void createNewPostTag(long tagId, long postId) {
-        Optional<Tag> findTag = tagRepository.findById(tagId);
-
-    }
+  }
 }

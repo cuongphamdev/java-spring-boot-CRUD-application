@@ -14,30 +14,30 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class LoginController {
 
-    @Autowired
-    private UserService userService;
+  @Autowired
+  private UserService userService;
 
-    @RequestMapping(value = "/login")
-    public ModelAndView login (HttpServletRequest request) {
-        if (userService.checkAuthentication(request)) {
-            return new ModelAndView("redirect:/");
-        }
-        return new ModelAndView("login");
+  @RequestMapping(value = "/login")
+  public ModelAndView login(HttpServletRequest request) {
+    if (userService.checkAuthentication(request)) {
+      return new ModelAndView("redirect:/");
     }
+    return new ModelAndView("login");
+  }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ModelAndView doLogin (@ModelAttribute User user, HttpServletRequest request) {
-        String email = user.getEmail();
-        String password = user.getPassword();
-        User loginUser = userService.loginByEmailAndPassword(email, password);
-        if (loginUser == null) {
-            String message = "The input information is incorrect";
-            ModelAndView modelAndView = new ModelAndView("login");
-            modelAndView.addObject("message", message);
-            modelAndView.addObject("email", email);
-            return modelAndView;
-        }
-        userService.setAuthenticate(request, loginUser);
-        return new ModelAndView("redirect:/");
+  @RequestMapping(value = "/login", method = RequestMethod.POST)
+  public ModelAndView doLogin(@ModelAttribute User user, HttpServletRequest request) {
+    String email = user.getEmail();
+    String password = user.getPassword();
+    User loginUser = userService.loginByEmailAndPassword(email, password);
+    if (loginUser == null) {
+      String message = "The input information is incorrect";
+      ModelAndView modelAndView = new ModelAndView("login");
+      modelAndView.addObject("message", message);
+      modelAndView.addObject("email", email);
+      return modelAndView;
     }
+    userService.setAuthenticate(request, loginUser);
+    return new ModelAndView("redirect:/");
+  }
 }

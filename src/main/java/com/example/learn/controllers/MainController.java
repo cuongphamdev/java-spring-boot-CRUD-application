@@ -15,8 +15,6 @@ public class MainController {
   @Autowired
   private PostService postService;
 
-  @Autowired
-
   @RequestMapping(value = "/")
   public ModelAndView home(HttpServletRequest request) {
     List<Post> posts = postService.findAllPosts();

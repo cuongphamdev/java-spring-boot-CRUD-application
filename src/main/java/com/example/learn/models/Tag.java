@@ -3,55 +3,59 @@ package com.example.learn.models;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity
+@Entity(name = "Tag")
 @Table(name = "tags")
 public class Tag {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+  @Column(name = "name", nullable = false)
+  private String name;
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
-    @JoinTable(
-            name = "tag_posts",
-            joinColumns = { @JoinColumn(name = "tag_id") },
-            inverseJoinColumns = { @JoinColumn(name = "post_id") }
-    )
-    private Set<Post> posts;
+  @ManyToMany(cascade = CascadeType.REMOVE)
+  @JoinTable(
+          name = "tag_posts",
+          joinColumns = {@JoinColumn(name = "tag_id")},
+          inverseJoinColumns = {@JoinColumn(name = "post_id")}
+  )
+  private Set<Post> posts;
 
-    public Tag(String name) {
-        this.name = name;
-    }
+  public Tag() {
+  }
 
-    public Tag(String name, Set<Post> posts) {
-        this.name = name;
-        this.posts = posts;
-    }
+  public Tag(String name) {
+    this.name = name;
+  }
 
-    public long getId() {
-        return id;
-    }
+  public Tag(String name, Set<Post> posts) {
+    this.name = name;
+    this.posts = posts;
+  }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public Set<Post> getPosts() {
-        return posts;
-    }
+  public void setId(long id) {
+    this.id = id;
+  }
 
-    public void setPosts(Set<Post> posts) {
-        this.posts = posts;
-    }
+  public Set<Post> getPosts() {
+    return posts;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setPosts(Set<Post> posts) {
+    this.posts = posts;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
 }
