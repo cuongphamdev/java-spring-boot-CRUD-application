@@ -228,36 +228,53 @@ if (
 }
 
 if (document.getElementById("post-detail")) {
-    console.log("exist")
     let listActionUpdateNodes = document.querySelectorAll('#comment-update-button');
     listActionUpdateNodes.forEach(item =>
         item.addEventListener('click', async function(event) {
           let commentId = event.target.getAttribute('comment-id');
           let postId = event.target.getAttribute('post-id');
           let commentEl = document.getElementById(`comment${commentId}`);
-          document.getElementById('modal-update-comment').classList.add('show');
+          $("#update-comment-post-id").val(postId);
+          $("#update-comment-comment-id").val(commentId);
           let commentContentEl = null;
-          if (commentEl.childNodes[i].className == 'media-body') {
-            for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) { 
-              if (commentEl.childNodes[i].childNodes[j].className == 'media-body') {
-                commentContentEl = commentEl.childNodes[i].childNodes[j];
-              } 
-            }
-          }
-          sendAjax(`/posts/${postId}/comments/${commentId}`, content, "PUT",  (response) => {
             for (let i = 0; i < commentEl.childNodes.length; i++) {
               if (commentEl.childNodes[i].className == 'media-body') {
                 for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) { 
-                  if (commentEl.childNodes[i].childNodes[j].className == 'media-body') {
-                    commentEl.childNodes[i].childNodes[j].innerHTML = response.content;
+                  if (commentEl.childNodes[i].childNodes[j].className == 'content') {
+                    commentContentEl = commentEl.childNodes[i].childNodes[j];
                   } 
                 }
               }
             }
-          });
-        })
-    );
 
+          let content = commentContentEl ?  commentContentEl.textContent : '';
+          $("#update-comment-content").val(content);
+          document.getElementById('modal-update-comment').classList.add('show');
+        })
+    )
+
+    $('#comment-update-submit-button').on('click', e => {
+      let postId = $("#update-comment-post-id").val();
+      let commentId = $("#update-comment-comment-id").val();
+      let content = $("#update-comment-content").val();
+
+      sendAjax(`/posts/${postId}/comments/${commentId}`, {content}, "PUT",  (response) => {
+        let commentEl = document.getElementById(`comment${commentId}`);
+        for (let i = 0; i < commentEl.childNodes.length; i++) {
+          if (commentEl.childNodes[i].className == 'media-body') {
+            for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) { 
+              if (commentEl.childNodes[i].childNodes[j].className == 'content') {
+                commentEl.childNodes[i].childNodes[j].innerHTML = response.content;
+              } 
+            }
+          }
+        }
+        $(`#comment${commentId}`).animate({background:'#f55a2e40'},'slow');
+        $(`#comment${commentId}`).animate({background:'transparent'},'slow');
+        document.getElementById("modal-update-comment").classList.remove("show");
+      });
+    })
+ 
     let listActionRemoveNodes = document.querySelectorAll('#comment-delete-button');
     listActionRemoveNodes.forEach(item =>
         item.addEventListener('click', async function(event) {
@@ -269,6 +286,10 @@ if (document.getElementById("post-detail")) {
           })
         })
     );
+
+    $('#close-update-modal-comment').on("click", (e) => {
+      e.target.parentNode.classList.remove("show");
+    });
 }
 
 

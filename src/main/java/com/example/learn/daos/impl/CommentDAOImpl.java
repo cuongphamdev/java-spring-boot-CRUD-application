@@ -43,7 +43,8 @@ public class CommentDAOImpl implements CommentDAO {
               "WHERE id = :comment_id";
       Query query = entityManager.createQuery(hql);
       query.setParameter("comment_id", comment.getId());
-      return query.executeUpdate();
+      query.executeUpdate();
+      return comment.getId();
     } catch (Exception e) {
       return 0;
     }

@@ -23,9 +23,11 @@ public class User {
   @JsonIgnore
   private String password;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   private Set<Post> posts;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   private Set<Comment> comments;
 
