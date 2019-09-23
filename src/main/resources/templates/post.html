@@ -112,7 +112,7 @@
                         th:text="${'@' + comment.user.name}"
                         >@MartinoMont</strong
                       >
-                      <p th:text="${comment.content}">
+                      <p class="content" th:text="${comment.content}">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         Lorem ipsum dolor sit amet.
                       </p>
@@ -207,7 +207,7 @@
           <div class="form-footer">
             <button
               class="btn btn-primary"
-              id="comment-update-submit"
+              id="comment-update-submit-button"
               type="button"
             >
               Update
