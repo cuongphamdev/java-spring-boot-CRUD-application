@@ -18,4 +18,6 @@ public interface PostService {
   public long countPostByUserId(long userId);
 
   public List<Post> findAllPostByUserIdAndPagination(int userId, int page);
+
+  public Post createPost(Post post);
 }

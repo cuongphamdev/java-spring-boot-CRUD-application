@@ -1,12 +1,14 @@
 package com.example.learn.services.impl;
 
 import com.example.learn.daos.PostDAO;
+import com.example.learn.daos.TagDAO;
 import com.example.learn.daos.UserDAO;
 import com.example.learn.models.Post;
 import com.example.learn.models.User;
 import com.example.learn.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +20,9 @@ public class PostServiceImpl implements PostService {
 
   @Autowired
   private UserDAO userDAO;
+
+  @Autowired
+  private TagDAO tagDAO;
 
   @Override
   public List<Post> findAllPosts() {
@@ -40,6 +45,7 @@ public class PostServiceImpl implements PostService {
     return null;
   }
 
+  @Transactional
   @Override
   public Post updatePost(long postId, String title, String content) {
     Post postFound = postDAO.findById(postId);
@@ -53,6 +59,7 @@ public class PostServiceImpl implements PostService {
     return null;
   }
 
+  @Transactional
   @Override
   public long deletePost(long postId) {
     Post post = postDAO.findById(postId);
@@ -67,5 +74,11 @@ public class PostServiceImpl implements PostService {
   @Override
   public List<Post> findAllPostByUserIdAndPagination(int userId, int page) {
     return postDAO.findAllPostByUserIdAndPagination(userId, page);
+  }
+
+  @Override
+  public Post createPost(Post post) {
+    long createdPostId = postDAO.create(post);
+    return postDAO.findById(createdPostId);
   }
 }

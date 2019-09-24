@@ -19,4 +19,6 @@ public interface UserService {
   public long getCurrentUserId(HttpServletRequest request);
 
   public List<User> searchUserByNameOrEmail(String query);
+
+  public User getCurrentUser(HttpServletRequest request);
 }

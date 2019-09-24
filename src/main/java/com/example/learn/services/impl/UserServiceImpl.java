@@ -52,12 +52,18 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public long getCurrentUserId(HttpServletRequest request) {
+    User currentUser = getCurrentUser(request);
+    return currentUser == null ? 0 : currentUser.getId();
+  }
+
+  @Override
+  public User getCurrentUser(HttpServletRequest request) {
     HttpSession session = request.getSession(true);
     User loginSession = (User) session.getAttribute("loginSession");
     if (loginSession != null) {
-      return loginSession.getId();
+      return loginSession;
     }
-    return 0;
+    return null;
   }
 
   @Override
