@@ -31,7 +31,7 @@ public class User {
   @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
   private Set<Comment> comments;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne
   @JoinColumn(name = "role_id", insertable = false, updatable = false)
   private Role role;
 

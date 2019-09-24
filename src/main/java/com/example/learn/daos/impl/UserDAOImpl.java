@@ -17,9 +17,6 @@ public class UserDAOImpl implements UserDAO {
   @PersistenceContext
   private EntityManager entityManager;
 
-//  @Autowired
-//  private SessionFactory sessionFactory;
-
   @Override
   public User findByEmailAndPassword(String email, String password) {
     try {
@@ -37,8 +34,7 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public List<User> findAll() {
     String hql = "FROM User";
-    List<User> users = entityManager.createQuery(hql).getResultList();
-    return users;
+    return entityManager.createQuery(hql).getResultList();
   }
 
   @Override
@@ -47,8 +43,7 @@ public class UserDAOImpl implements UserDAO {
       String hql = "FROM User WHERE id = :userId";
       Query query = entityManager.createQuery(hql)
               .setParameter("userId", id);
-      User user = (User) query.getSingleResult();
-      return user;
+      return (User) query.getSingleResult();
     } catch (Exception e) {
       return null;
     }
@@ -68,13 +63,9 @@ public class UserDAOImpl implements UserDAO {
   @Transactional
   public long update(User user) {
     try {
-      String hql = "UPDATE User SET name = :name, password = :password " +
-              "WHERE id = :userId";
-      Query query = entityManager.createQuery(hql);
-      query.setParameter("name", user.getName())
-              .setParameter("password", user.getPassword())
-              .setParameter("userId", user.getId());
-      return query.executeUpdate();
+      Session session = entityManager.unwrap(Session.class);
+      session.update(user);
+      return user.getId();
     } catch (Exception e) {
       return 0;
     }
@@ -82,14 +73,21 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   @Transactional
-  public long delete(long userId) {
+  public long delete(User user) {
     try {
-      String hql = "DELETE FROM User WHERE id = :userId";
-      Query query = entityManager.createQuery(hql).setParameter("userId", userId);
-      return query.executeUpdate();
+      entityManager.remove(user);
+      return user.getId();
     } catch (Exception e) {
       System.out.println("Error: " + e.toString());
       return 0;
     }
+  }
+
+  @Override
+  public List<User> searchUserByNameOrEmail(String queryString) {
+    String hql = "FROM User WHERE email = :queryString OR name LIKE :queryString";
+    Query query = entityManager.createQuery(hql).setParameter("queryString", "%" + queryString + "%");
+    List<User> result = query.getResultList();
+    return result;
   }
 }

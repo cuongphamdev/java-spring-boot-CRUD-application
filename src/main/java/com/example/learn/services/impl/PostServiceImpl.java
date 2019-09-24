@@ -55,6 +55,17 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public long deletePost(long postId) {
-    return postDAO.delete(postId);
+    Post post = postDAO.findById(postId);
+    return postDAO.delete(post);
+  }
+
+  @Override
+  public long countPostByUserId(long userId) {
+    return postDAO.countPostByUserId(userId);
+  }
+
+  @Override
+  public List<Post> findAllPostByUserIdAndPagination(int userId, int page) {
+    return postDAO.findAllPostByUserIdAndPagination(userId, page);
   }
 }

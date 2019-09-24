@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -57,5 +58,10 @@ public class UserServiceImpl implements UserService {
       return loginSession.getId();
     }
     return 0;
+  }
+
+  @Override
+  public List<User> searchUserByNameOrEmail(String query) {
+    return userDAO.searchUserByNameOrEmail(query);
   }
 }

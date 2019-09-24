@@ -14,4 +14,8 @@ public interface PostService {
   public Post updatePost(long postId, String title, String content);
 
   public long deletePost(long postId);
+
+  public long countPostByUserId(long userId);
+
+  public List<Post> findAllPostByUserIdAndPagination(int userId, int page);
 }

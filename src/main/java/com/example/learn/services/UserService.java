@@ -3,6 +3,7 @@ package com.example.learn.services;
 import com.example.learn.models.User;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 public interface UserService {
   public User createNewUser(String name, String email, String password, long roleId);
@@ -16,4 +17,6 @@ public interface UserService {
   public User findUserById(long userId);
 
   public long getCurrentUserId(HttpServletRequest request);
+
+  public List<User> searchUserByNameOrEmail(String query);
 }

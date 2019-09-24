@@ -14,4 +14,6 @@ public interface CommentService {
   public Comment updateComment(long commentId, String content);
 
   public void deleteComment(long commentId);
+
+  public long countCommentByUserId(long userId);
 }

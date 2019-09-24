@@ -120,7 +120,6 @@ if (
   var listNodes = document.querySelectorAll('#action-more-btn');
   listNodes.forEach(item =>
     item.addEventListener('click', function(event) {
-      console.log(event.target.parentNode.parentNode.parentNode);
       let postID = event.target.getAttribute('post-id');
       for (
         let i = 0;
@@ -191,14 +190,6 @@ if (
     await sendAjax(`/posts/${postId}`, data, 'PUT', data => {});
 
     let postItem = document.getElementById(`post-${postId}`);
-    console.log('post', postItem.childNodes.item('title'));
-    for (let i = 0; i < postItem.childNodes.length; i++) {
-      if (postItem.childNodes[i].className == 'title') {
-        console.log(postItem.childNodes[i]);
-      }
-    }
-    console.log('data', data);
-
     postItem.querySelector('.title').innerHTML = data.title;
     postItem.querySelector('.content').innerHTML = data.content;
     event.target.parentNode.parentNode.classList.remove('show');
@@ -215,16 +206,15 @@ if (
       });
     })
   );
+}
 
-  document.getElementById('post-create-submit').onclick = function(event) {
-    let postForm = document.getElementById('create-post-form');
-    let title = document.getElementById('form-post-title');
-    let content = document.getElementById('form-post-content');
-    console.log('title', 'content', title.value, content.value);
-    if ((content.value !== '', title.value !== '')) {
-      postForm.submit();
-    }
-  };
+document.getElementById('post-create-submit').onclick = function(event) {
+  let postForm = document.getElementById('create-post-form');
+  let title = document.getElementById('form-post-title');
+  let content = document.getElementById('form-post-content');
+  if ((content.value !== '' && title.value !== '')) {
+    postForm.submit();
+  }
 }
 
 if (document.getElementById("post-detail")) {
