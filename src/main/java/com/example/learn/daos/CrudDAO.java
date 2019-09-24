@@ -11,5 +11,5 @@ public interface CrudDAO<T> {
 
   long update(T t);
 
-  long delete(long id);
+  long delete(T t);
 }

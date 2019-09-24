@@ -28,8 +28,7 @@ public class CommentDAOImpl implements CommentDAO {
   public long create(Comment comment) {
     try {
       Session session = entityManager.unwrap(Session.class);
-      long commentId = (long) session.save(comment);
-      return commentId;
+      return (long) session.save(comment);
     } catch (Exception e) {
       return 0;
     }
@@ -52,11 +51,10 @@ public class CommentDAOImpl implements CommentDAO {
 
   @Override
   @Transactional
-  public long delete(long commentId) {
+  public long delete(Comment comment) {
     try {
-      String hql = "DELETE FROM Comment WHERE id = :commentId";
-      Query query = entityManager.createQuery(hql).setParameter("commentId", commentId);
-      return query.executeUpdate();
+      entityManager.remove(comment);
+      return comment.getId();
     } catch (Exception e) {
       return 0;
     }
@@ -84,6 +82,18 @@ public class CommentDAOImpl implements CommentDAO {
       return (Comment) query.getSingleResult();
     } catch (Exception e) {
       return null;
+    }
+  }
+
+  @Override
+  public long countCommentByUserId(long userId) {
+    try {
+      String hql = "SELECT COUNT(c) FROM Comment c WHERE c.userId = :userId";
+      Query query = entityManager.createQuery(hql)
+              .setParameter("userId", userId);
+      return (long) query.getSingleResult();
+    } catch (Exception e) {
+      return 0;
     }
   }
 }

@@ -1,19 +1,17 @@
 package com.example.learn.utils;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.Session;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 public class HibernateUtil {
 
-  private static SessionFactory sessionFactory;
+  @PersistenceContext
+  private static EntityManager entityManager;
 
-  public static SessionFactory getSessionFactory() {
-    if (sessionFactory == null) {
-      Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-      StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
-      sessionFactory = configuration.buildSessionFactory(builder.build());
-    }
-    return sessionFactory;
+
+  public static Session getSession() {
+    return entityManager.unwrap(Session.class);
   }
 }

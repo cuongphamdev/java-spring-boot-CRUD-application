@@ -2,8 +2,10 @@ package com.example.learn.controllers;
 
 import com.example.learn.models.Comment;
 import com.example.learn.models.Post;
+import com.example.learn.models.Tag;
 import com.example.learn.services.CommentService;
 import com.example.learn.services.PostService;
+import com.example.learn.services.TagService;
 import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/posts")
@@ -24,6 +27,9 @@ public class PostController {
 
   @Autowired
   private CommentService commentService;
+
+  @Autowired
+  private TagService tagService;
 
   @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
   public long deletePostById(@PathVariable(value = "id") long postId, HttpServletRequest request) {
@@ -60,13 +66,27 @@ public class PostController {
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public ModelAndView createPost(@ModelAttribute Post post, HttpServletRequest request) {
-    String title = post.getTitle();
-    String content = post.getContent();
-    long userId = userService.getCurrentUserId(request);
-    if (userId != 0) {
-      postService.createNewPost(title, content, userId);
+  public ModelAndView createPost(@ModelAttribute Post post, HttpServletRequest request, @RequestParam(value = "tagIds", required = false) List<Long> tagIds) {
+    try {
+      long currentUserId = userService.getCurrentUserId(request);
+      String title = post.getTitle();
+      String content = post.getContent();
+      if (currentUserId != 0) {
+        Post postCreated = postService.createNewPost(title, content, currentUserId);
+        if (tagIds != null) {
+          for (long tagId : tagIds) {
+            Tag tag = tagService.getTagById(tagId);
+            Set<Post> newPosts = tag.getPosts();
+            newPosts.add(postCreated);
+            tag.setPosts(newPosts);
+            tagService.updateTagPost(tag);
+          }
+        }
+      }
+    } catch (Exception e) {
+      System.out.println("Error" + e);
+    } finally {
+      return new ModelAndView("redirect:/");
     }
-    return new ModelAndView("redirect:/");
   }
 }

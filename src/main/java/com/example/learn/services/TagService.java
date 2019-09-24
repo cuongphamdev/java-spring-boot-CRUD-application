@@ -9,9 +9,14 @@ public interface TagService {
 
   public Tag updateTag(long tagId, String name);
 
+  public Tag updateTagPost(Tag tag);
+
   public List<Tag> getAllTags();
 
-  public void deleteTag(long tagId);
 
-  public void createNewPostTag(long tagId, long postId);
+  public Tag getTagById(long tagId);
+
+  public long deleteTag(long tagId);
+
+  public List<Tag> searchTags(String queryString);
 }

@@ -101,7 +101,6 @@
 }
 
 .create-post {
-    overflow: hidden;
     border-radius: 0.5rem;
 }
 .create-post .form-title {

@@ -8,6 +8,8 @@
         <property name="connection.driver_class"/>
         <property name="connection.username"/>
         <property name="connection.password"/>
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
 <!--        <mapping class="com.example.learn.models.Comment" />-->
 <!--        <mapping class="com.example.learn.models.Post" />-->
 <!--        <mapping class="com.example.learn.models.Tag" />-->

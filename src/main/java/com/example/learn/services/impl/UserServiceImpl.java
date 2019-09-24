@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -51,11 +52,22 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public long getCurrentUserId(HttpServletRequest request) {
+    User currentUser = getCurrentUser(request);
+    return currentUser == null ? 0 : currentUser.getId();
+  }
+
+  @Override
+  public User getCurrentUser(HttpServletRequest request) {
     HttpSession session = request.getSession(true);
     User loginSession = (User) session.getAttribute("loginSession");
     if (loginSession != null) {
-      return loginSession.getId();
+      return loginSession;
     }
-    return 0;
+    return null;
+  }
+
+  @Override
+  public List<User> searchUserByNameOrEmail(String query) {
+    return userDAO.searchUserByNameOrEmail(query);
   }
 }

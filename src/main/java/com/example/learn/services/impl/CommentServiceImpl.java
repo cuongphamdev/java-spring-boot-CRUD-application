@@ -54,6 +54,12 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public void deleteComment(long commentId) {
-    long deletedCommentId = commentDAO.delete(commentId);
+    Comment comment = commentDAO.findById(commentId);
+    long deletedCommentId = commentDAO.delete(comment);
+  }
+
+  @Override
+  public long countCommentByUserId(long userId) {
+    return commentDAO.countCommentByUserId(userId);
   }
 }

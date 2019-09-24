@@ -47,6 +47,7 @@
             infancy. Various versions have evolved over the years, sometimes by
             accident, sometimes on purpose (injected humour and the like).
         </div>
+        <small class="text-muted" th:if="${post.tags != null}" th:each="tag: ${post.tags}" th:text="${'#' + tag.name}"></small>
         <div
                 class="popup"
                 id="popup"

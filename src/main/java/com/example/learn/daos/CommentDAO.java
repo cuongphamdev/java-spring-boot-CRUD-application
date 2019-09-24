@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CommentDAO extends CrudDAO<Comment> {
   public List<Comment> listRootCommentByPostId(long postId);
+
+  public long countCommentByUserId(long userId);
 }

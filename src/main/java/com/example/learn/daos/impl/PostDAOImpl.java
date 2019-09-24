@@ -32,7 +32,6 @@ public class PostDAOImpl implements PostDAO {
               .setParameter("postId", id);
       return (Post) query.getSingleResult();
     } catch (Exception e) {
-      System.out.println("Error: " + e.toString());
       return null;
     }
   }
@@ -52,12 +51,9 @@ public class PostDAOImpl implements PostDAO {
   @Transactional
   public long update(Post post) {
     try {
-      String hql = "UPDATE Post SET title = :title, content = :content " +
-              "WHERE id = :postId";
-      Query query = entityManager.createQuery(hql);
-      query.setParameter("title", post.getTitle())
-              .setParameter("content", post.getContent());
-      return query.executeUpdate();
+      Session session = entityManager.unwrap(Session.class);
+      session.update(post);
+      return post.getId();
     } catch (Exception e) {
       return 0;
     }
@@ -65,13 +61,50 @@ public class PostDAOImpl implements PostDAO {
 
   @Override
   @Transactional
-  public long delete(long postId) {
+  public long delete(Post post) {
     try {
-      String hql = "DELETE FROM Post p WHERE p.id = :postId";
-      Query query = entityManager.createQuery(hql).setParameter("postId", postId);
-      return query.executeUpdate();
+      entityManager.remove(post);
+      return post.getId();
     } catch (Exception e) {
       return 0;
+    }
+  }
+
+  @Override
+  public long countPostByUserId(long userId) {
+    try {
+      String hql = "SELECT COUNT (p) FROM Post p WHERE userId = :userId";
+      Query query = entityManager.createQuery(hql);
+      query.setParameter("userId", userId);
+      return (long) query.getSingleResult();
+    } catch (Exception e) {
+      return 0;
+    }
+  }
+
+  @Override
+  public List<Post> findAllPostByUserId(long userId) {
+    try {
+      String hql = "FROM Post p WHERE userId = :userId";
+      Query query = entityManager.createQuery(hql);
+      query.setParameter("userId", userId);
+      return query.getResultList();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  @Override
+  public List<Post> findAllPostByUserIdAndPagination(int userId, int page) {
+    try {
+      String hql = "FROM Post p WHERE userId = :userId";
+      Query query = entityManager.createQuery(hql);
+      query.setParameter("userId", (long) userId);
+      query.setFirstResult((page - 1) * 1);
+      query.setMaxResults(1);
+      return query.getResultList();
+    } catch (Exception e) {
+      return null;
     }
   }
 }

@@ -1,5 +1,7 @@
 package com.example.learn.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -17,15 +19,19 @@ public class Post extends AuditModel {
   @Column(name = "content", nullable = false)
   private String content;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne
   @JoinColumn(name = "user_id", insertable = false, updatable = false)
   private User user;
 
   @Column(name = "user_id", nullable = false)
   private long userId;
 
-  @ManyToMany(mappedBy = "posts", cascade = CascadeType.REMOVE)
+  @ManyToMany(mappedBy = "posts")
   private Set<Tag> tags;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+  private Set<Comment> comments;
 
   public Post() {
   }
@@ -88,6 +94,14 @@ public class Post extends AuditModel {
 
   public void setUserId(long userId) {
     this.userId = userId;
+  }
+
+  public Set<Comment> getComments() {
+    return comments;
+  }
+
+  public void setComments(Set<Comment> comments) {
+    this.comments = comments;
   }
 
   @Override

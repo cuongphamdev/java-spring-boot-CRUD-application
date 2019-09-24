@@ -16,7 +16,7 @@ public class Comment {
   @Column(name = "content", nullable = false)
   private String content;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne
   @JoinColumn(name = "user_id", insertable = false, updatable = false)
   private User user;
 
@@ -24,7 +24,7 @@ public class Comment {
   private long userId;
 
   @JsonIgnore
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne
   @JoinColumn(name = "post_id", insertable = false, updatable = false)
   private Post post;
 
@@ -32,7 +32,7 @@ public class Comment {
   private long postId;
 
   @JsonIgnore
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @ManyToOne
   @JoinColumn(name = "parent_id", insertable = false, updatable = false)
   private Comment parent;
 
