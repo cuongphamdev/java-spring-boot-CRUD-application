@@ -19,5 +19,7 @@ public interface PostService {
 
   public List<Post> findAllPostByUserIdAndPagination(int userId, int page);
 
+  public List<Post> findAllPostPagination(int page);
+
   public Post createPost(Post post);
 }

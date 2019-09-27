@@ -1,10 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
     <title>Profile</title>
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+  <header th:replace="header.html :: header"> </header>
+    <div class="container">
+    <section id="search-user">
+        <input type="text" name="searchQuery form-control" placeholder="Enter email or name of user which you want" id="input-text-search">
+        <div class="dropdown-menu" id="dropdown-user-search-list">
+        </div>
+    </section>
+    <br>
+      <section class="user-profile-summary">
+        <div class="user-profile-data">
+          <h2 th:text="${userProfile.name}"></h2>
+          <p th:text="${userProfile.email}"></p>
+        </div>
+        <div class="user-summary-history">
+          <span class="post-count"
+            ><strong th:text="${countPosts}"></strong> Posts</span
+          >
+          <span class="comment-count"
+            ><strong th:text="${countComments}"></strong> Comments</span
+          >
+        </div>
+      </section>
 
-</body>
+      <section class="post-lists-pagination">
+        <div class="post-lists">
+          <div
+            class="post"
+            th:attr="id=${'post-' + post.id}"
+            th:each="post : ${listPosts}"
+          >
+            <div class="title-header">
+              <div class="title-header-left">
+                <h5 class="author" th:text="${post.user.name}">Author</h5>
+                <p class="created-at" th:text="${post.createdAt}">
+                  16/2/2018
+                </p>
+              </div>
+              <div
+                class="title-header-right"
+                th:attr="post-id=${post.id}"
+                post-id="1"
+              >
+                <span
+                  th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
+                  id="action-more-btn"
+                  >▼</span
+                >
+              </div>
+            </div>
+            <h3 class="title" id="title">
+              <a
+                th:href="@{'/posts/'+ ${post.id}}"
+                th:text="${post.title}"
+                class="link"
+                >This is title</a
+              >
+            </h3>
+            <div id="content" class="content" th:text="${post.content}">
+            </div>
+            <div
+              class="popup"
+              id="popup"
+              th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
+            >
+              <ul class="list-action" id="list-action">
+                <span class="inner" id="inner">X</span>
+                <li
+                  class="action"
+                  id="update-post"
+                  th:attr="post-id=${post.id}"
+                >
+                  Update
+                </li>
+                <li
+                  class="action"
+                  id="remove-post"
+                  th:attr="post-id=${post.id}"
+                >
+                  Remove
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="pagination"></div>
+      </section>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script th:src="@{/js/main.js}"></script>
+  </body>
 </html>

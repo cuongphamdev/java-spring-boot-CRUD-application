@@ -5,6 +5,7 @@ import com.example.learn.models.Tag;
 import com.example.learn.services.PostService;
 import com.example.learn.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,13 +22,24 @@ public class MainController {
   @Autowired
   private TagService tagService;
 
-  @RequestMapping(value = "/")
-  public ModelAndView home(HttpServletRequest request) {
-    List<Post> posts = postService.findAllPosts();
-    List<Tag> tags = tagService.getAllTags();
+  private ModelAndView getPostAndTagModelView(int pageNumber) {
     ModelAndView modelAndView = new ModelAndView("index");
+    List<Post> posts = postService.findAllPostPagination(pageNumber);
+    List<Tag> tags = tagService.getAllTags();
     modelAndView.addObject("posts", posts);
     modelAndView.addObject("tags", tags);
+    modelAndView.addObject("currentPage", pageNumber);
     return modelAndView;
+  }
+
+
+  @RequestMapping(value = "/")
+  public ModelAndView home(HttpServletRequest request) {
+    return this.getPostAndTagModelView(1);
+  }
+
+  @RequestMapping("/pages/{page}")
+  public ModelAndView summaryProfileByPage(@PathVariable(value = "page") int page) {
+    return this.getPostAndTagModelView(page);
   }
 }

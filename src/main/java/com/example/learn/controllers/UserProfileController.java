@@ -16,7 +16,7 @@ import java.util.List;
 @Controller
 public class UserProfileController {
 
-  private final int DEFAULT_PAGE = 1;
+  private final int DEFAULT_PAGE_NUMBER = 1;
 
   @Autowired
   UserService userService;
@@ -42,7 +42,7 @@ public class UserProfileController {
 
   @RequestMapping("/users/{userId}")
   public ModelAndView summaryProfileByPageDefault(@PathVariable(value = "userId") int userId) {
-    return this.getSummaryProfile(userId, DEFAULT_PAGE);
+    return this.getSummaryProfile(userId, DEFAULT_PAGE_NUMBER);
   }
 
 
@@ -50,6 +50,4 @@ public class UserProfileController {
   public ModelAndView summaryProfileByPage(@PathVariable(value = "userId") int userId, @PathVariable(value = "page") int page) {
     return this.getSummaryProfile(userId, page);
   }
-
-
 }

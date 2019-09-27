@@ -10,4 +10,6 @@ public interface PostDAO extends CrudDAO<Post> {
   public List<Post> findAllPostByUserId(long userId);
 
   public List<Post> findAllPostByUserIdAndPagination(int userId, int page);
+
+  public List<Post> findAllPostPagination(int page);
 }

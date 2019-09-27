@@ -7,9 +7,9 @@ public interface CrudDAO<T> {
 
   T findById(long id);
 
-  long create(T t);
+  T create(T t);
 
-  long update(T t);
+  T update(T t);
 
-  long delete(T t);
+  long delete(long id);
 }

@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" >
 </head>
 <body>
+<header th:replace="header.html :: header"> </header>
 <div class="container container--background relative">
     <form autocomplete="on" th-action="@{/login}" method="post" action="#" class="form form--center absolute" id="login-form">
         <h1 class="title text--center">Login Form</h1>

@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 <body>
+<header th:replace="header.html :: header"> </header>
 <div class="container" id="post-detail">
     <div class="post" th:attr="id=${'post-' + post.id}">
         <div class="title-header">

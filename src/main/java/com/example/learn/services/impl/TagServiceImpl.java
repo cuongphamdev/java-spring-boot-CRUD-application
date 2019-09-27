@@ -18,8 +18,7 @@ public class TagServiceImpl implements TagService {
   public Tag createNewTag(String name) {
     Tag tag = new Tag();
     tag.setName(name);
-    long createdTagId = tagDAO.create(tag);
-    return tagDAO.findById(createdTagId);
+    return tagDAO.create(tag);
   }
 
   @Override
@@ -27,8 +26,7 @@ public class TagServiceImpl implements TagService {
     Tag tagFound = tagDAO.findById(tagId);
     if (tagFound != null) {
       tagFound.setName(name);
-      long updatedPostId = tagDAO.update(tagFound);
-      return tagDAO.findById(updatedPostId);
+      return tagDAO.update(tagFound);
     }
     return null;
   }
@@ -40,8 +38,7 @@ public class TagServiceImpl implements TagService {
 
   @Override
   public long deleteTag(long tagId) {
-    Tag tag = tagDAO.findById(tagId);
-    return tagDAO.delete(tag);
+    return tagDAO.delete(tagId);
   }
 
   @Override
@@ -56,7 +53,6 @@ public class TagServiceImpl implements TagService {
 
   @Override
   public Tag updateTagPost(Tag tag) {
-    long updatedPostId = tagDAO.update(tag);
-    return tagDAO.findById(updatedPostId);
+    return tagDAO.update(tag);
   }
 }
