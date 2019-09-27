@@ -21,4 +21,6 @@ public interface UserService {
   public List<User> searchUserByNameOrEmail(String query);
 
   public User getCurrentUser(HttpServletRequest request);
+
+  public void removeAuthenticate(HttpServletRequest request);
 }

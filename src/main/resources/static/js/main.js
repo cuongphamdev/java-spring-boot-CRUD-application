@@ -208,6 +208,7 @@ if (
   );
 }
 
+if (document.getElementById('post-create-submit')) {
 document.getElementById('post-create-submit').onclick = function(event) {
   let postForm = document.getElementById('create-post-form');
   let title = document.getElementById('form-post-title');
@@ -216,6 +217,8 @@ document.getElementById('post-create-submit').onclick = function(event) {
     postForm.submit();
   }
 }
+}
+
 
 if (document.getElementById("post-detail")) {
     let listActionUpdateNodes = document.querySelectorAll('#comment-update-button');
@@ -282,6 +285,33 @@ if (document.getElementById("post-detail")) {
     });
 }
 
+  let eventTimeout = null;
+  $("#input-text-search").keyup(function(event) {
+    clearTimeout(eventTimeout);
+    eventTimeout = setTimeout(() => {
+      $('#dropdown-user-search-list').css("display", "block");
+      let searchText = $('#input-text-search').val();
+      if (searchText != '') {
+        sendAjax(`/search/user/${searchText}`, null, "GET", (response) => {
+          $("#dropdown-user-search-list").empty();
+        if (response.length > 0) {
+          $("#dropdown-user-search-list").empty();
+          response.forEach(item => (
+            $("#dropdown-user-search-list").append(`<a class="dropdown-item" target="_blank" href="/users/${item.id}">${item.name}</a>`)
+          ));
+        } else {
+          $("#dropdown-user-search-list").append(`<p >No result found</p>`);
+        }
+      });
+      }
+    }, 500);
+  });
+
+$( "#input-text-search" )
+  .focusout(function() {
+    setTimeout(() => {$('#dropdown-user-search-list').css("display", "none");}, 500)
+
+  });
 
 async function sendAjax(url, data, method, action) {
   try {

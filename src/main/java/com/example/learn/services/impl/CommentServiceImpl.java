@@ -3,7 +3,6 @@ package com.example.learn.services.impl;
 import com.example.learn.daos.CommentDAO;
 import com.example.learn.models.Comment;
 import com.example.learn.services.CommentService;
-import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +14,9 @@ public class CommentServiceImpl implements CommentService {
   @Autowired
   private CommentDAO commentDAO;
 
-  @Autowired
-  private UserService userService;
-
   @Override
   public List<Comment> findAllRootCommentByPostId(long postId) {
-    List<Comment> listComments = commentDAO.listRootCommentByPostId(postId);
-    return listComments;
+    return commentDAO.listRootCommentByPostId(postId);
 
   }
 
@@ -36,9 +31,7 @@ public class CommentServiceImpl implements CommentService {
     if (parentId != 0) {
       comment.setParentId(parentId);
     }
-
-    long commentId = commentDAO.create(comment);
-    return commentDAO.findById(commentId);
+    return commentDAO.create(comment);
   }
 
   @Override
@@ -48,14 +41,12 @@ public class CommentServiceImpl implements CommentService {
       return null;
     }
     comment.setContent(content);
-    commentDAO.update(comment);
-    return comment;
+    return commentDAO.update(comment);
   }
 
   @Override
   public void deleteComment(long commentId) {
-    Comment comment = commentDAO.findById(commentId);
-    long deletedCommentId = commentDAO.delete(comment);
+    commentDAO.delete(commentId);
   }
 
   @Override

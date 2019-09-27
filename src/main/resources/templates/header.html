@@ -1,0 +1,21 @@
+<header class="header" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="header-title">
+        <h2 class="title"><a href="/">Home</a></h2>
+    </div>
+    <nav class="nav-bar">
+        <ul class="header-lists">
+            <li class="header-item" th:if="${session.loginSession == null}">
+                <a href="/login">Login</a>
+            </li>
+            <li class="header-item" th:if="${session.loginSession == null}">
+                <a href="/register">Register</a>
+            </li>
+            <li class="header-item" th:if="${session.loginSession != null}">
+                <span>Hello <strong th:text="${session.loginSession.name}"></strong></span>
+            </li>
+            <li class="header-item" th:if="${session.loginSession != null}">
+                <a href="/logout">Logout</a>
+            </li>
+        </ul>
+    </nav>
+</header>

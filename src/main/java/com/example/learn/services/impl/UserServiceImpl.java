@@ -23,8 +23,7 @@ public class UserServiceImpl implements UserService {
     user.setName(name);
     user.setPassword(password);
     user.setRoleId(roleId);
-    long loginUserId = userDAO.create(user);
-    return userDAO.findById(loginUserId);
+    return userDAO.create(user);
   }
 
   @Override
@@ -38,6 +37,12 @@ public class UserServiceImpl implements UserService {
   public void setAuthenticate(HttpServletRequest request, User user) {
     HttpSession session = request.getSession(true);
     session.setAttribute("loginSession", user);
+  }
+
+  @Override
+  public void removeAuthenticate(HttpServletRequest request) {
+    HttpSession session = request.getSession(true);
+    session.removeAttribute("loginSession");
   }
 
   @Override

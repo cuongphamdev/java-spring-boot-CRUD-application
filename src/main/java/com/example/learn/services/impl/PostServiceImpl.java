@@ -1,7 +1,6 @@
 package com.example.learn.services.impl;
 
 import com.example.learn.daos.PostDAO;
-import com.example.learn.daos.TagDAO;
 import com.example.learn.daos.UserDAO;
 import com.example.learn.models.Post;
 import com.example.learn.models.User;
@@ -21,9 +20,6 @@ public class PostServiceImpl implements PostService {
   @Autowired
   private UserDAO userDAO;
 
-  @Autowired
-  private TagDAO tagDAO;
-
   @Override
   public List<Post> findAllPosts() {
     return postDAO.findAll();
@@ -39,8 +35,7 @@ public class PostServiceImpl implements PostService {
     User author = userDAO.findById(userId);
     if (author != null) {
       Post post = new Post(title, content, author.getId());
-      long postCreatedId = postDAO.create(post);
-      return postDAO.findById(postCreatedId);
+      return postDAO.create(post);
     }
     return null;
   }
@@ -53,8 +48,7 @@ public class PostServiceImpl implements PostService {
     if (postFound != null) {
       postFound.setTitle(title);
       postFound.setContent(content);
-      long updatedPostId = postDAO.update(postFound);
-      return postDAO.findById(updatedPostId);
+      return postDAO.update(postFound);
     }
     return null;
   }
@@ -62,8 +56,7 @@ public class PostServiceImpl implements PostService {
   @Transactional
   @Override
   public long deletePost(long postId) {
-    Post post = postDAO.findById(postId);
-    return postDAO.delete(post);
+    return postDAO.delete(postId);
   }
 
   @Override
@@ -78,7 +71,11 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public Post createPost(Post post) {
-    long createdPostId = postDAO.create(post);
-    return postDAO.findById(createdPostId);
+    return postDAO.create(post);
+  }
+
+  @Override
+  public List<Post> findAllPostPagination(int page) {
+    return postDAO.findAllPostPagination(page);
   }
 }

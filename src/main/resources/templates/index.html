@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" >
 </head>
 <body>
+<header th:replace="header.html :: header"> </header>
 <div class="container">
     <div th:if="${session.loginSession == null}" class="wellcome-anonymous text--center">
         <h2>Hi there, If you first time come to our website, please create the new user by go <a th:href="@{/register}">There</a></h2>
@@ -66,6 +67,10 @@
                 </div>
             </div>
         </section>
+        <div class="pagination">
+            <a th:if="${currentPage > 1}" th:href="${'/pages/' + (currentPage - 1)}">❮</a>
+            <a th:href="${'/pages/' + (currentPage + 1)}">❯</a>
+        </div>
     </div>
     <section class="modal" id="modal-update" >
         <form  th:if="${session.loginSession != null}" id="update-post-form"  class="form create-post">
@@ -86,6 +91,7 @@
         </form>
         <button class="btn btn--full btn-warning" id="close-update-modal">Close</button>
     </section>
+
 </div>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

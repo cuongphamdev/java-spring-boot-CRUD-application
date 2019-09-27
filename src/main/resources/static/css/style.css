@@ -240,3 +240,37 @@
 .img-circle {
     border-radius: 50%;
 }
+
+#search-user {
+    position: relative;
+}
+
+.pagination {
+    display: inline-block;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+}
+
+.header {
+    position: sticky;
+    display: flex;
+    justify-content: space-around;
+}
+.header-lists {
+    list-style: none;
+    display: flex;
+}
+.header-item.header-item {
+    margin-left: 1rem;
+}
+
+.dropdown-item {
+    display: block;
+}
