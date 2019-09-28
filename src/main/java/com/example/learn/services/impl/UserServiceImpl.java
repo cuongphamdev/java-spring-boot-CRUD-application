@@ -23,7 +23,8 @@ public class UserServiceImpl implements UserService {
     user.setName(name);
     user.setPassword(password);
     user.setRoleId(roleId);
-    return userDAO.create(user);
+    User createUser = userDAO.create(user);
+    return createUser;
   }
 
   @Override

@@ -31,7 +31,7 @@
             </div>
             <div class="form-group">
                 <select name="tagIds" class="selectpicker" data-live-search="true" multiple data-max-options="3" data-size="5">
-                    <option th:each="tag : ${tags}" th:attr="value=${tag.id}" th:text="${tag.name}">Tag name</option>
+                    <option th:if="${tags != null}" th:each="tag : ${tags}" th:attr="value=${tag.id}" th:text="${tag.name}">Tag name</option>
                 </select>                          
             </div>
             <div class="form-footer">
