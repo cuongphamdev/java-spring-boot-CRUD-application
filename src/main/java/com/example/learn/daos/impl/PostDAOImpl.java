@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
@@ -68,5 +71,16 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
     } catch (Exception e) {
       return null;
     }
+  }
+
+  @Override
+  public List<Post> findPostByTitleAndContent(String queryString) {
+    queryString = "%" + queryString + "%";
+    CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
+    Root<Post> root = criteria.from(Post.class);
+    criteria.select(root);
+    criteria.where(builder.or(builder.like(root.get("title"), queryString), builder.like(root.get("content"), queryString)));
+    return entityManager.createQuery(criteria).setMaxResults(1).getResultList();
   }
 }

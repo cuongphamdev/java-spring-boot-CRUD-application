@@ -21,5 +21,7 @@ public interface PostService {
 
   public List<Post> findAllPostPagination(int page);
 
+  public List<Post> findPostByTitleAndContent(String queryString);
+
   public Post createPost(Post post);
 }

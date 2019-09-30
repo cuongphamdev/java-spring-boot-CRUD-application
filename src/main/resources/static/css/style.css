@@ -92,7 +92,6 @@
 }
 
 .home-wrap {
-    margin: 0 15%;
     padding: 1rem 0;
 }
 
@@ -273,4 +272,8 @@
 
 .dropdown-item {
     display: block;
+}
+
+#search-post {
+    position: relative;
 }
