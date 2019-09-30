@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
@@ -35,9 +38,12 @@ public class UserDAOImpl extends CrudDAOImpl<User> implements UserDAO {
 
   @Override
   public List<User> searchUserByNameOrEmail(String queryString) {
-    String hql = "FROM User WHERE email LIKE :queryString OR name LIKE :queryString";
-    Query query = entityManager.createQuery(hql).setParameter("queryString", "%" + queryString + "%");
-    List<User> result = query.getResultList();
-    return result;
+    queryString = "%" + queryString + "%";
+    CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<User> criteria = builder.createQuery(User.class);
+    Root<User> root = criteria.from(User.class);
+    criteria.select(root);
+    criteria.where(builder.or(builder.like(root.get("name"), queryString), builder.like(root.get("email"), queryString)));
+    return entityManager.createQuery(criteria).setMaxResults(5).getResultList();
   }
 }

@@ -307,10 +307,32 @@ if (document.getElementById("post-detail")) {
     }, 500);
   });
 
-$( "#input-text-search" )
+$( "#input-post-search" )
   .focusout(function() {
-    setTimeout(() => {$('#dropdown-user-search-list').css("display", "none");}, 500)
+    setTimeout(() => {$('#dropdown-post-search-list').css("display", "none");}, 500)
 
+  });
+
+  let searchPostTimeout = null;
+  $("#input-post-search").keyup(function(event) {
+    clearTimeout(searchPostTimeout);
+    searchPostTimeout = setTimeout(() => {
+      $('#dropdown-post-search-list').css("display", "block");
+      let searchText = $('#input-post-search').val();
+      if (searchText != '') {
+        sendAjax(`/search/post/${searchText}`, null, "GET", (response) => {
+          $("#dropdown-post-search-list").empty();
+        if (response.length > 0) {
+          $("#dropdown-post-search-list").empty();
+          response.forEach(item => (
+            $("#dropdown-post-search-list").append(`<a class="dropdown-item" target="_blank" href="/posts/${item.id}">${item.title}</a>`)
+          ));
+        } else {
+          $("#dropdown-post-search-list").append(`<p >No result found</p>`);
+        }
+      });
+      }
+    }, 500);
   });
 
 async function sendAjax(url, data, method, action) {
