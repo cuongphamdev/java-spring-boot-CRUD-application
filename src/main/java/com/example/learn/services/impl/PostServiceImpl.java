@@ -80,18 +80,6 @@ public class PostServiceImpl implements PostService {
     return postDAO.findAllPostPagination(page);
   }
 
-
-  //TODO: UT here
-  @Override
-  public List<Post> findPostByTitleAndContent(String queryString) {
-    return postDAO.findPostByTitleAndContent(queryString);
-  }
-
-  @Override
-  public List<Post> findPostByTitleAndContentAndTagName(String query) {
-    return postDAO.findPostByTitleAndContentAndTagName(query);
-  }
-
   @Override
   public Search<Post> findPostByTitleAndContentAndTagNameWithUserId(String query, long userId, int page) {
     return postDAO.searchPostByTitleAndContentAndTagNameWithUserId(query, userId, page);

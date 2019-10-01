@@ -25,5 +25,5 @@ public interface UserService {
 
   public void removeAuthenticate(HttpServletRequest request);
 
-  public Search<User> searchUserInOrderAndPagination (String query, String order, int page);
+  public Search<User> searchUserInOrderAndPagination(String query, String order, int page);
 }

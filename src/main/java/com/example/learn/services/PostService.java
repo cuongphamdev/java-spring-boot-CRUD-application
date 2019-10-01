@@ -22,11 +22,7 @@ public interface PostService {
 
   public List<Post> findAllPostPagination(int page);
 
-  public List<Post> findPostByTitleAndContent(String queryString);
-
   public Post createPost(Post post);
-
-  public List<Post> findPostByTitleAndContentAndTagName(String query);
 
   public Search<Post> findPostByTitleAndContentAndTagNameWithUserId(String query, long userId, int page);
 }
