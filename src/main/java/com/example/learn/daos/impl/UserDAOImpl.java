@@ -56,23 +56,16 @@ public class UserDAOImpl extends CrudDAOImpl<User> implements UserDAO {
     Root<User> root = criteria.from(User.class);
     criteria.select(root);
     criteria.where(builder.or(builder.like(root.get("name"), "%" + query + "%"), builder.like(root.get("email"), "%" + query + "%")));
-
     if (order.equals("a2z")) {
       criteria.orderBy(builder.asc(root.get("name")));
     } else if (order.equals("z2a")) {
       criteria.orderBy(builder.desc(root.get("name")));
     }
-
     countItems = entityManager.createQuery(criteria).getResultList().size();
     List<User> usersList = entityManager.createQuery(criteria).setFirstResult((page - 1) * 5).setMaxResults(5).getResultList();
-    Search<User> result = new Search<>();
-
-    result.setListItems(usersList);
-    result.setTotalItems(countItems);
-    result.setMaxPages(countItems / 5 + (countItems % 5 != 0 ? 1 : 0));
+    int maxPages = countItems / 5 + (countItems % 5 != 0 ? 1 : 0);
+    Search<User> result = new Search<User>(usersList, countItems, maxPages, query, page);
     result.setSortBy(order);
-    result.setSearchQuery(query);
-    result.setCurrentPage(page);
     return result;
   }
 }

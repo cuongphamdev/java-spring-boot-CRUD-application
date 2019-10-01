@@ -14,13 +14,25 @@
   <body>
   <header th:replace="header.html :: header"> </header>
     <div class="container">
-      <section id="search-post">
-        <input type="text" name="searchQuery" placeholder="Enter title or content of post" id="input-post-search">
-        <input type="hidden" name="userId" th:attr="value=${user.id}" placeholder="Enter title or content of post" id="input-post-user-id">
-        <div class="dropdown-menu" id="dropdown-post-search-list">
-        </div>
+      <section id="search-post" class="user-search">
+        <form action="#" method="GET" class="search-user-form">
+          <div class="form-group d-flex">
+            <input
+                    type="text"
+                    class="form-search-user-input"
+                    id="search-user-input"
+                    placeholder="Enter the name or email of user here"
+                    name="q"
+                    th:attr="value=${searchPostData.searchQuery != null ? searchPostData.searchQuery : ''}"
+            />
+          </div>
+          <div class="form-group flex-x--end">
+            <button class="btn btn-default btn-success" type="submit">Search</button>
+          </div>
+        </form>
       </section>
     <br>
+
       <section class="user-profile-summary">
         <div class="user-profile-data">
           <h2 th:text="${user.name}"></h2>
@@ -36,69 +48,156 @@
         </div>
       </section>
 
-      <section class="post-lists-pagination">
-        <div class="post-lists" th:if="${searchPostData != null}">
-          <div
-            class="post"
-            th:attr="id=${'post-' + post.id}"
-            th:each="post : ${searchPostData.listItems}"
-          >
-            <div class="title-header">
-              <div class="title-header-left">
-                <h5 class="author" th:text="${post.user.name}">Author</h5>
-                <p class="created-at" th:text="${post.createdAt}">
-                  16/2/2018
-                </p>
-              </div>
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#posts">Posts</a></li>
+        <li><a data-toggle="tab" href="#comments">Comments</a></li>
+      </ul>
+      <div class="tab-content">
+        <div id="posts" class="tab-pane fade in active show">
+          <section class="post-lists-pagination">
+            <div class="post-lists" th:if="${searchPostData != null}">
               <div
-                class="title-header-right"
-                th:attr="post-id=${post.id}"
-                post-id="1"
+                      class="post"
+                      th:attr="id=${'post-' + post.id}"
+                      th:each="post : ${searchPostData.listItems}"
               >
+                <div class="title-header">
+                  <div class="title-header-left">
+                    <h5 class="author" th:text="${post.user.name}">Author</h5>
+                    <p class="created-at" th:text="${post.createdAt}">
+                      16/2/2018
+                    </p>
+                    <p th:if="${post.tags != null}"  class="created-at">
+                      <span th:each="tag: ${post.tags}" th:text="${'  #' + tag.name}">tag</span>
+                    </p>
+                  </div>
+                  <div
+                          class="title-header-right"
+                          th:attr="post-id=${post.id}"
+                          post-id="1"
+                  >
                 <span
-                  th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
-                  id="action-more-btn"
-                  >▼</span
+                        th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
+                        id="action-more-btn"
+                >▼</span
                 >
+                  </div>
+                </div>
+                <h3 class="title" id="title">
+                  This is title
+                  >
+                </h3>
+                <div id="content" class="content" th:text="${post.content}">
+                </div>
+                <div class="post-footer">
+                  <strong th:text="${post.comments.size()}"></strong>
+                  <span th:text="${post.comments.size() > 1 ? ' comments' : ' comment'}"></span>
+                  <br>
+                  <a th:href="@{'/posts/' + ${post.id}}">View detail</a>
+                </div>
+                <div
+                        class="popup"
+                        id="popup"
+                        th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
+                >
+                  <ul class="list-action" id="list-action">
+                    <span class="inner" id="inner">X</span>
+                    <li
+                            class="action"
+                            id="update-post"
+                            th:attr="post-id=${post.id}"
+                    >
+                      Update
+                    </li>
+                    <li
+                            class="action"
+                            id="remove-post"
+                            th:attr="post-id=${post.id}"
+                    >
+                      Remove
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-            <h3 class="title" id="title">
-              <a
-                th:href="@{'/posts/'+ ${post.id}}"
-                th:text="${post.title}"
-                class="link"
-                >This is title</a
-              >
-            </h3>
-            <div id="content" class="content" th:text="${post.content}">
-            </div>
-            <div
-              class="popup"
-              id="popup"
-              th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
-            >
-              <ul class="list-action" id="list-action">
-                <span class="inner" id="inner">X</span>
+            <div class="pagination" th:if="${searchPostData.maxPages > 1}">
+              <ul class="pagination-list" id="pagination-list">
                 <li
-                  class="action"
-                  id="update-post"
-                  th:attr="post-id=${post.id}"
+                        class="post pagination-item"
+                        th:each="number: ${#numbers.sequence(1, searchPostData.maxPages, 1)}"
                 >
-                  Update
-                </li>
-                <li
-                  class="action"
-                  id="remove-post"
-                  th:attr="post-id=${post.id}"
-                >
-                  Remove
+                  <a
+                          th:href="@{'/users/'+ ${user.id} +'?q=' + ${searchPostData.searchQuery} + '&page=' + ${number}}" th:text="${number}"
+                  ></a>
                 </li>
               </ul>
             </div>
+          </section>
+        </div>
+        <div id="comments" class="tab-pane fade">
+          <div class="comment-wrapper">
+            <div class="clearfix"></div>
+            <hr/>
+            <ul class="media-list comment-list">
+              <li
+                      class="media comment-item"
+                      th:each="comment : ${comments}"
+                      th:attr="id=${'comment' + comment.id}"
+              >
+                <a href="#" class="pull-left" th:if="${comments != null}">
+                  <img
+                          src="https://bootdey.com/img/Content/user_1.jpg"
+                          alt=""
+                          class="img-circle"
+                  />
+                </a>
+                <div th:if="${comment != null}" class="media-body">
+                      <span class="text-muted pull-right">
+                        <!--                                    <small class="text-muted">30 min ago</small> --></span
+                      >
+                  <strong
+                          class="text-success"
+                          th:text="${'@' + comment.user.name}"
+                  >@MartinoMont</strong
+                  >
+                  <p class="content" th:text="${comment.content}">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Lorem ipsum dolor sit amet.
+                  </p>
+                  <button
+                          class="reply btn btn-default btn-primary"
+                          th:if="${session.loginSession != null}"
+                  >
+                    Reply
+                  </button>
+                </div>
+                <div
+                        class="media-footer"
+                        th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
+                >
+
+                  <button
+                          class="reply btn btn-default btn-warning comment-update-button"
+                          th:attr="comment-id=${comment.id}, post-id=${post.id}"
+                          id="comment-update-button"
+                  >
+                    Update
+                  </button>
+                  <button
+                          class="reply btn btn-default btn-danger comment-delete-button"
+                          th:attr="comment-id=${comment.id}, post-id=${post.id}"
+                          id="comment-delete-button"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="pagination"></div>
-      </section>
+      </div>
+
+
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script

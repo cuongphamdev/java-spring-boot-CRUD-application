@@ -110,8 +110,11 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
     CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
     Root<Post> root = criteria.from(Post.class);
     criteria.select(root);
+    criteria.orderBy(builder.desc(root.get("id")));
     criteria.where(
-            builder.and(builder.or(builder.like(builder.lower(root.get("title")), searchQuery),
+            builder.and(builder.or(
+                    builder.like(builder.lower(root.join("tags").get("name")), query),
+                    builder.like(builder.lower(root.get("title")), searchQuery),
                     builder.like(builder.lower(root.get("content")), searchQuery))),
             builder.equal(root.get("userId"), userId)
     );

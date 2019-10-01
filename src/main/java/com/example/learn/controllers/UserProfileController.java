@@ -43,11 +43,6 @@ public class UserProfileController {
     return modelAndView;
   }
 
-//  @RequestMapping("/users/{userId}")
-//  public ModelAndView summaryProfileByPageDefault(@PathVariable(value = "userId") int userId) {
-//    return this.getSummaryProfile(userId, DEFAULT_PAGE_NUMBER);
-//  }
-
   @RequestMapping("/users/{userId}")
   public ModelAndView searchPostByTitleAndContent(
           @PathVariable(value = "userId") int userId,
@@ -55,29 +50,15 @@ public class UserProfileController {
           @RequestParam(value = "page", required = false) Integer page
   ) {
     queryParam = queryParam != null ? queryParam : "";
-    page = page != null ? page : 1;
-
+    page = page != null ? page : DEFAULT_PAGE_NUMBER;
     ModelAndView modelAndView = new ModelAndView("profile");
     Search<Post> searchResult = postService.findPostByTitleAndContentAndTagNameWithUserId(queryParam, userId, page);
-
     User currentUser = userService.findUserById(userId);
     List<Comment> comments = commentService.findCommentsByUserId(userId);
-
-//    searchResult
-
-//    TODO: Search post by user Id, tag name, title, content, and page
-
     modelAndView.addObject("comments", comments);
     modelAndView.addObject("user", currentUser);
     modelAndView.addObject("searchPostData", searchResult);
-
     return modelAndView;
-//    return postService.findPostByTitleAndContentAndTagName(queryParam);
   }
 
-
-//  @RequestMapping("/users/{userId}/pages/{page}")
-//  public ModelAndView summaryProfileByPage(@PathVariable(value = "userId") int userId, @PathVariable(value = "page") int page) {
-//    return this.getSummaryProfile(userId, page);
-//  }
 }
