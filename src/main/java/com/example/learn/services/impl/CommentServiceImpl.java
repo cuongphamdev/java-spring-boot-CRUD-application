@@ -53,4 +53,9 @@ public class CommentServiceImpl implements CommentService {
   public long countCommentByUserId(long userId) {
     return commentDAO.countCommentByUserId(userId);
   }
+
+  @Override
+  public List<Comment> findCommentsByUserId(long userId) {
+    return commentDAO.findCommentByUserId(userId);
+  }
 }

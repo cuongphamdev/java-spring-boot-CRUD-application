@@ -2,6 +2,7 @@ package com.example.learn.daos.impl;
 
 import com.example.learn.daos.PostDAO;
 import com.example.learn.models.Post;
+import com.example.learn.models.Search;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -75,12 +76,49 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
 
   @Override
   public List<Post> findPostByTitleAndContent(String queryString) {
-    queryString = "%" + queryString + "%";
+    queryString = "%" + queryString.toLowerCase() + "%";
     CriteriaBuilder builder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
     Root<Post> root = criteria.from(Post.class);
     criteria.select(root);
     criteria.where(builder.or(builder.like(root.get("title"), queryString), builder.like(root.get("content"), queryString)));
-    return entityManager.createQuery(criteria).setMaxResults(1).getResultList();
+    return entityManager.createQuery(criteria).setMaxResults(5).getResultList();
+  }
+
+  @Override
+  public List<Post> findPostByTitleAndContentAndTagName(String query) {
+    query = "%" + query.toLowerCase() + "%";
+    CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
+    Root<Post> root = criteria.from(Post.class);
+    criteria.select(root);
+    criteria.where(
+            builder.or(
+                    builder.like(builder.lower(root.join("tags").get("name")), query),
+                    builder.like(builder.lower(root.get("title")), query),
+                    builder.like(builder.lower(root.get("content")), query)
+
+            )
+    );
+    return entityManager.createQuery(criteria).setMaxResults(5).getResultList();
+  }
+
+  @Override
+  public Search<Post> searchPostByTitleAndContentAndTagNameWithUserId(String query, long userId, int page) {
+    String searchQuery = "%" + query.toLowerCase() + "%";
+    CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
+    Root<Post> root = criteria.from(Post.class);
+    criteria.select(root);
+    criteria.where(
+            builder.and(builder.or(builder.like(builder.lower(root.get("title")), searchQuery),
+                    builder.like(builder.lower(root.get("content")), searchQuery))),
+            builder.equal(root.get("userId"), userId)
+    );
+    int countItems = entityManager.createQuery(criteria).getResultList().size();
+    List<Post> postList = entityManager.createQuery(criteria).setFirstResult((page - 1) * 5).setMaxResults(5).getResultList();
+    int maxPages = countItems / 5 + (countItems % 5 != 0 ? 1 : 0);
+    Search<Post> result = new Search<Post>(postList, countItems, maxPages, query, page);
+    return result;
   }
 }

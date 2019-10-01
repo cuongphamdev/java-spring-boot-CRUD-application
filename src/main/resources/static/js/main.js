@@ -292,7 +292,7 @@ if (document.getElementById("post-detail")) {
       $('#dropdown-user-search-list').css("display", "block");
       let searchText = $('#input-text-search').val();
       if (searchText != '') {
-        sendAjax(`/search/user/${searchText}`, null, "GET", (response) => {
+        sendAjax(`/search/user/?search${searchText}`, null, "GET", (response) => {
           $("#dropdown-user-search-list").empty();
         if (response.length > 0) {
           $("#dropdown-user-search-list").empty();

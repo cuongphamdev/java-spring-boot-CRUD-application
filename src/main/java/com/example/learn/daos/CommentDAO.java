@@ -8,4 +8,6 @@ public interface CommentDAO extends CrudDAO<Comment> {
   public List<Comment> listRootCommentByPostId(long postId);
 
   public long countCommentByUserId(long userId);
+
+  public List<Comment> findCommentByUserId(long userId);
 }

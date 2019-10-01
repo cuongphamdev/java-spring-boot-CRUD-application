@@ -1,6 +1,7 @@
 package com.example.learn.services;
 
 import com.example.learn.models.Post;
+import com.example.learn.models.Search;
 
 import java.util.List;
 
@@ -24,4 +25,8 @@ public interface PostService {
   public List<Post> findPostByTitleAndContent(String queryString);
 
   public Post createPost(Post post);
+
+  public List<Post> findPostByTitleAndContentAndTagName(String query);
+
+  public Search<Post> findPostByTitleAndContentAndTagNameWithUserId(String query, long userId, int page);
 }
