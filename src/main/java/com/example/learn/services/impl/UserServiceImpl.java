@@ -1,6 +1,7 @@
 package com.example.learn.services.impl;
 
 import com.example.learn.daos.UserDAO;
+import com.example.learn.models.Search;
 import com.example.learn.models.User;
 import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,5 +76,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public List<User> searchUserByNameOrEmail(String query) {
     return userDAO.searchUserByNameOrEmail(query);
+  }
+
+  @Override
+  public Search<User> searchUserInOrderAndPagination(String query, String order, int page) {
+    return userDAO.searchByPaginationAndOrderByName(query, order, page);
   }
 }

@@ -54,4 +54,16 @@ public class CommentDAOImpl extends CrudDAOImpl<Comment> implements CommentDAO {
       return 0;
     }
   }
+
+  @Override
+  public List<Comment> findCommentByUserId(long userId) {
+    try {
+      String hql = "FROM Comment WHERE userId = :userId";
+      Query query = entityManager.createQuery(hql)
+              .setParameter("userId", userId);
+      return (List<Comment>) query.getResultList();
+    } catch (Exception e) {
+      return null;
+    }
+  }
 }

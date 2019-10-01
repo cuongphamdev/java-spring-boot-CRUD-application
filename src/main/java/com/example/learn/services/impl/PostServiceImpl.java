@@ -3,6 +3,7 @@ package com.example.learn.services.impl;
 import com.example.learn.daos.PostDAO;
 import com.example.learn.daos.UserDAO;
 import com.example.learn.models.Post;
+import com.example.learn.models.Search;
 import com.example.learn.models.User;
 import com.example.learn.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,5 +85,15 @@ public class PostServiceImpl implements PostService {
   @Override
   public List<Post> findPostByTitleAndContent(String queryString) {
     return postDAO.findPostByTitleAndContent(queryString);
+  }
+
+  @Override
+  public List<Post> findPostByTitleAndContentAndTagName(String query) {
+    return postDAO.findPostByTitleAndContentAndTagName(query);
+  }
+
+  @Override
+  public Search<Post> findPostByTitleAndContentAndTagNameWithUserId(String query, long userId, int page) {
+    return postDAO.searchPostByTitleAndContentAndTagNameWithUserId(query, userId, page);
   }
 }

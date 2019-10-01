@@ -1,5 +1,6 @@
 package com.example.learn.services;
 
+import com.example.learn.models.Search;
 import com.example.learn.models.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,4 +24,6 @@ public interface UserService {
   public User getCurrentUser(HttpServletRequest request);
 
   public void removeAuthenticate(HttpServletRequest request);
+
+  public Search<User> searchUserInOrderAndPagination (String query, String order, int page);
 }

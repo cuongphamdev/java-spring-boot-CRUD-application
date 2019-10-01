@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Search</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+  <header th:replace="header.html :: header"> </header>
+    <div class="container">
+       <section class="user-search">
+      <form action="#" method="GET" class="search-user-form">
+        <div class="form-group d-flex">
+          <input
+            type="text"
+            class="form-search-user-input"
+            id="search-user-input"
+            placeholder="Enter the name or email of user here"
+            name="q"
+            th:attr="value=${data.searchQuery != null ? data.searchQuery : ''}"
+          />
+          <select name="sortBy" id="sort-by" class="form-search-user-select form-select">
+            <option value="a2z" class="form-option">A to Z</option>
+            <option value="z2a" class="form-option">Z to A</option>
+          </select>
+        </div>
+        <div class="form-group flex-x--end">
+          <button class="btn btn-default btn-success" type="submit">Search</button>
+        </div>
+      </form>
+    </section>
+      <section class="list-all-users" th:if="${data != null}">
+        <ul class="user-lists" th:if="${data.listItems != null}">
+          <li class="post user-item" th:each="user: ${data.listItems}">
+            <div class="user-header">
+              <h5 class="user-name" th:text="${user.name}">Name</h5>
+            </div>
+            <div class="user-summary">
+            <span class="count-number">
+              <strong th:text="${user.posts.size()}"> </strong>
+              <span
+                      th:text="${user.posts.size() > 1 ? ' posts' : ' post'}"
+              ></span>
+            </span>
+              <span class="count-number">
+              <strong th:text="${user.comments.size()}"> ></strong
+              ><span
+                      th:text="${user.comments.size() > 1 ? ' comments' : ' comment'}"
+              ></span>
+            </span>
+              <br />
+              <a th:attr="href=${'/users/' + user.id}" class="user-view-profile"
+              >View Profile</a
+              >
+            </div>
+          </li>
+        </ul>
+        <div class="pagination" th:if="${data.maxPages > 1}">
+          <ul class="pagination-list" id="pagination-list">
+            <li
+                    class="post pagination-item"
+                    th:each="number: ${#numbers.sequence(1, data.maxPages, 1)}"
+            >
+              <a
+                      th:href="@{'/search/user?q=' + ${data.searchQuery} + '&sortBy=' + ${data.sortBy} + '&page=' + ${number}}" th:text="${number}"
+              ></a>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script th:src="@{/js/main.js}"></script>
+  </body>
+</html>

@@ -14,33 +14,34 @@
   <body>
   <header th:replace="header.html :: header"> </header>
     <div class="container">
-    <section id="search-user">
-        <input type="text" name="searchQuery form-control" placeholder="Enter email or name of user which you want" id="input-text-search">
-        <div class="dropdown-menu" id="dropdown-user-search-list">
+      <section id="search-post">
+        <input type="text" name="searchQuery" placeholder="Enter title or content of post" id="input-post-search">
+        <input type="hidden" name="userId" th:attr="value=${user.id}" placeholder="Enter title or content of post" id="input-post-user-id">
+        <div class="dropdown-menu" id="dropdown-post-search-list">
         </div>
-    </section>
+      </section>
     <br>
       <section class="user-profile-summary">
         <div class="user-profile-data">
-          <h2 th:text="${userProfile.name}"></h2>
-          <p th:text="${userProfile.email}"></p>
+          <h2 th:text="${user.name}"></h2>
+          <p th:text="${user.email}"></p>
         </div>
         <div class="user-summary-history">
           <span class="post-count"
-            ><strong th:text="${countPosts}"></strong> Posts</span
+            ><strong th:text="${user.posts.size()}"></strong> Posts</span
           >
           <span class="comment-count"
-            ><strong th:text="${countComments}"></strong> Comments</span
+            ><strong th:text="${user.comments.size()}"></strong> Comments</span
           >
         </div>
       </section>
 
       <section class="post-lists-pagination">
-        <div class="post-lists">
+        <div class="post-lists" th:if="${searchPostData != null}">
           <div
             class="post"
             th:attr="id=${'post-' + post.id}"
-            th:each="post : ${listPosts}"
+            th:each="post : ${searchPostData.listItems}"
           >
             <div class="title-header">
               <div class="title-header-left">

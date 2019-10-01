@@ -16,4 +16,6 @@ public interface CommentService {
   public void deleteComment(long commentId);
 
   public long countCommentByUserId(long userId);
+
+  public List<Comment> findCommentsByUserId(long userId);
 }
