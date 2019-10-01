@@ -10,6 +10,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
@@ -113,9 +114,10 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
     criteria.orderBy(builder.desc(root.get("id")));
     criteria.where(
             builder.and(builder.or(
-                    builder.like(builder.lower(root.join("tags").get("name")), query),
+                    builder.like(builder.lower(root.join("tags", JoinType.LEFT).get("name")), searchQuery),
                     builder.like(builder.lower(root.get("title")), searchQuery),
-                    builder.like(builder.lower(root.get("content")), searchQuery))),
+                    builder.like(builder.lower(root.get("content")), searchQuery))
+            ),
             builder.equal(root.get("userId"), userId)
     );
     int countItems = entityManager.createQuery(criteria).getResultList().size();
