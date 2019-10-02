@@ -47,12 +47,14 @@ public class UserProfileController {
   public ModelAndView searchPostByTitleAndContent(
           @PathVariable(value = "userId") int userId,
           @RequestParam(value = "q", required = false) String queryParam,
-          @RequestParam(value = "page", required = false) Integer page
+          @RequestParam(value = "page", required = false) Integer page,
+          @RequestParam(value = "sortBy", required = false) String order
   ) {
     queryParam = queryParam != null ? queryParam : "";
     page = page != null ? page : DEFAULT_PAGE_NUMBER;
+    order = order != null ? order : "a2z";
     ModelAndView modelAndView = new ModelAndView("profile");
-    Search<Post> searchResult = postService.findPostByTitleAndContentAndTagNameWithUserId(queryParam, userId, page);
+    Search<Post> searchResult = postService.findPostByTitleAndContentAndTagNameWithUserId(queryParam, userId, order, page);
     User currentUser = userService.findUserById(userId);
     List<Comment> comments = commentService.findCommentsByUserId(userId);
     modelAndView.addObject("comments", comments);

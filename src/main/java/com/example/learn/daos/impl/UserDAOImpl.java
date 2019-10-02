@@ -26,9 +26,9 @@ public class UserDAOImpl extends CrudDAOImpl<User> implements UserDAO {
   @Override
   public User findByEmailAndPassword(String email, String password) {
     try {
-      String hql = "FROM User WHERE email = :email AND password = :password";
+      String hql = "FROM User WHERE lower(email)  = :email AND password = :password";
       Query query = entityManager.createQuery(hql)
-              .setParameter("email", email)
+              .setParameter("email", email.toLowerCase())
               .setParameter("password", password);
       return (User) query.getSingleResult();
     } catch (Exception e) {
@@ -55,7 +55,7 @@ public class UserDAOImpl extends CrudDAOImpl<User> implements UserDAO {
     CriteriaQuery<User> criteria = builder.createQuery(User.class);
     Root<User> root = criteria.from(User.class);
     criteria.select(root);
-    criteria.where(builder.or(builder.like(root.get("name"), "%" + query + "%"), builder.like(root.get("email"), "%" + query + "%")));
+    criteria.where(builder.or(builder.like(builder.lower(root.get("name")), "%" + query.toLowerCase() + "%"), builder.like(builder.lower(root.get("email")), "%" + query + "%")));
     if (order.equals("a2z")) {
       criteria.orderBy(builder.asc(root.get("name")));
     } else if (order.equals("z2a")) {
@@ -64,7 +64,7 @@ public class UserDAOImpl extends CrudDAOImpl<User> implements UserDAO {
     countItems = entityManager.createQuery(criteria).getResultList().size();
     List<User> usersList = entityManager.createQuery(criteria).setFirstResult((page - 1) * 5).setMaxResults(5).getResultList();
     int maxPages = countItems / 5 + (countItems % 5 != 0 ? 1 : 0);
-    Search<User> result = new Search<User>(usersList, countItems, maxPages, query, page);
+    Search<User> result = new Search<User>(usersList, countItems, maxPages, query.toLowerCase(), page);
     result.setSortBy(order);
     return result;
   }

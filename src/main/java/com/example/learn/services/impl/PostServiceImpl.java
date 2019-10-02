@@ -81,7 +81,7 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
-  public Search<Post> findPostByTitleAndContentAndTagNameWithUserId(String query, long userId, int page) {
-    return postDAO.searchPostByTitleAndContentAndTagNameWithUserId(query, userId, page);
+  public Search<Post> findPostByTitleAndContentAndTagNameWithUserId(String query, long userId, String order, int page) {
+    return postDAO.searchPostByTitleAndContentAndTagNameWithUserId(query, userId, order, page);
   }
 }

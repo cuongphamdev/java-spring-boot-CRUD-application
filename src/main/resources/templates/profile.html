@@ -25,6 +25,10 @@
                     name="q"
                     th:attr="value=${searchPostData.searchQuery != null ? searchPostData.searchQuery : ''}"
             />
+            <select name="sortBy" id="sort-by" class="form-search-user-select form-select">
+              <option value="a2z" class="form-option">A to Z</option>
+              <option value="z2a" class="form-option">Z to A</option>
+            </select>
           </div>
           <div class="form-group flex-x--end">
             <button class="btn btn-default btn-success" type="submit">Search</button>
@@ -55,6 +59,9 @@
       <div class="tab-content">
         <div id="posts" class="tab-pane fade in active show">
           <section class="post-lists-pagination">
+            <div class="post" th:if="${searchPostData.listItems.size() == 0}" th:text="${searchPostData.searchQuery != null ? 'No data for ' + searchPostData.searchQuery : 'User dont have any post'}">
+
+            </div>
             <div class="post-lists" th:if="${searchPostData != null}">
               <div
                       class="post"
