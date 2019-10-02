@@ -8,8 +8,11 @@ public class Search<T> {
   private int totalItems;
   private int maxPages;
   private String searchQuery;
+  private String anotherQuery;
   private int currentPage;
   private String sortBy;
+  private int pageBreak;
+  private int anotherDataId;
 
   public Search() {
   }
@@ -24,6 +27,30 @@ public class Search<T> {
 
   public List<T> getListItems() {
     return listItems;
+  }
+
+  public String getAnotherQuery() {
+    return anotherQuery;
+  }
+
+  public void setAnotherQuery(String anotherQuery) {
+    this.anotherQuery = anotherQuery;
+  }
+
+  public int getAnotherDataId() {
+    return anotherDataId;
+  }
+
+  public void setAnotherDataId(int anotherDataId) {
+    this.anotherDataId = anotherDataId;
+  }
+
+  public int getPageBreak() {
+    return pageBreak;
+  }
+
+  public void setPageBreak(int pageBreak) {
+    this.pageBreak = pageBreak;
   }
 
   public void setListItems(List<T> listItems) {

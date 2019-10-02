@@ -19,4 +19,6 @@ public interface PostDAO extends CrudDAO<Post> {
   public List<Post> findPostByTitleAndContentAndTagName(String query);
 
   public Search<Post> searchPostByTitleAndContentAndTagNameWithUserId(String query, long userId,String order, int pageId);
+
+  public Search<Post> searchPostByTitleAndContentAndNameUserWithSortAndPageBreak(String postQuery, String userQuery, String order, int page, int pageBreak, int tagId);
 }

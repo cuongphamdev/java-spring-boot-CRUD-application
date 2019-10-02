@@ -8,10 +8,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.List;
 
 @Repository
@@ -128,6 +125,64 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
     List<Post> postList = entityManager.createQuery(criteria).setFirstResult((page - 1) * 5).setMaxResults(5).getResultList();
     int maxPages = countItems / 5 + (countItems % 5 != 0 ? 1 : 0);
     Search<Post> result = new Search<Post>(postList, countItems, maxPages, query, page);
+    return result;
+  }
+
+  @Override
+  public Search<Post> searchPostByTitleAndContentAndNameUserWithSortAndPageBreak(String postQuery, String userQuery, String order, int page, int pageBreak, int tagId) {
+    String searchPostQuery = "%" + postQuery.toLowerCase() + "%";
+    String searchUserQuery = "%" + userQuery.toLowerCase() + "%";
+    CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
+    Root<Post> root = criteria.from(Post.class);
+    criteria.select(root);
+
+    Expression<Boolean> checkTagIdQuery = tagId > 0 ?
+            builder.equal(root.join("tags", JoinType.LEFT).get("id"), tagId) :
+            builder.greaterThan(root.get("id"), tagId);
+    criteria.where(
+      builder.and(
+              builder.like(builder.lower(root.join("user").get("name")), searchUserQuery),
+              builder.or(
+                      builder.like(builder.lower(root.get("title")), searchPostQuery),
+                      builder.like(builder.lower(root.get("content")), searchPostQuery)
+
+              ),
+              (Predicate) checkTagIdQuery
+      )
+    );
+
+    switch (order) {
+      case "a2z": {
+        criteria.orderBy(builder.asc(root.get("title")));
+        break;
+      }
+      case "z2a": {
+        criteria.orderBy(builder.desc(root.get("title")));
+        break;
+      }
+      case "commentDESC": {
+        Join<Object, Object> comments = root.join("comments", JoinType.LEFT);
+        criteria.groupBy(root.get("id"));
+        criteria.orderBy(
+                builder.desc(builder.count(comments))
+        );
+        break;
+      }
+      case "latestPost": {
+        criteria.orderBy(builder.desc(root.get("createdAt")));
+        break;
+      }
+    }
+
+    int countItems = entityManager.createQuery(criteria).getResultList().size();
+    List<Post> postList = entityManager.createQuery(criteria).setFirstResult((page - 1) * pageBreak).setMaxResults(pageBreak).getResultList();
+    int maxPages = countItems / pageBreak + (countItems % pageBreak != 0 ? 1 : 0);
+    Search<Post> result = new Search<Post>(postList, countItems, maxPages, postQuery, page);
+    result.setSortBy(order);
+    result.setAnotherQuery(userQuery);
+    result.setPageBreak(pageBreak);
+    result.setAnotherDataId(tagId);
     return result;
   }
 }
