@@ -105,13 +105,12 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
   }
 
   @Override
-  public Search<Post> searchPostByTitleAndContentAndTagNameWithUserId(String query, long userId, int page) {
+  public Search<Post> searchPostByTitleAndContentAndTagNameWithUserId(String query, long userId, String order, int page) {
     String searchQuery = "%" + query.toLowerCase() + "%";
     CriteriaBuilder builder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
     Root<Post> root = criteria.from(Post.class);
     criteria.select(root);
-    criteria.orderBy(builder.desc(root.get("id")));
     criteria.where(
             builder.and(builder.or(
                     builder.like(builder.lower(root.join("tags", JoinType.LEFT).get("name")), searchQuery),
@@ -120,6 +119,11 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
             ),
             builder.equal(root.get("userId"), userId)
     );
+    if (order.equals("a2z")) {
+      criteria.orderBy(builder.asc(root.get("title")));
+    } else if (order.equals("z2a")) {
+      criteria.orderBy(builder.desc(root.get("title")));
+    }
     int countItems = entityManager.createQuery(criteria).getResultList().size();
     List<Post> postList = entityManager.createQuery(criteria).setFirstResult((page - 1) * 5).setMaxResults(5).getResultList();
     int maxPages = countItems / 5 + (countItems % 5 != 0 ? 1 : 0);

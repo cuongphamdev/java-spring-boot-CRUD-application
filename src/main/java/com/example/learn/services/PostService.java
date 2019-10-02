@@ -24,5 +24,5 @@ public interface PostService {
 
   public Post createPost(Post post);
 
-  public Search<Post> findPostByTitleAndContentAndTagNameWithUserId(String query, long userId, int page);
+  public Search<Post> findPostByTitleAndContentAndTagNameWithUserId(String query, long userId, String sort, int page);
 }
