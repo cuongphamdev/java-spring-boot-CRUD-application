@@ -13,7 +13,6 @@ public interface TagService {
 
   public List<Tag> getAllTags();
 
-
   public Tag getTagById(long tagId);
 
   public long deleteTag(long tagId);

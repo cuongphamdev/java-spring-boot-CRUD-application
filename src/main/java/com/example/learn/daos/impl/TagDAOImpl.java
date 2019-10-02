@@ -16,7 +16,7 @@ public class TagDAOImpl extends CrudDAOImpl<Tag> implements TagDAO {
   private EntityManager entityManager;
 
   public TagDAOImpl() {
-    super("Comment");
+    super("Tag");
   }
 
   @Override

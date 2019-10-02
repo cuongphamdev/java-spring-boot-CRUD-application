@@ -45,8 +45,8 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public void deleteComment(long commentId) {
-    commentDAO.delete(commentId);
+  public long deleteComment(long commentId) {
+    return commentDAO.delete(commentId);
   }
 
   @Override
@@ -57,5 +57,11 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public List<Comment> findCommentsByUserId(long userId) {
     return commentDAO.findCommentByUserId(userId);
+  }
+
+  // todo: UT
+  @Override
+  public List<Comment> findAllComment() {
+    return commentDAO.findAll();
   }
 }
