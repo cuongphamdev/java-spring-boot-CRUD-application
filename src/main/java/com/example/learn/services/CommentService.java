@@ -13,9 +13,11 @@ public interface CommentService {
 
   public Comment updateComment(long commentId, String content);
 
-  public void deleteComment(long commentId);
+  public long deleteComment(long commentId);
 
   public long countCommentByUserId(long userId);
 
   public List<Comment> findCommentsByUserId(long userId);
+
+  public List<Comment> findAllComment();
 }

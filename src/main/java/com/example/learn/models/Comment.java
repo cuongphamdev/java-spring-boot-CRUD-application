@@ -36,7 +36,7 @@ public class Comment {
   @JoinColumn(name = "parent_id", insertable = false, updatable = false)
   private Comment parent;
 
-  @Column(name = "parent_id", nullable = false, columnDefinition = "int8 default 0")
+  @Column(name = "parent_id", columnDefinition = "int8 default 0")
   private Long parentId;
 
   @JsonIgnore

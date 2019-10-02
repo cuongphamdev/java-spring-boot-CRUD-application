@@ -9,6 +9,8 @@ import java.util.List;
 public interface UserService {
   public User createNewUser(String name, String email, String password, long roleId);
 
+  public User updateUser(User user);
+
   public User loginByEmailAndPassword(String email, String password);
 
   public boolean checkAuthentication(HttpServletRequest request);
@@ -26,4 +28,8 @@ public interface UserService {
   public void removeAuthenticate(HttpServletRequest request);
 
   public Search<User> searchUserInOrderAndPagination(String query, String order, int page);
+
+  public List<User> findAllUser();
+
+  public long deleteUser(long userId);
 }
