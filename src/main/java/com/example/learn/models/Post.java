@@ -30,7 +30,7 @@ public class Post extends AuditModel {
   private Set<Tag> tags;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Comment> comments;
 
   public Post() {

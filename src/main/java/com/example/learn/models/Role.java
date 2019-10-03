@@ -17,7 +17,7 @@ public class Role {
   private String name;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "role", cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<User> users;
 
   public Role() {

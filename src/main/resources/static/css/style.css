@@ -302,6 +302,7 @@
     margin-bottom: 1rem;
     padding: 0;
     display: flex;
+    flex-wrap: wrap;
 }
 
 .pagination-item.pagination-item {

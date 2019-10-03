@@ -46,6 +46,7 @@ public class CrudDAOImpl<T> implements CrudDAO<T> {
   }
 
   @Override
+  @Transactional
   public T create(T t) {
     try {
       Session session = entityManager.unwrap(Session.class);

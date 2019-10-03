@@ -17,13 +17,14 @@ public class Tag {
   private String name;
 
   @JsonIgnore
-  @ManyToMany(cascade = CascadeType.REMOVE)
+  @ManyToMany(cascade = CascadeType.ALL)
   @JoinTable(
           name = "tag_posts",
           joinColumns = {@JoinColumn(name = "tag_id")},
           inverseJoinColumns = {@JoinColumn(name = "post_id")}
   )
   private Set<Post> posts;
+
 
   public Tag() {
   }

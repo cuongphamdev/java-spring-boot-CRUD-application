@@ -114,7 +114,6 @@ if (document.getElementById('login-form')) {
 }
 
 if (
-  document.getElementById('post-lists') &&
   document.getElementById('action-more-btn')
 ) {
   var listNodes = document.querySelectorAll('#action-more-btn');
@@ -163,22 +162,19 @@ if (
       let postData = event.target.parentNode.parentNode.parentNode;
       let title = postData.querySelector('.title').textContent;
       let content = postData.querySelector('.content').textContent;
-      document.getElementById('modal-update').classList.add('show');
-
-      document.getElementById('update-post-title').value = title;
-      document.getElementById('update-post-content').value = content;
-      document.getElementById('update-post-id').value = postId;
+      $("#modal-update").addClass("show");
+      $("#update-post-title").val(title);
+      $("#update-post-content").val(content);
+      $("#update-post-id").val(postId);
       event.target.parentNode.parentNode.classList.remove('show');
     })
   );
 
-  document.getElementById('close-update-modal').onclick = function() {
+  $('#close-update-modal').on('click', e => {
     document.getElementById('modal-update').classList.remove('show');
-  };
+  });
 
-  document.getElementById('post-update-submit').onclick = async function(
-    event
-  ) {
+  $('#post-update-submit').on('click', async e => {
     let title = document.getElementById('update-post-title').value;
     let content = document.getElementById('update-post-content').value;
     let postId = document.getElementById('update-post-id').value;
@@ -192,8 +188,8 @@ if (
     let postItem = document.getElementById(`post-${postId}`);
     postItem.querySelector('.title').innerHTML = data.title;
     postItem.querySelector('.content').innerHTML = data.content;
-    event.target.parentNode.parentNode.classList.remove('show');
-  };
+    e.target.parentNode.parentNode.classList.remove('show');
+});
 
   //  TODO: show update post model
 

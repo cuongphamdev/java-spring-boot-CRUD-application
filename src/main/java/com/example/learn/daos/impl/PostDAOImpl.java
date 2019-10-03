@@ -64,7 +64,7 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
     try {
       String hql = "FROM Post ORDER BY id DESC";
       Query query = entityManager.createQuery(hql);
-      query.setFirstResult((page - 1) * 1);
+      query.setFirstResult((page - 1) * 5);
       query.setMaxResults(5);
       return query.getResultList();
     } catch (Exception e) {

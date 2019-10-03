@@ -56,10 +56,12 @@ public class UserProfileController {
     ModelAndView modelAndView = new ModelAndView("profile");
     Search<Post> searchResult = postService.findPostByTitleAndContentAndTagNameWithUserId(queryParam, userId, order, page);
     User currentUser = userService.findUserById(userId);
-    List<Comment> comments = commentService.findCommentsByUserId(userId);
-    modelAndView.addObject("comments", comments);
-    modelAndView.addObject("user", currentUser);
-    modelAndView.addObject("searchPostData", searchResult);
+    if (currentUser != null) {
+      List<Comment> comments = commentService.findCommentsByUserId(userId);
+      modelAndView.addObject("comments", comments);
+      modelAndView.addObject("user", currentUser);
+      modelAndView.addObject("searchPostData", searchResult);
+    }
     return modelAndView;
   }
 

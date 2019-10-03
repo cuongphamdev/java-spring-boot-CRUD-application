@@ -145,6 +145,25 @@
             </ul>
         </div>
     </section>
+    <section class="modal" id="modal-update" >
+        <form  th:if="${session.loginSession != null}" id="update-post-form"  class="form create-post">
+     <span class="form-title">
+       Update a post
+    </span>
+            <input type="text" name="title" id="update-post-title" class="input input--fullwidth" placeholder="Enter the title of your post">
+            <input type="hidden" name="postId" id="update-post-id">
+            <div class="post-content">
+      <textarea class="textarea" id="update-post-content" name="content">
+</textarea>
+            </div>
+            <div class="form-footer">
+                <button class="btn btn-primary" id="post-update-submit" type="button">
+                    Update
+                </button>
+            </div>
+        </form>
+        <button class="btn btn--full btn-warning" id="close-update-modal">Close</button>
+    </section>
 </div>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script
