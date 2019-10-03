@@ -8,12 +8,14 @@ import com.example.learn.services.CommentService;
 import com.example.learn.services.PostService;
 import com.example.learn.services.TagService;
 import com.example.learn.services.UserService;
+import com.example.learn.utils.CommonUtils;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -37,32 +39,55 @@ public class ApiController {
   }
 
   //  CRUD Api for user
-  @RequestMapping(value = "users")
-  private List<User> getAllUser() {
-    return userService.findAllUser();
+  @RequestMapping(value = "/users")
+  private ResponseEntity<Object> getAllUser() {
+    List<User> userList = userService.findAllUser();
+    try {
+      if (userList.size() == 0) throw new Exception("Not data");
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(userList);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "No user data"));
+    }
   }
 
+
   @RequestMapping(value = "/users", method = RequestMethod.POST)
-  private User createUser (@ModelAttribute User user) {
+  private ResponseEntity<Object> createUser (@ModelAttribute User user) {
     user.setRoleId(1);
-    if (!this.checkUserDataBlank(user.getName(), user.getEmail(), user.getPassword())) return null;
     try {
-      return userService.createNewUser(user.getName(), user.getEmail().toLowerCase(), user.getPassword(), user.getRoleId());
+      if (!this.checkUserDataBlank(user.getName(), user.getEmail(), user.getPassword())) {
+        throw new Exception("User data is required");
+      };
+      User newUser =  userService.createNewUser(user.getName(), user.getEmail().toLowerCase(), user.getPassword(), user.getRoleId());
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(newUser);
     } catch (Exception e) {
-      return  null;
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "You can not create new user"));
     }
   }
 
   @RequestMapping("/users/{userId}")
-  private User getUserById (@PathVariable(value = "userId") long userId) {
-    return userService.findUserById(userId);
+  private ResponseEntity<Object> getUserById (@PathVariable(value = "userId") long userId) {
+    User foundUser = userService.findUserById(userId);
+    try {
+      if (foundUser == null) throw new Exception("User not found for id = [" + userId + "]");
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(foundUser);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "User not found"));
+    }
   }
 
   @RequestMapping(value = "/users/{userId}", method = RequestMethod.PUT)
-  private User updateUser (@ModelAttribute User user, @PathVariable(value = "userId") long userId) {
+  private ResponseEntity<Object> updateUser (@ModelAttribute User user, @PathVariable(value = "userId") long userId) {
     if (!this.checkUserDataBlank(user.getName(), user.getEmail(), user.getPassword())) return null;
     try {
       User updateUser = userService.findUserById(userId);
+      if (updateUser == null) throw new Exception("User not found for id = [" + userId + "]");
       if (user.getName() != null && !user.getName().equals("")) {
         updateUser.setName(user.getName());
       }
@@ -72,75 +97,112 @@ public class ApiController {
       if (user.getEmail() != null && !user.getEmail().equals("")) {
         updateUser.setEmail(user.getEmail());
       }
-      return userService.updateUser(updateUser);
+
+      User updatedUser = userService.updateUser(updateUser);
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(updatedUser);
     } catch (Exception e) {
-      return  null;
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "User not found"));
     }
   }
 
   @RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
-  private long deleteUser (@PathVariable("userId") long userId) {
+  private ResponseEntity<Object> deleteUser (@PathVariable("userId") long userId) {
     try {
-      return userService.deleteUser(userId);
+      User user = userService.findUserById(userId);
+      if (user == null) throw new Exception("User not found for id = [" + userId + "]");
+
+      for (Post post: user.getPosts()) {
+        this.deleteTags(post.getId());
+      }
+
+      long deletedId = userService.deleteUser(userId);
+      Map<String, Long> response = new HashMap<>();
+      response.put("id", deletedId);
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(response);
     } catch (Exception e) {
-      return 0;
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "User not found"));
     }
   }
 
   //  CRUD Api for posts
   @RequestMapping("/posts")
-  private List<Post> getAllPost () {
-    return postService.findAllPosts();
+  private ResponseEntity<Object> getAllPost () {
+    List<Post> postList = postService.findAllPosts();
+    try {
+      if (postList.size() == 0) throw new Exception("Not posts");
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(postList);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "No posts data"));
+    }
   }
 
   @RequestMapping("/posts/{postId}")
-  private Post findPostById (@PathVariable(value = "postId") long postId) {
-    return postService.findPostById(postId);
+  private ResponseEntity<Object> findPostById (@PathVariable(value = "postId") long postId) {
+    Post foundPost = postService.findPostById(postId);
+    try {
+      if (foundPost == null) throw new Exception("Post not found for id = [" + postId + "]");
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(foundPost);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "Post not found"));
+    }
   }
 
   private boolean checkValidPostData (String title, String content, Long userId) {
     if (title == null || title.equals("") || content == null || content.equals("") || userId == null) return false;
-    if (userService.findUserById(userId) == null) return false;
     return true;
   }
 
   @RequestMapping(value = "/posts", method = RequestMethod.POST)
-  private Post createPostWithPostData (@ModelAttribute Post post, @RequestParam(value = "tagIds", required = false) List<Long> tagIds) {
+  private ResponseEntity<Object> createPostWithPostData (@ModelAttribute Post post, @RequestParam(value = "tagIds", required = false) List<Long> tagIds) {
     String title = post.getTitle();
     String content = post.getContent();
     Long userId = post.getUserId();
-    if (this.checkValidPostData(title, content, userId)) {
-      Post postCreated = postService.createNewPost(title, content, userId);
-      Set<Tag> tagsAdd = new HashSet<>();
-      if (tagIds != null) {
-        for (long tagId : tagIds) {
-          Tag tag = tagService.getTagById(tagId);
-          Set<Post> newPosts = tag.getPosts();
-          newPosts.add(postCreated);
-          tag.setPosts(newPosts);
-          tagService.updateTagPost(tag);
-          tagsAdd.add(tag);
+    try {
+      if (!this.checkValidPostData(title, content, userId)) throw new Exception("Post data cannot be empty");
+      if (userService.findUserById(userId) == null) throw new Exception("User not found with id = [" + userId + "]");
+        Post postCreated = postService.createNewPost(title, content, userId);
+        Set<Tag> tagsAdd = new HashSet<>();
+        if (tagIds != null) {
+          for (long tagId : tagIds) {
+            Tag tag = tagService.getTagById(tagId);
+            Set<Post> newPosts = tag.getPosts();
+            newPosts.add(postCreated);
+            tag.setPosts(newPosts);
+            tagService.updateTagPost(tag);
+            tagsAdd.add(tag);
+          }
         }
-      }
-      postCreated.setTags(tagsAdd);
-      return postCreated;
+        postCreated.setTags(tagsAdd);
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(postCreated);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "Create new user fail"));
     }
-    return null;
   }
 
   @RequestMapping(value = "/posts/{postId}", method = RequestMethod.PUT)
-  private Post updatePostWithPostData (@ModelAttribute Post post, @PathVariable(value = "postId") long postId, @RequestParam(value = "tagIds", required = false) List<Long> tagIds) {
-    Post newPost = postService.findPostById(postId);
-    if (newPost == null) return null;
-    String title = post.getTitle();
-    String content = post.getContent();
-    if (title != null && !title.trim().equals("")) {
-      newPost.setTitle(title);
-    }
-    if (content != null && !content.trim().equals("")) {
-      newPost.setContent(title);
-    }
-    Set<Tag> tagsUpdateList = newPost.getTags();
+  private ResponseEntity<Object> updatePostWithPostData (@ModelAttribute Post post, @PathVariable(value = "postId") long postId, @RequestParam(value = "tagIds", required = false) List<Long> tagIds) {
+    try {
+      Post newPost = postService.findPostById(postId);
+      if (newPost == null) throw new Exception("Post not found");
+      String title = post.getTitle();
+      String content = post.getContent();
+      if (title != null && !title.trim().equals("")) {
+        newPost.setTitle(title);
+      }
+      if (content != null && !content.trim().equals("")) {
+        newPost.setContent(title);
+      }
+      Set<Tag> tagsUpdateList = newPost.getTags();
       Post updatedPost = postService.updatePost(newPost.getId(), newPost.getTitle(), newPost.getContent()) ;
       for (Tag tagDeleted: newPost.getTags()) {
         Set<Post> postList = tagDeleted.getPosts();
@@ -149,40 +211,90 @@ public class ApiController {
         tagService.updateTagPost(tagDeleted);
       }
 
-    if (tagIds != null) {
-      for (long tagId : tagIds) {
-        Tag tag = tagService.getTagById(tagId);
-        Set<Post> newPosts = tag.getPosts();
-        newPosts.add(updatedPost);
-        tag.setPosts(newPosts);
-        tagService.updateTagPost(tag);
-        tagsUpdateList.add(tag);
+      if (tagIds != null) {
+        for (long tagId : tagIds) {
+          Tag tag = tagService.getTagById(tagId);
+          Set<Post> newPosts = tag.getPosts();
+          newPosts.add(updatedPost);
+          tag.setPosts(newPosts);
+          tagService.updateTagPost(tag);
+          tagsUpdateList.add(tag);
+        }
+      } else {
+        tagsUpdateList = null;
       }
-    } else {
-      tagsUpdateList = null;
+      newPost.setTags(tagsUpdateList);
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(newPost);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "Update post fail"));
     }
-    newPost.setTags(tagsUpdateList);
-    return newPost;
+  }
+
+  private void deleteTags (long postId) {
+    try {
+      Post foundPost = postService.findPostById(postId);
+      if (foundPost == null) {
+        throw new NotFoundException("Post is not found with id [" + postId + "]");
+      }
+      else if (foundPost.getTags() != null) {
+        for (Tag tagRemove : foundPost.getTags()) {
+          Set<Post> newPosts = tagRemove.getPosts();
+          newPosts.remove(foundPost);
+          tagRemove.setPosts(newPosts);
+          tagService.updateTagPost(tagRemove);
+        }
+      }
+    } catch (Exception e) {
+      //
+    }
   }
 
   @RequestMapping(value = "/posts/{postId}", method = RequestMethod.DELETE)
-  private long deletePost (@PathVariable(value = "postId") long postId) {
+  private ResponseEntity<Object> deletePost (@PathVariable(value = "postId") long postId) {
     try {
-      return postService.deletePost(postId);
+      this.deleteTags(postId);
+      long deletedPostId = postService.deletePost(postId);
+      Map<String, Long> response = new HashMap<>();
+      response.put("id", deletedPostId);
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(response);
+
     } catch (Exception e) {
-      return 0;
+      Map<String, String> errors = new HashMap<>();
+      errors.put("message", "You cannot delete a post");
+      errors.put("error", e.getMessage().toString());
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(errors);
     }
   }
 
   //  CRUD Api for comments
   @RequestMapping(value = "/comments")
-  private List<Comment> getAllComments () {
-    return commentService.findAllComment();
+  private ResponseEntity<Object> getAllComments () {
+    List<Comment> commentList = commentService.findAllComment();
+    try {
+      if (commentList.size() == 0) throw new Exception("Not data");
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(commentList);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "No comments data"));
+    }
   }
 
   @RequestMapping(value = "/comments/{commentId}")
-  private Comment getCommentById (@PathVariable(value = "commentId") long commentId) {
-    return commentService.findCommentById(commentId);
+  private ResponseEntity<Object> getCommentById (@PathVariable(value = "commentId") long commentId) {
+    Comment foundComment = commentService.findCommentById(commentId);
+    try {
+      if (foundComment == null) throw new Exception("Comment not found for id = [" + commentId + "]");
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(foundComment);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "Comment not found"));
+    }
   }
 
   private boolean checkCommentDataValid (String content, Long postId, Long userId, Long parentId) {
@@ -197,21 +309,27 @@ public class ApiController {
   }
 
   @RequestMapping(value = "/comments", method = RequestMethod.POST)
-  private Comment createComment (@ModelAttribute Comment comment) {
-    String content = comment.getContent();
-    Long postId = comment.getPostId();
-    Long userId = comment.getUserId();
-    Long parentId = comment.getParentId() == null ? 0 : comment.getParentId();
-    if (checkCommentDataValid(content, postId, userId, parentId)) {
-      Comment createdComment = commentService.createComment(content, postId, userId, parentId);
-      createdComment.setUser(userService.findUserById(createdComment.getUserId()));
-      return createdComment;
+  private ResponseEntity<Object> createComment (@ModelAttribute Comment comment) {
+    try {
+      String content = comment.getContent();
+      Long postId = comment.getPostId();
+      Long userId = comment.getUserId();
+      Long parentId = comment.getParentId() == null ? 0 : comment.getParentId();
+      if (checkCommentDataValid(content, postId, userId, parentId)) {
+        Comment createdComment = commentService.createComment(content, postId, userId, parentId);
+        createdComment.setUser(userService.findUserById(createdComment.getUserId()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(createdComment);
+      }
+      return null;
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "Create comment fail"));
     }
-    return null;
   }
 
   @RequestMapping(value = "/comments/{commentId}",  method = RequestMethod.PUT)
-  private Comment updateComment (@ModelAttribute Comment comment, @PathVariable("commentId") long commentId) {
+  private ResponseEntity<Object> updateComment (@ModelAttribute Comment comment, @PathVariable("commentId") long commentId) {
     try {
       String content = comment.getContent();
       long userId = comment.getUserId();
@@ -222,60 +340,107 @@ public class ApiController {
               userId != 0 &&
               userId == updateComment.getUserId()
       ) {
-        return commentService.updateComment(commentId, content);
+        Comment updatedComment = commentService.updateComment(commentId, content);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(updatedComment);
+      }
+      else {
+        throw new Exception("Data input cannot empty");
       }
     } catch (Exception e) {
-      return null;
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "Update fail"));
     }
-    return null;
   }
 
   @RequestMapping(value = "/comments/{commentId}",  method = RequestMethod.DELETE)
-  private long deleteComment (@PathVariable("commentId") long commentId) {
+  private ResponseEntity<Object> deleteComment (@PathVariable("commentId") long commentId) {
     try {
-      return commentService.deleteComment(commentId);
+      Comment foundComment = commentService.findCommentById(commentId);
+      if (foundComment == null) throw new Exception("Comment not found for id = [" + commentId + "]");
+      long deletedId = commentService.deleteComment(commentId);
+      Map<String, Long> response = new HashMap<>();
+      response.put("id", deletedId);
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(response);
     } catch (Exception e) {
-      return 0;
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "Comment not found"));
     }
   }
 
   //  CRUD Api for tags
   @RequestMapping(value = "/tags")
-  private List<Tag> getAllTag () {
-    return tagService.getAllTags();
+  private ResponseEntity<Object> getAllTag () {
+    List<Tag> list = tagService.getAllTags();
+    try {
+      if (list.size() == 0) throw new Exception("Not tags");
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(list);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "No tas data"));
+    }
   }
 
   @RequestMapping(value = "/tags/{tagId}")
-  private Tag getTagById (@PathVariable("tagId") long tagId) {
-    return tagService.getTagById(tagId);
+  private ResponseEntity<Object> getTagById (@PathVariable("tagId") long tagId) {
+    Tag found = tagService.getTagById(tagId);
+    try {
+      if (found == null) throw new Exception("Post not found for id = [" + tagId + "]");
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(found);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "Tag not found"));
+    }
   }
 
   @RequestMapping(value = "/tags", method = RequestMethod.POST)
-  private Tag createTag (@ModelAttribute Tag tag) {
-    String tagName = tag.getName();
-    if (tagName == null || tagName.trim().equals("")) {
-      return null;
+  private ResponseEntity<Object> createTag (@ModelAttribute Tag tag) {
+    try {
+      String tagName = tag.getName();
+      if (tagName == null || tagName.trim().equals("")) {
+        throw new Exception("Tag data cannot empty!");
+      }
+      Tag tagCreated = tagService.createNewTag(tagName);
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(tagCreated);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "Tag create fail"));
     }
-    Tag tagCreated = tagService.createNewTag(tagName);
-    return tagCreated;
   }
 
   @RequestMapping(value = "/tags/{tagId}", method = RequestMethod.PUT)
-  private Tag updateTag (@ModelAttribute Tag tag, @PathVariable("tagId") long tagId) {
-    String tagName = tag.getName();
-    if (tagName == null || tagName.trim().equals("") || tagService.getTagById(tagId) == null) {
-      return null;
+  private ResponseEntity<Object> updateTag (@ModelAttribute Tag tag, @PathVariable("tagId") long tagId) {
+    try {
+      String tagName = tag.getName();
+      if (tagName == null || tagName.trim().equals("") || tagService.getTagById(tagId) == null) {
+        throw new Exception("Tag data cannot empty!");
+      }
+      Tag tagUpdated = tagService.updateTag(tagId, tagName);
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(tagUpdated);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "Tag update fail"));
     }
-    Tag tagCreated = tagService.updateTag(tagId, tagName);
-    return tagCreated;
   }
 
   @RequestMapping(value = "/tags/{tagId}", method = RequestMethod.DELETE)
-  private long deleteTag (@PathVariable("tagId") long tagId) {
+  private ResponseEntity<Object> deleteTag (@PathVariable("tagId") long tagId) {
     try {
-      return tagService.deleteTag(tagId);
+      Tag tagFound = tagService.getTagById(tagId);
+      if (tagFound == null) throw new NotFoundException("Tag is not found with id [" + tagId + "]");
+      long tagDeletedId =  tagService.deleteTag(tagId);
+      Map<String, Long> response = new HashMap<>();
+      response.put("id", tagDeletedId);
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(response);
     } catch (Exception e) {
-      return 0;
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(CommonUtils.getMapErrors(e, "Tag not found"));
     }
   }
 }

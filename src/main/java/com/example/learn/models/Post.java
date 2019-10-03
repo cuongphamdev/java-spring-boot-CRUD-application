@@ -26,7 +26,7 @@ public class Post extends AuditModel {
   @Column(name = "user_id", nullable = false)
   private long userId;
 
-  @ManyToMany(mappedBy = "posts")
+  @ManyToMany(mappedBy = "posts", fetch = FetchType.EAGER)
   private Set<Tag> tags;
 
   @JsonIgnore
