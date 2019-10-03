@@ -227,12 +227,18 @@ if (document.getElementById("post-detail")) {
           $("#update-comment-comment-id").val(commentId);
           let commentContentEl = null;
             for (let i = 0; i < commentEl.childNodes.length; i++) {
-              if (commentEl.childNodes[i].className == 'media-body') {
+              
+              if (commentEl.childNodes[i].className == 'comment-item__wrap') {
                 for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) { 
-                  if (commentEl.childNodes[i].childNodes[j].className == 'content') {
-                    commentContentEl = commentEl.childNodes[i].childNodes[j];
+                  if (commentEl.childNodes[i].childNodes[j].className == 'media-body') {
+                    for (let k = 0; k < commentEl.childNodes[i].childNodes[j].childNodes.length; k++) { 
+                      if (commentEl.childNodes[i].childNodes[j].childNodes[k].className == 'content') {
+                        commentContentEl = commentEl.childNodes[i].childNodes[j].childNodes[k];
+                      } 
+                    }
                   } 
                 }
+                
               }
             }
 
@@ -249,15 +255,32 @@ if (document.getElementById("post-detail")) {
 
       sendAjax(`/posts/${postId}/comments/${commentId}`, {content}, "PUT",  (response) => {
         let commentEl = document.getElementById(`comment${commentId}`);
+        // for (let i = 0; i < commentEl.childNodes.length; i++) {
+        //   if (commentEl.childNodes[i].className == 'media-body') {
+        //     for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) { 
+        //       if (commentEl.childNodes[i].childNodes[j].className == 'content') {
+        //         commentEl.childNodes[i].childNodes[j].innerHTML = response.content;
+        //       } 
+        //     }
+        //   }
+        // }
+
         for (let i = 0; i < commentEl.childNodes.length; i++) {
-          if (commentEl.childNodes[i].className == 'media-body') {
+              
+          if (commentEl.childNodes[i].className == 'comment-item__wrap') {
             for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) { 
-              if (commentEl.childNodes[i].childNodes[j].className == 'content') {
-                commentEl.childNodes[i].childNodes[j].innerHTML = response.content;
+              if (commentEl.childNodes[i].childNodes[j].className == 'media-body') {
+                for (let k = 0; k < commentEl.childNodes[i].childNodes[j].childNodes.length; k++) { 
+                  if (commentEl.childNodes[i].childNodes[j].childNodes[k].className == 'content') {
+                    commentEl.childNodes[i].childNodes[j].childNodes[k].innerHTML = response.content;
+                  } 
+                }
               } 
             }
+            
           }
         }
+
         $(`#comment${commentId}`).animate({background:'#f55a2e40'},'slow');
         $(`#comment${commentId}`).animate({background:'transparent'},'slow');
         document.getElementById("modal-update-comment").classList.remove("show");
@@ -330,6 +353,51 @@ $( "#input-post-search" )
       }
     }, 500);
   });
+
+$(document).on("click", "#reply-comment-btn", (e) => {
+  let postId = e.target.getAttribute('post-id');
+  let commentId = e.target.getAttribute('comment-id');
+
+  let formHTML = `
+    <form
+     action="/posts/${postId}/comments"
+     class="form"
+     method="post"
+     id="reply-comment-form"
+    ><br>
+     <div class="form-group">
+     <textarea
+       class="form-control"
+       placeholder="write a comment..."
+       rows="3"
+       name="content"
+     ></textarea>
+             <input type="hidden" value="${commentId}" name="parentId">
+         </div>
+         <div class="form-group d-flex flex-x--end">
+            <button type="button" class="btn btn-default btn-warning pull-left" id="btn-close-reply-comment-form">Close</button>
+             <button type="button" class="btn btn-info pull-right" id="submit-reply-form">
+                 Reply now
+             </button>
+         </div>
+      </form>
+  `;
+  if (!e.target.parentNode.querySelector("#reply-comment-form")) {
+    e.target.parentElement.insertAdjacentHTML('beforeend', formHTML);
+  }
+});
+
+$(document).on("click","#btn-close-reply-comment-form",function(e) {
+  e.target.parentNode.parentNode.remove();
+});
+
+$(document).on("click","#submit-reply-form",function(e) {
+  console.log(e.target.parentNode.parentNode.querySelector(".form-group > textarea").value);
+  if (e.target.parentNode.parentNode.querySelector(".form-group > textarea").value) {
+    e.target.parentNode.parentNode.submit();
+  }
+});
+
 
 async function sendAjax(url, data, method, action) {
   try {

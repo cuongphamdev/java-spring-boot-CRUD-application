@@ -68,4 +68,14 @@ public class UserDAOImpl extends CrudDAOImpl<User> implements UserDAO {
     result.setSortBy(order);
     return result;
   }
+
+  @Override
+  public User searchUserEqualEmail(String email) {
+    CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<User> criteria = builder.createQuery(User.class);
+    Root<User> root = criteria.from(User.class);
+    criteria.select(root);
+    criteria.where(builder.equal(root.get("email"), email));
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
 }

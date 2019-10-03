@@ -44,20 +44,18 @@ public class SearchController<T> {
   @RequestMapping("/post")
   private ModelAndView getSearchBoxPage(@RequestParam(value = "q", required = false) String postQuery,
                                         @RequestParam(value = "sortBy", required = false) String sortBy,
-                                        @RequestParam(value = "nameUser", required = false) String nameUser,
                                         @RequestParam(value = "page", required = false) Integer page,
                                         @RequestParam(value = "tagId", required = false) Integer tagId,
                                         @RequestParam(value = "break", required = false) Integer pageBreak) {
 
     postQuery = postQuery != null ? postQuery : "";
-    nameUser = nameUser != null ? nameUser : "";
     sortBy = sortBy != null ? sortBy : "a2z";
     page = page != null ? page : 1;
     pageBreak = pageBreak != null ? pageBreak : 5;
     tagId = tagId != null ? tagId : 0;
 
     List<Tag> listTags = tagService.getAllTags();
-    Search<Post> searchData = postService.searchPostByTitleAndContentAndNameUserWithSortAndPageBreak(postQuery, nameUser, sortBy, page, pageBreak, tagId);
+    Search<Post> searchData = postService.searchPostByTitleAndContentAndNameUserWithSortAndPageBreak(postQuery, sortBy, page, pageBreak, tagId);
     ModelAndView modelAndView = new ModelAndView("post-search");
     modelAndView.addObject("searchPostData", searchData);
     modelAndView.addObject("tags", listTags);

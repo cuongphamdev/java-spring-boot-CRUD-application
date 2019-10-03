@@ -3,6 +3,7 @@ package com.example.learn.daos.impl;
 import com.example.learn.daos.PostDAO;
 import com.example.learn.models.Post;
 import com.example.learn.models.Search;
+import com.example.learn.utils.CommonUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -129,26 +130,23 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
   }
 
   @Override
-  public Search<Post> searchPostByTitleAndContentAndNameUserWithSortAndPageBreak(String postQuery, String userQuery, String order, int page, int pageBreak, int tagId) {
-    String searchPostQuery = "%" + postQuery.toLowerCase() + "%";
-    String searchUserQuery = "%" + userQuery.toLowerCase() + "%";
+  public Search<Post> searchPostByTitleAndContentAndNameUserWithSortAndPageBreak(String postQuery, String order, int page, int pageBreak, int tagId) {
+    String searchPostQuery = CommonUtils.getSearchString(postQuery);
     CriteriaBuilder builder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
     Root<Post> root = criteria.from(Post.class);
     criteria.select(root);
-
     Expression<Boolean> checkTagIdQuery = tagId > 0 ?
             builder.equal(root.join("tags", JoinType.LEFT).get("id"), tagId) :
             builder.greaterThan(root.get("id"), tagId);
     criteria.where(
       builder.and(
-              builder.like(builder.lower(root.join("user").get("name")), searchUserQuery),
               builder.or(
+                      builder.like(builder.lower(root.join("user").get("name")), searchPostQuery),
                       builder.like(builder.lower(root.get("title")), searchPostQuery),
                       builder.like(builder.lower(root.get("content")), searchPostQuery)
-
               ),
-              (Predicate) checkTagIdQuery
+              checkTagIdQuery
       )
     );
 
@@ -180,7 +178,6 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
     int maxPages = countItems / pageBreak + (countItems % pageBreak != 0 ? 1 : 0);
     Search<Post> result = new Search<Post>(postList, countItems, maxPages, postQuery, page);
     result.setSortBy(order);
-    result.setAnotherQuery(userQuery);
     result.setPageBreak(pageBreak);
     result.setAnotherDataId(tagId);
     return result;

@@ -10,5 +10,7 @@ public interface UserDAO extends CrudDAO<User> {
 
   List<User> searchUserByNameOrEmail(String queryString);
 
+  User searchUserEqualEmail(String email);
+
   Search<User> searchByPaginationAndOrderByName(String query, String order, int page);
 }

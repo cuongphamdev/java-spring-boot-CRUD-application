@@ -181,19 +181,19 @@
                 </div>
                 <div
                         class="media-footer"
-                        th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
+                        th:if="${session.loginSession != null && session.loginSession.id == comment.user.id}"
                 >
 
                   <button
                           class="reply btn btn-default btn-warning comment-update-button"
-                          th:attr="comment-id=${comment.id}, post-id=${post.id}"
+                          th:attr="[comment-id=${comment.id}, post-id=${post.id}]"
                           id="comment-update-button"
                   >
                     Update
                   </button>
                   <button
                           class="reply btn btn-default btn-danger comment-delete-button"
-                          th:attr="comment-id=${comment.id}, post-id=${post.id}"
+                          th:attr="[comment-id=${comment.id}, post-id=${post.id}]"
                           id="comment-delete-button"
                   >
                     Delete

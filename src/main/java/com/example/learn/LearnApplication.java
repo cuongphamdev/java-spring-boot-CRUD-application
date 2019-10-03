@@ -83,7 +83,7 @@ public class LearnApplication implements CommandLineRunner {
         Tag tag = tagService.getTagById(random.nextInt(8) + 1);
         Set<Post> listPost = tag.getPosts();
         Set<Post> newPosts = listPost.size() > 0 ? listPost: new HashSet<Post>();
-        newPosts.add(postService.findPostById(random.nextInt(120) + 1));
+        newPosts.add(postService.findPostById(random.nextInt(50) + 1));
         tag.setPosts(newPosts);
         tagService.updateTagPost(tag);
       } catch (Exception e) {
@@ -92,7 +92,7 @@ public class LearnApplication implements CommandLineRunner {
     }
 
     //import Comment
-    for (int j = 0; j < 1000; j ++) {
+    for (int j = 0; j < 300; j ++) {
       try {
         commentService.createComment("test content comment parent " + j, random.nextInt(120) + 1, random.nextInt(10) + 1, 0);
       }catch (Exception e) {

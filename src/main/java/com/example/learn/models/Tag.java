@@ -17,7 +17,7 @@ public class Tag {
   private String name;
 
   @JsonIgnore
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
           name = "tag_posts",
           joinColumns = {@JoinColumn(name = "tag_id")},

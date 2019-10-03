@@ -26,29 +26,29 @@
                         name="q"
                         th:attr="value=${searchPostData.searchQuery != null ? searchPostData.searchQuery : ''}"
                 />
-<!--                <p th:text="${searchPostData.sortBy}"></p>-->
-                <select name="sortBy" id="sort-by" class="form-search-user-select form-select">
-                    <option value="a2z" class="form-option" >A to Z</option>
-                    <option value="z2a" class="form-option" >Z to A</option>
-                    <option value="latestPost" class="form-option" >Latest Post</option>
-                    <option value="commentDESC" class="form-option" >Total Comment Degree</option>
-                </select>
-                <select name="tagId" class="selectpicker form-select" data-live-search="true" multiple data-max-options="1" data-size="5">
-                    <option th:attr="value=${tag.id}" th:text="${tag.name}" th:if="${tags != null}" th:each="tag : ${tags}">Tag name</option>
+            </div>
+            <div class="form-group flex-direct--y">
+                <div class="form-group">
+                    <label class="form-label">Sort by</label>
+                    <select name="sortBy" class="selectpicker form-select" data-live-search="true" multiple data-max-options="1" data-size="5">
+                        <option value="a2z" class="form-option" th:attr="selected=${searchPostData.sortBy == 'a2z' ? 'selected' : 'false' }">A to Z</option>
+                        <option value="z2a" class="form-option" th:attr="selected=${searchPostData.sortBy == 'z2a' ? 'selected' : 'false' }">Z to A</option>
+                        <option value="latestPost" class="form-option" th:attr="selected=${searchPostData.sortBy == 'latestPost' ? 'selected' : 'false' }">Latest Post</option>
+                        <option value="commentDESC" class="form-option" th:attr="selected=${searchPostData.sortBy == 'commentDESC' ? 'selected' : 'false' }">Count Comment</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Pick tag</label>
+                    <select name="tagId" class="selectpicker form-select" data-live-search="true" multiple data-max-options="1" data-size="5">
+                        <option th:attr="value=${tag.id}, selected=${searchPostData.anotherDataId == tag.id ? 'selected' : 'false' }" th:text="${tag.name}" th:if="${tags != null}" th:each="tag : ${tags}">Tag name</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                <label class="form-label">Number in page</label>
+                <select name="break" class="selectpicker form-select" data-live-search="true" multiple data-max-options="1" data-size="5">
+                    <option th:attr="value=${number}, selected=${searchPostData.pageBreak == number ? 'selected' : 'false' }" th:each="number: ${#numbers.sequence(5, 20, 5)}" th:text="${number + ' per page'}"></option>
                 </select>
             </div>
-            <div class="form-group">
-                <input
-                        type="text"
-                        class="form-search-user-input"
-                        id="search-user-name-input"
-                        placeholder="Enter the name of author"
-                        name="nameUser"
-                        th:attr="value=${searchPostData.anotherQuery != null ? searchPostData.anotherQuery : ''}"
-                />
-                <select name="break" class="selectpicker form-select" data-live-search="true" multiple data-max-options="1" data-size="5">
-                    <option th:attr="value=${number}" th:each="number: ${#numbers.sequence(5, 20, 5)}" th:text="${number + ' per page'}"></option>
-                </select>
             </div>
             <div class="form-group flex-x--end">
                 <button class="btn btn-default btn-success" type="submit">Search</button>
@@ -127,7 +127,8 @@
             </div>
         </dib>
         <div class="pagination" th:if="${searchPostData.maxPages > 1}">
-            <p th:text="${'Display ' + searchPostData.listItems.size() + ' of' + searchPostData.totalItems}"></p>
+            <br>
+            <p th:text="${'Display ' + searchPostData.listItems.size() + ' of ' + searchPostData.totalItems + (searchPostData.listItems.size() > 1 ? ' items' : ' item')}"></p>
             <ul class="pagination-list" id="pagination-list">
                 <li
                         class="post pagination-item"

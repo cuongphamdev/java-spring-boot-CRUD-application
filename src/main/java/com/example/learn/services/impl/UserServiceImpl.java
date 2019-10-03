@@ -99,4 +99,10 @@ public class UserServiceImpl implements UserService {
   public long deleteUser(long userId) {
     return userDAO.delete(userId);
   }
+
+  //TODO: UT
+  @Override
+  public User findUserByEmail(String email) {
+    return userDAO.searchUserEqualEmail(email);
+  }
 }

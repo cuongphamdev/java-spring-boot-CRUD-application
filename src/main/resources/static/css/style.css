@@ -308,3 +308,38 @@
 .pagination-item.pagination-item {
     margin-left: 0.5rem;
 }
+
+.flex-direct--y {
+    flex-direction: column;
+}
+
+.form-label {
+    flex: 2;
+}
+
+.form-select {
+    flex: 8;
+}
+
+.media-list--p-5 {
+    margin-left: 2rem;
+    margin-top: 1rem;
+    /* box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12); */
+    padding: 0.5rem;
+}
+
+.comment-item--column {
+    flex-direction: column;
+}
+
+.comment-item__wrap {
+    display: flex;
+}
+
+.comment-item.comment-item {
+    margin-top: 0.5rem;
+}
+
+.media {
+    align-items: unset;
+}
