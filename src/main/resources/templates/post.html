@@ -76,7 +76,7 @@
             <div class="panel panel-info">
               <div class="panel-body">
                 <form
-                  th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
+                  th:if="${session.loginSession != null}"
                   th:attr="action='/posts/' + ${post.id} + '/comments'"
                   class="form"
                   method="post"
@@ -185,14 +185,6 @@
                               Lorem ipsum dolor sit amet, consectetur adipiscing
                               elit. Lorem ipsum dolor sit amet.
                             </p>
-                            <button
-                              class="reply btn btn-default btn-primary"
-                              id="reply-comment-btn"
-                              th:if="${session.loginSession != null}"
-                              th:attr="post-id=${post.id}, comment-id=${childC.id}"
-                            >
-                              Reply
-                            </button>
                           </div>
                           <div
                             class="media-footer"
@@ -263,7 +255,7 @@
         <button class="btn btn--full" id="close-update-modal">Close</button>
       </section>
 
-      <section class="modal" id="modal-update-comment">
+      <section class="modal" id="modal-update-comment" th:if="${post != null}">
         <form
           id="update-comment-form"
           class="form create-post create-comment "
