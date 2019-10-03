@@ -84,13 +84,11 @@ public class UserServiceImpl implements UserService {
     return userDAO.searchByPaginationAndOrderByName(query, order, page);
   }
 
-  //todo: UT
   @Override
   public User updateUser(User user) {
     return userDAO.update(user);
   }
 
-  //TODO: UT
   @Override
   public List<User> findAllUser() {
     return userDAO.findAll();
