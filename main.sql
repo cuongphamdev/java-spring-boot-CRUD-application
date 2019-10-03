@@ -40,8 +40,8 @@ CREATE TABLE comments (
 
 INSERT INTO roles (name)
 VALUES
-('admin'),
-('user');
+('user'),
+('admin');
 
 INSERT INTO users (name, email, password, role_id)
 VALUES

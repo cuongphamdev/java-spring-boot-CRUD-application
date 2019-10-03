@@ -33,7 +33,7 @@
             <input id="confirm-password" type="password" name="confirmPassword" class="input" placeholder="Input the confirm password">
         </div>
         <span class="message error text--center" id="confirm-password-error"></span>
-        <span class="message error text--center" id="error-message"></span>
+        <span class="message error text--center" id="error-message" th:if="${message != null}" th:text="${message}"></span>
         <div class="form-group flex-x--end">
             <button class="btn btn-primary" id="btn-submit" type="button">Submit</button>
         </div>

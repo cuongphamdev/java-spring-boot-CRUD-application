@@ -84,13 +84,11 @@ public class UserServiceImpl implements UserService {
     return userDAO.searchByPaginationAndOrderByName(query, order, page);
   }
 
-  //todo: UT
   @Override
   public User updateUser(User user) {
     return userDAO.update(user);
   }
 
-  //TODO: UT
   @Override
   public List<User> findAllUser() {
     return userDAO.findAll();
@@ -100,5 +98,11 @@ public class UserServiceImpl implements UserService {
   @Override
   public long deleteUser(long userId) {
     return userDAO.delete(userId);
+  }
+
+  //TODO: UT
+  @Override
+  public User findUserByEmail(String email) {
+    return userDAO.searchUserEqualEmail(email);
   }
 }

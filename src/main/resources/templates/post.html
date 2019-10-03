@@ -1,242 +1,316 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8"/>
+  <head>
+    <meta charset="UTF-8" />
     <title>Post</title>
     <link
-            rel="stylesheet"
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-            crossorigin="anonymous"
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
     />
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
-</head>
-<body>
-<header th:replace="header.html :: header"> </header>
-<div class="container" id="post-detail">
-    <div class="post" th:attr="id=${'post-' + post.id}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <header th:replace="header.html :: header"></header>
+    <div class="container" id="post-detail">
+        <p th:if="${post == null}">Page not found</p>
+      <div class="post" th:if="${post != null}" th:attr="id=${'post-' + post.id}">
         <div class="title-header">
-            <div class="title-header-left">
-                <h5 class="author" th:text="${post.user.name}">Author</h5>
-                <p class="created-at" th:text="${post.createdAt}">
-                    16/2/2018
-                </p>
-            </div>
-            <div
-                    class="title-header-right"
-                    th:attr="post-id=${post.id}"
-                    post-id="1"
-            >
+          <div class="title-header-left">
+            <h5 class="author" th:text="${post.user.name}">Author</h5>
+            <p class="created-at" th:text="${post.createdAt}">
+              16/2/2018
+            </p>
+          </div>
+          <div
+            class="title-header-right"
+            th:attr="post-id=${post.id}"
+            post-id="1"
+          >
             <span
-                    th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
-                    id="action-more-btn"
-            >▼</span
+              th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
+              id="action-more-btn"
+              >▼</span
             >
-            </div>
+          </div>
         </div>
         <h3 class="title" id="title" th:text="${post.title}">
-            <a th:href="${'/posts/' + [post.id}" class="link">This is title</a>
+          <a th:href="${'/posts/' + [post.id}" class="link">This is title</a>
         </h3>
         <div id="content" class="content" th:text="${post.content}">
-            It is a long established fact that a reader will be distracted by the
-            readable content of a page when looking at its layout. The point of
-            using Lorem Ipsum is that it has a more-or-less normal distribution of
-            letters, as opposed to using 'Content here, content here', making it
-            look like readable English. Many desktop publishing packages and web
-            page editors now use Lorem Ipsum as their default model text, and a
-            search for 'lorem ipsum' will uncover many web sites still in their
-            infancy. Various versions have evolved over the years, sometimes by
-            accident, sometimes on purpose (injected humour and the like).
+          It is a long established fact that a reader will be distracted by the
+          readable content of a page when looking at its layout. The point of
+          using Lorem Ipsum is that it has a more-or-less normal distribution of
+          letters, as opposed to using 'Content here, content here', making it
+          look like readable English. Many desktop publishing packages and web
+          page editors now use Lorem Ipsum as their default model text, and a
+          search for 'lorem ipsum' will uncover many web sites still in their
+          infancy. Various versions have evolved over the years, sometimes by
+          accident, sometimes on purpose (injected humour and the like).
         </div>
-        <small class="text-muted" th:if="${post.tags != null}" th:each="tag: ${post.tags}" th:text="${'#' + tag.name}"></small>
+        <small
+          class="text-muted"
+          th:if="${post.tags != null}"
+          th:each="tag: ${post.tags}"
+          th:text="${'#' + tag.name}"
+        ></small>
         <div
-                class="popup"
-                id="popup"
-                th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
+          class="popup"
+          id="popup"
+          th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
         >
-            <ul class="list-action" id="list-action">
-                <span class="inner" id="inner">X</span>
-                <li class="action" id="update-post" th:attr="post-id=${post.id}">
-                    Update
-                </li>
-                <li class="action" id="remove-post" th:attr="post-id=${post.id}">
-                    Remove
-                </li>
-            </ul>
+          <ul class="list-action" id="list-action">
+            <span class="inner" id="inner">X</span>
+            <li class="action" id="update-post" th:attr="post-id=${post.id}">
+              Update
+            </li>
+            <li class="action" id="remove-post" th:attr="post-id=${post.id}">
+              Remove
+            </li>
+          </ul>
         </div>
-        <br/><br/><br/>
+        <br /><br /><br />
         <div class="">
-            <div class="comment-wrapper">
-                <div class="panel panel-info">
-                    <div class="panel-body">
-                        <form
-                                th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
-                                th:attr="action='/posts/' + ${post.id} + '/comments'"
-                                class="form"
-                                method="post"
-                        >
-                            <div class="form-group">
+          <div class="comment-wrapper">
+            <div class="panel panel-info">
+              <div class="panel-body">
+                <form
+                  th:if="${session.loginSession != null}"
+                  th:attr="action='/posts/' + ${post.id} + '/comments'"
+                  class="form"
+                  method="post"
+                >
+                  <div class="form-group">
                     <textarea
-                            class="form-control"
-                            placeholder="write a comment..."
-                            rows="3"
-                            name="content"
+                      class="form-control"
+                      placeholder="write a comment..."
+                      rows="3"
+                      name="content"
                     ></textarea>
-                                <input type="hidden" value="0" name="parentId">
-                            </div>
-                            <div class="form-group d-flex flex-x--end">
-                                <button type="submit" class="btn btn-info pull-right">
-                                    Comment
-                                </button>
-                            </div>
-                        </form>
-                        <div class="clearfix"></div>
-                        <hr/>
-                        <ul class="media-list comment-list">
-                            <li
-                                    class="media comment-item"
-                                    th:each="comment : ${comments}"
-                                    th:attr="id=${'comment' + comment.id}"
-                            >
-                                <a href="#" class="pull-left" th:if="${comments != null}">
-                                    <img
-                                            src="https://bootdey.com/img/Content/user_1.jpg"
-                                            alt=""
-                                            class="img-circle"
-                                    />
-                                </a>
-                                <div th:if="${comment != null}" class="media-body">
-                      <span class="text-muted pull-right">
-                        <!--                                    <small class="text-muted">30 min ago</small> --></span
+                    <input type="hidden" value="0" name="parentId" />
+                  </div>
+                  <div class="form-group d-flex flex-x--end">
+                    <button type="submit" class="btn btn-info pull-right">
+                      Comment
+                    </button>
+                  </div>
+                </form>
+                <div class="clearfix"></div>
+                <hr />
+                <ul class="media-list comment-list">
+                  <li
+                    class="media comment-item comment-item--column"
+                    th:each="comment : ${comments}"
+                    th:attr="id=${'comment' + comment.id}"
+                  >
+                    <div class="comment-item__wrap">
+                      <a href="#" class="pull-left" th:if="${comments != null}">
+                        <img
+                          src="https://bootdey.com/img/Content/user_1.jpg"
+                          alt=""
+                          class="img-circle"
+                        />
+                      </a>
+                      <div th:if="${comment != null}" class="media-body">
+                        <span class="text-muted pull-right"></span>
+                        <strong
+                          class="text-success"
+                          th:text="${'@' + comment.user.name}"
+                          >@MartinoMont</strong
+                        >
+                        <p class="content" th:text="${comment.content}">
+                          Lorem ipsum dolor sit amet, consectetur adipiscing
+                          elit. Lorem ipsum dolor sit amet.
+                        </p>
+                        <button
+                          class="reply btn btn-default btn-primary"
+                          id="reply-comment-btn"
+                          th:if="${session.loginSession != null}"
+                          th:attr="post-id=${post.id}, comment-id=${comment.id}"
+                        >
+                          Reply
+                        </button>
+                      </div>
+                      <div
+                        class="media-footer"
+                        th:if="${session.loginSession != null && session.loginSession.id == comment.user.id}"
                       >
-                                    <strong
-                                            class="text-success"
-                                            th:text="${'@' + comment.user.name}"
-                                    >@MartinoMont</strong
-                                    >
-                                    <p class="content" th:text="${comment.content}">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                        Lorem ipsum dolor sit amet.
-                                    </p>
-                                    <button
-                                            class="reply btn btn-default btn-primary"
-                                            th:if="${session.loginSession != null}"
-                                    >
-                                        Reply
-                                    </button>
-                                </div>
-                                <div
-                                        class="media-footer"
-                                        th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
-                                >
-
-                                    <button
-                                            class="reply btn btn-default btn-warning comment-update-button"
-                                            th:attr="comment-id=${comment.id}, post-id=${post.id}"
-                                            id="comment-update-button"
-                                    >
-                                        Update
-                                    </button>
-                                    <button
-                                            class="reply btn btn-default btn-danger comment-delete-button"
-                                            th:attr="comment-id=${comment.id}, post-id=${post.id}"
-                                            id="comment-delete-button"
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                            </li>
-                        </ul>
+                        <button
+                          class="reply btn btn-default btn-warning comment-update-button"
+                          th:attr="comment-id=${comment.id}, post-id=${post.id}"
+                          id="comment-update-button"
+                        >
+                          Update
+                        </button>
+                        <button
+                          class="reply btn btn-default btn-danger comment-delete-button"
+                          th:attr="comment-id=${comment.id}, post-id=${post.id}"
+                          id="comment-delete-button"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                      <div id="reply_action"></div>
                     </div>
-                </div>
+                    <ul
+                      class="media-list media-list--p-5 comment-list"
+                      th:if="${comment.childComments != null}"
+                    >
+                      <li
+                        class="media comment-item"
+                        th:each="childC : ${comment.childComments}"
+                        th:attr="id=${'comment' + childC.id}"
+                      >
+                        <div class="comment-item__wrap">
+                          <a
+                            href="#"
+                            class="pull-left"
+                            th:if="${childC != null}"
+                          >
+                            <img
+                              src="https://bootdey.com/img/Content/user_1.jpg"
+                              alt=""
+                              class="img-circle"
+                            />
+                          </a>
+                          <div th:if="${childC != null}" class="media-body">
+                            <span class="text-muted pull-right"></span>
+                            <strong
+                              class="text-success"
+                              th:text="${'@' + childC.user.name}"
+                              >@MartinoMont</strong
+                            >
+                            <p class="content" th:text="${childC.content}">
+                              Lorem ipsum dolor sit amet, consectetur adipiscing
+                              elit. Lorem ipsum dolor sit amet.
+                            </p>
+                          </div>
+                          <div
+                            class="media-footer"
+                            th:if="${session.loginSession != null && session.loginSession.id == childC.user.id}"
+                          >
+                            <button
+                              class="reply btn btn-default btn-warning comment-update-button"
+                              th:attr="comment-id=${childC.id}, post-id=${post.id}"
+                              id="comment-update-button"
+                            >
+                              Update
+                            </button>
+                            <button
+                              class="reply btn btn-default btn-danger comment-delete-button"
+                              th:attr="comment-id=${childC.id}, post-id=${post.id}"
+                              id="comment-delete-button"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                          <div id="reply_action"></div>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-    <section class="modal" id="modal-update">
+      </div>
+
+      <section class="modal" id="modal-update">
         <form
-                th:if="${session.loginSession != null}"
-                id="update-post-form"
-                class="form create-post"
+          th:if="${session.loginSession != null}"
+          id="update-post-form"
+          class="form create-post"
         >
           <span class="form-title">
             Update a post
           </span>
-            <input
-                    type="text"
-                    name="title"
-                    id="update-post-title"
-                    class="input input--fullwidth"
-                    placeholder="Enter the title of your post"
-            />
-            <input type="hidden" name="postId" id="update-post-id"/>
-            <div class="post-content">
+          <input
+            type="text"
+            name="title"
+            id="update-post-title"
+            class="input input--fullwidth"
+            placeholder="Enter the title of your post"
+          />
+          <input type="hidden" name="postId" id="update-post-id" />
+          <div class="post-content">
             <textarea
-                    class="textarea"
-                    id="update-post-content"
-                    name="content"
+              class="textarea"
+              id="update-post-content"
+              name="content"
             ></textarea>
-            </div>
-            <div class="form-footer">
-                <button
-                        class="btn btn-primary"
-                        id="post-update-submit"
-                        type="button"
-                >
-                    Update
-                </button>
-            </div>
+          </div>
+          <div class="form-footer">
+            <button
+              class="btn btn-primary"
+              id="post-update-submit"
+              type="button"
+            >
+              Update
+            </button>
+          </div>
         </form>
 
         <button class="btn btn--full" id="close-update-modal">Close</button>
-    </section>
+      </section>
 
-    <section class="modal" id="modal-update-comment">
+      <section class="modal" id="modal-update-comment" th:if="${post != null}">
         <form
-
-                id="update-comment-form"
-                class="form create-post create-comment "
-                th:if="${session.loginSession != null}"
+          id="update-comment-form"
+          class="form create-post create-comment "
+          th:if="${session.loginSession != null}"
         >
-
-            <h4 class="form-title text--center">
-                Update a comment
-            </h4>
-            <div class="post-content">
+          <h4 class="form-title text--center">
+            Update a comment
+          </h4>
+          <div class="post-content">
             <textarea
-                    class="textarea"
-                    id="update-comment-content"
-                    name="content"
+              class="textarea"
+              id="update-comment-content"
+              name="content"
             ></textarea>
-            </div>
-            <input type="hidden" th:attr="value=${post.id}" id="update-comment-post-id">
-            <input type="hidden" th:attr="value=0" id="update-comment-comment-id">
-            <div class="form-footer">
-                <button
-                        class="btn btn-primary"
-                        id="comment-update-submit-button"
-                        type="button"
-                >
-                    Update
-                </button>
-            </div>
+          </div>
+          <input
+            type="hidden"
+            th:attr="value=${post.id}"
+            id="update-comment-post-id"
+          />
+          <input
+            type="hidden"
+            th:attr="value=0"
+            id="update-comment-comment-id"
+          />
+          <div class="form-footer">
+            <button
+              class="btn btn-primary"
+              id="comment-update-submit-button"
+              type="button"
+            >
+              Update
+            </button>
+          </div>
         </form>
 
-        <button class="btn btn--full btn-warning" id="close-update-modal-comment">
-            Close
+        <button
+          class="btn btn--full btn-warning"
+          id="close-update-modal-comment"
+        >
+          Close
         </button>
-    </section>
-</div>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script
-        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"
-></script>
-<script
-        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"
-></script>
-<script th:src="@{/js/main.js}"></script>
-</body>
+      </section>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script th:src="@{/js/main.js}"></script>
+  </body>
 </html>

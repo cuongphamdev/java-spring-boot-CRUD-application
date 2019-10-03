@@ -34,6 +34,9 @@ public class RegisterController {
     } catch (Exception e) {
       System.out.println("Error: " + e.toString());
       String message = "";
+      if (userService.findUserByEmail(email) != null) {
+        message = "The email is existed! Please try with other email.";
+      }
       ModelAndView modelAndView = new ModelAndView("/register");
       modelAndView.addObject("message", message);
       modelAndView.addObject("email", email);

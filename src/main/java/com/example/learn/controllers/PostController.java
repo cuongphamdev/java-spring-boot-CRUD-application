@@ -38,6 +38,14 @@ public class PostController {
     if (foundPost.getUserId() != currentUserId) {
       return 0;
     }
+    if (foundPost.getTags() != null) {
+      for (Tag tagRemove : foundPost.getTags()) {
+        Set<Post> newPosts = tagRemove.getPosts();
+        newPosts.remove(foundPost);
+        tagRemove.setPosts(newPosts);
+        tagService.updateTagPost(tagRemove);
+      }
+    }
     return postService.deletePost(postId);
   }
 

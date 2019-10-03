@@ -22,7 +22,7 @@ public class CommentDAOImpl extends CrudDAOImpl<Comment> implements CommentDAO {
   @Override
   public List<Comment> listRootCommentByPostId(long postId) {
     try {
-      String hql = "FROM Comment WHERE parentId = null AND postId = :postId";
+      String hql = "FROM Comment WHERE parentId = null AND postId = :postId ORDER BY id DESC";
       List<Comment> comments = entityManager.createQuery(hql)
               .setParameter("postId", postId).getResultList();
       return comments;

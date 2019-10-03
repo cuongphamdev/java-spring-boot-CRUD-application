@@ -40,7 +40,7 @@ public class Comment {
   private Long parentId;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private Set<Comment> childComments;
 
   public Comment() {

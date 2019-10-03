@@ -24,11 +24,11 @@ public class User {
   private String password;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Post> posts;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Comment> comments;
 
   @ManyToOne
@@ -38,7 +38,8 @@ public class User {
   @Column(name = "role_id", nullable = false)
   private long roleId;
 
-  public User() {
+  public
+  User() {
   }
 
   public User(String email, String password) {

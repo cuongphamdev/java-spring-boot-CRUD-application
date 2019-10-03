@@ -13,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,6 +72,17 @@ public class UserServiceTest {
       return userList;
     }
     );
+
+    when(userDAO.update(any())).thenAnswer(invocation -> {
+              User user = invocation.getArgument(0);
+              if (user.getEmail().equals(ServiceDataTest.dummyUser.getEmail())) {
+                return ServiceDataTest.dummyUser;
+              }
+              return null;
+            }
+    );
+
+    when(userDAO.findAll()).thenReturn(Arrays.asList(ServiceDataTest.dummyUserList));
   }
 
   @DisplayName("Find user by valid id and return valid user data")
@@ -139,5 +151,26 @@ public class UserServiceTest {
     verify(userDAO).searchUserByNameOrEmail(searchString);
   }
 
+  @DisplayName("update success")
+  @Test
+  void update () {
+    User result = userService.updateUser(ServiceDataTest.dummyUser);
+    assertEquals(ServiceDataTest.dummyUser, result);
+  }
+
+  @DisplayName("update fail")
+  @Test
+  void updateFail () {
+    User user = new User(ServiceDataTest.dummyUser.getName(), "wrongemail@dot.com", ServiceDataTest.dummyUser.getPassword());
+    User result = userService.updateUser(user);
+    assertEquals(null, result);
+  }
+
+  @DisplayName("findAllUser success")
+  @Test
+  void findAll () {
+    List<User> result = userService.findAllUser();
+    assertEquals(Arrays.asList(ServiceDataTest.dummyUserList), result);
+  }
 
 }
