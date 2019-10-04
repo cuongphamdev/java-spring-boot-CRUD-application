@@ -38,8 +38,7 @@ public class User {
   @Column(name = "role_id", nullable = false)
   private long roleId;
 
-  public
-  User() {
+  public User() {
   }
 
   public User(String email, String password) {

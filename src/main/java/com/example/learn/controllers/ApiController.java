@@ -33,8 +33,9 @@ public class ApiController {
   @Autowired
   private TagService tagService;
 
-  private boolean checkUserDataBlank (String name, String email, String password) {
-    if ((name == null && email == null && password == null) || (name.equals("") && email.equals("") && password.equals("")) ) return false;
+  private boolean checkUserDataBlank(String name, String email, String password) {
+    if ((name == null && email == null && password == null) || (name.equals("") && email.equals("") && password.equals("")))
+      return false;
     return true;
   }
 
@@ -54,13 +55,14 @@ public class ApiController {
 
 
   @RequestMapping(value = "/users", method = RequestMethod.POST)
-  private ResponseEntity<Object> createUser (@ModelAttribute User user) {
+  private ResponseEntity<Object> createUser(@RequestBody User user) {
     user.setRoleId(1);
     try {
       if (!this.checkUserDataBlank(user.getName(), user.getEmail(), user.getPassword())) {
         throw new Exception("User data is required");
-      };
-      User newUser =  userService.createNewUser(user.getName(), user.getEmail().toLowerCase(), user.getPassword(), user.getRoleId());
+      }
+      ;
+      User newUser = userService.createNewUser(user.getName(), user.getEmail().toLowerCase(), user.getPassword(), user.getRoleId());
       return ResponseEntity.status(HttpStatus.OK)
               .body(newUser);
     } catch (Exception e) {
@@ -70,7 +72,7 @@ public class ApiController {
   }
 
   @RequestMapping("/users/{userId}")
-  private ResponseEntity<Object> getUserById (@PathVariable(value = "userId") long userId) {
+  private ResponseEntity<Object> getUserById(@PathVariable(value = "userId") long userId) {
     User foundUser = userService.findUserById(userId);
     try {
       if (foundUser == null) throw new Exception("User not found for id = [" + userId + "]");
@@ -83,7 +85,7 @@ public class ApiController {
   }
 
   @RequestMapping(value = "/users/{userId}", method = RequestMethod.PUT)
-  private ResponseEntity<Object> updateUser (@ModelAttribute User user, @PathVariable(value = "userId") long userId) {
+  private ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable(value = "userId") long userId) {
     if (!this.checkUserDataBlank(user.getName(), user.getEmail(), user.getPassword())) return null;
     try {
       User updateUser = userService.findUserById(userId);
@@ -108,12 +110,12 @@ public class ApiController {
   }
 
   @RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
-  private ResponseEntity<Object> deleteUser (@PathVariable("userId") long userId) {
+  private ResponseEntity<Object> deleteUser(@PathVariable("userId") long userId) {
     try {
       User user = userService.findUserById(userId);
       if (user == null) throw new Exception("User not found for id = [" + userId + "]");
 
-      for (Post post: user.getPosts()) {
+      for (Post post : user.getPosts()) {
         this.deleteTags(post.getId());
       }
 
@@ -130,7 +132,7 @@ public class ApiController {
 
   //  CRUD Api for posts
   @RequestMapping("/posts")
-  private ResponseEntity<Object> getAllPost () {
+  private ResponseEntity<Object> getAllPost() {
     List<Post> postList = postService.findAllPosts();
     try {
       if (postList.size() == 0) throw new Exception("Not posts");
@@ -143,7 +145,7 @@ public class ApiController {
   }
 
   @RequestMapping("/posts/{postId}")
-  private ResponseEntity<Object> findPostById (@PathVariable(value = "postId") long postId) {
+  private ResponseEntity<Object> findPostById(@PathVariable(value = "postId") long postId) {
     Post foundPost = postService.findPostById(postId);
     try {
       if (foundPost == null) throw new Exception("Post not found for id = [" + postId + "]");
@@ -155,32 +157,32 @@ public class ApiController {
     }
   }
 
-  private boolean checkValidPostData (String title, String content, Long userId) {
+  private boolean checkValidPostData(String title, String content, Long userId) {
     if (title == null || title.equals("") || content == null || content.equals("") || userId == null) return false;
     return true;
   }
 
   @RequestMapping(value = "/posts", method = RequestMethod.POST)
-  private ResponseEntity<Object> createPostWithPostData (@ModelAttribute Post post, @RequestParam(value = "tagIds", required = false) List<Long> tagIds) {
+  private ResponseEntity<Object> createPostWithPostData(@RequestBody Post post, @RequestParam(value = "tagIds", required = false) List<Long> tagIds) {
     String title = post.getTitle();
     String content = post.getContent();
     Long userId = post.getUserId();
     try {
       if (!this.checkValidPostData(title, content, userId)) throw new Exception("Post data cannot be empty");
       if (userService.findUserById(userId) == null) throw new Exception("User not found with id = [" + userId + "]");
-        Post postCreated = postService.createNewPost(title, content, userId);
-        Set<Tag> tagsAdd = new HashSet<>();
-        if (tagIds != null) {
-          for (long tagId : tagIds) {
-            Tag tag = tagService.getTagById(tagId);
-            Set<Post> newPosts = tag.getPosts();
-            newPosts.add(postCreated);
-            tag.setPosts(newPosts);
-            tagService.updateTagPost(tag);
-            tagsAdd.add(tag);
-          }
+      Post postCreated = postService.createNewPost(title, content, userId);
+      Set<Tag> tagsAdd = new HashSet<>();
+      if (tagIds != null) {
+        for (long tagId : tagIds) {
+          Tag tag = tagService.getTagById(tagId);
+          Set<Post> newPosts = tag.getPosts();
+          newPosts.add(postCreated);
+          tag.setPosts(newPosts);
+          tagService.updateTagPost(tag);
+          tagsAdd.add(tag);
         }
-        postCreated.setTags(tagsAdd);
+      }
+      postCreated.setTags(tagsAdd);
       return ResponseEntity.status(HttpStatus.OK)
               .body(postCreated);
     } catch (Exception e) {
@@ -190,7 +192,7 @@ public class ApiController {
   }
 
   @RequestMapping(value = "/posts/{postId}", method = RequestMethod.PUT)
-  private ResponseEntity<Object> updatePostWithPostData (@ModelAttribute Post post, @PathVariable(value = "postId") long postId, @RequestParam(value = "tagIds", required = false) List<Long> tagIds) {
+  private ResponseEntity<Object> updatePostWithPostData(@RequestBody Post post, @PathVariable(value = "postId") long postId, @RequestParam(value = "tagIds", required = false) List<Long> tagIds) {
     try {
       Post newPost = postService.findPostById(postId);
       if (newPost == null) throw new Exception("Post not found");
@@ -203,8 +205,8 @@ public class ApiController {
         newPost.setContent(title);
       }
       Set<Tag> tagsUpdateList = newPost.getTags();
-      Post updatedPost = postService.updatePost(newPost.getId(), newPost.getTitle(), newPost.getContent()) ;
-      for (Tag tagDeleted: newPost.getTags()) {
+      Post updatedPost = postService.updatePost(newPost.getId(), newPost.getTitle(), newPost.getContent());
+      for (Tag tagDeleted : newPost.getTags()) {
         Set<Post> postList = tagDeleted.getPosts();
         postList.remove(updatedPost);
         tagDeleted.setPosts(postList);
@@ -232,13 +234,12 @@ public class ApiController {
     }
   }
 
-  private void deleteTags (long postId) {
+  private void deleteTags(long postId) {
     try {
       Post foundPost = postService.findPostById(postId);
       if (foundPost == null) {
         throw new NotFoundException("Post is not found with id [" + postId + "]");
-      }
-      else if (foundPost.getTags() != null) {
+      } else if (foundPost.getTags() != null) {
         for (Tag tagRemove : foundPost.getTags()) {
           Set<Post> newPosts = tagRemove.getPosts();
           newPosts.remove(foundPost);
@@ -252,7 +253,7 @@ public class ApiController {
   }
 
   @RequestMapping(value = "/posts/{postId}", method = RequestMethod.DELETE)
-  private ResponseEntity<Object> deletePost (@PathVariable(value = "postId") long postId) {
+  private ResponseEntity<Object> deletePost(@PathVariable(value = "postId") long postId) {
     try {
       this.deleteTags(postId);
       long deletedPostId = postService.deletePost(postId);
@@ -272,7 +273,7 @@ public class ApiController {
 
   //  CRUD Api for comments
   @RequestMapping(value = "/comments")
-  private ResponseEntity<Object> getAllComments () {
+  private ResponseEntity<Object> getAllComments() {
     List<Comment> commentList = commentService.findAllComment();
     try {
       if (commentList.size() == 0) throw new Exception("Not data");
@@ -285,7 +286,7 @@ public class ApiController {
   }
 
   @RequestMapping(value = "/comments/{commentId}")
-  private ResponseEntity<Object> getCommentById (@PathVariable(value = "commentId") long commentId) {
+  private ResponseEntity<Object> getCommentById(@PathVariable(value = "commentId") long commentId) {
     Comment foundComment = commentService.findCommentById(commentId);
     try {
       if (foundComment == null) throw new Exception("Comment not found for id = [" + commentId + "]");
@@ -297,10 +298,10 @@ public class ApiController {
     }
   }
 
-  private boolean checkCommentDataValid (String content, Long postId, Long userId, Long parentId) {
+  private boolean checkCommentDataValid(String content, Long postId, Long userId, Long parentId) {
     if (content == null || content.trim().equals("") || postId == null || userId == null ||
             (parentId != 0 && commentService.findCommentById(parentId) == null) ||
-            postService.findPostById(postId) == null||
+            postService.findPostById(postId) == null ||
             userService.findUserById(userId) == null
     ) {
       return false;
@@ -309,7 +310,7 @@ public class ApiController {
   }
 
   @RequestMapping(value = "/comments", method = RequestMethod.POST)
-  private ResponseEntity<Object> createComment (@ModelAttribute Comment comment) {
+  private ResponseEntity<Object> createComment(@RequestBody Comment comment) {
     try {
       String content = comment.getContent();
       Long postId = comment.getPostId();
@@ -328,8 +329,8 @@ public class ApiController {
     }
   }
 
-  @RequestMapping(value = "/comments/{commentId}",  method = RequestMethod.PUT)
-  private ResponseEntity<Object> updateComment (@ModelAttribute Comment comment, @PathVariable("commentId") long commentId) {
+  @RequestMapping(value = "/comments/{commentId}", method = RequestMethod.PUT)
+  private ResponseEntity<Object> updateComment(@RequestBody Comment comment, @PathVariable("commentId") long commentId) {
     try {
       String content = comment.getContent();
       long userId = comment.getUserId();
@@ -343,8 +344,7 @@ public class ApiController {
         Comment updatedComment = commentService.updateComment(commentId, content);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(updatedComment);
-      }
-      else {
+      } else {
         throw new Exception("Data input cannot empty");
       }
     } catch (Exception e) {
@@ -353,8 +353,8 @@ public class ApiController {
     }
   }
 
-  @RequestMapping(value = "/comments/{commentId}",  method = RequestMethod.DELETE)
-  private ResponseEntity<Object> deleteComment (@PathVariable("commentId") long commentId) {
+  @RequestMapping(value = "/comments/{commentId}", method = RequestMethod.DELETE)
+  private ResponseEntity<Object> deleteComment(@PathVariable("commentId") long commentId) {
     try {
       Comment foundComment = commentService.findCommentById(commentId);
       if (foundComment == null) throw new Exception("Comment not found for id = [" + commentId + "]");
@@ -371,7 +371,7 @@ public class ApiController {
 
   //  CRUD Api for tags
   @RequestMapping(value = "/tags")
-  private ResponseEntity<Object> getAllTag () {
+  private ResponseEntity<Object> getAllTag() {
     List<Tag> list = tagService.getAllTags();
     try {
       if (list.size() == 0) throw new Exception("Not tags");
@@ -384,7 +384,7 @@ public class ApiController {
   }
 
   @RequestMapping(value = "/tags/{tagId}")
-  private ResponseEntity<Object> getTagById (@PathVariable("tagId") long tagId) {
+  private ResponseEntity<Object> getTagById(@PathVariable("tagId") long tagId) {
     Tag found = tagService.getTagById(tagId);
     try {
       if (found == null) throw new Exception("Post not found for id = [" + tagId + "]");
@@ -397,7 +397,7 @@ public class ApiController {
   }
 
   @RequestMapping(value = "/tags", method = RequestMethod.POST)
-  private ResponseEntity<Object> createTag (@ModelAttribute Tag tag) {
+  private ResponseEntity<Object> createTag(@RequestBody Tag tag) {
     try {
       String tagName = tag.getName();
       if (tagName == null || tagName.trim().equals("")) {
@@ -413,7 +413,7 @@ public class ApiController {
   }
 
   @RequestMapping(value = "/tags/{tagId}", method = RequestMethod.PUT)
-  private ResponseEntity<Object> updateTag (@ModelAttribute Tag tag, @PathVariable("tagId") long tagId) {
+  private ResponseEntity<Object> updateTag(@RequestBody Tag tag, @PathVariable("tagId") long tagId) {
     try {
       String tagName = tag.getName();
       if (tagName == null || tagName.trim().equals("") || tagService.getTagById(tagId) == null) {
@@ -429,11 +429,11 @@ public class ApiController {
   }
 
   @RequestMapping(value = "/tags/{tagId}", method = RequestMethod.DELETE)
-  private ResponseEntity<Object> deleteTag (@PathVariable("tagId") long tagId) {
+  private ResponseEntity<Object> deleteTag(@PathVariable("tagId") long tagId) {
     try {
       Tag tagFound = tagService.getTagById(tagId);
       if (tagFound == null) throw new NotFoundException("Tag is not found with id [" + tagId + "]");
-      long tagDeletedId =  tagService.deleteTag(tagId);
+      long tagDeletedId = tagService.deleteTag(tagId);
       Map<String, Long> response = new HashMap<>();
       response.put("id", tagDeletedId);
       return ResponseEntity.status(HttpStatus.OK)

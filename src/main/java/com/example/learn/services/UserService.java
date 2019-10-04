@@ -33,5 +33,5 @@ public interface UserService {
 
   public long deleteUser(long userId);
 
-  public User findUserByEmail (String email);
+  public User findUserByEmail(String email);
 }

@@ -3,7 +3,6 @@ package com.example.learn.daos;
 import com.example.learn.daos.impl.PostDAOImpl;
 import com.example.learn.models.Post;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -34,10 +33,5 @@ public class PostDAOTest {
   public void setupEach() {
     when(criteria.select(any())).thenReturn(criteria);
     when(criteria.where((Expression<Boolean>) any())).thenReturn(criteria);
-  }
-
-  @Test
-  void searchPost () {
-
   }
 }
