@@ -45,13 +45,17 @@
                 <div class="title-header">
                     <div class="title-header-left">
                         <h5 class="author" th:text="${post.user.name}">Author</h5>
-                        <p class="created-at" th:text="${post.createdAt}">
-                            16/2/2018
-                        </p>
+
                     </div>
+                    <p th:if="${post.tags != null}"  class="created-at">
+                        <span th:each="tag: ${post.tags}" th:text="${'  #' + tag.name}">tag</span>
+                    </p>
                     <div class="title-header-right"   th:attr="post-id=${post.id}" post-id="1">
                         <span th:if="${session.loginSession != null && session.loginSession.id == post.user.id}" id="action-more-btn">▼</span>
                     </div>
+                    <p class="created-at" th:text="${post.createdAt}">
+                        16/2/2018
+                    </p>
                 </div>
                 <h3 class="title" id="title" ><a th:href="@{'/posts/'+ ${post.id}}" th:text="${post.title}" class="link">This is title</a></h3>
                 <div id="content" class="content" th:text="${post.content}">
@@ -68,7 +72,7 @@
         </section>
         <div class="pagination">
             <a th:if="${currentPage > 1}" th:href="${'/pages/' + (currentPage - 1)}">❮</a>
-            <a th:href="${'/pages/' + (currentPage + 1)}">❯</a>
+            <a th:if="${posts!=null && posts.size() > 0}" th:href="${'/pages/' + (currentPage + 1)}">❯</a>
         </div>
     </div>
     <section class="modal" id="modal-update" >
@@ -82,6 +86,9 @@
       <textarea class="textarea" id="update-post-content" name="content">
 </textarea>
             </div>
+<!--            <select name="tagIds" class="selectpicker" data-live-search="true" multiple data-max-options="3" data-size="5">-->
+<!--                <option th:if="${tags != null}" th:each="tag : ${tags}" th:attr="value=${tag.id}" th:text="${tag.name}">Tag name</option>-->
+<!--            </select>-->
             <div class="form-footer">
                 <button class="btn btn-primary" id="post-update-submit" type="button">
                     Update

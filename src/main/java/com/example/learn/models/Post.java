@@ -16,7 +16,7 @@ public class Post extends AuditModel {
   @Column(name = "title", nullable = false)
   private String title;
 
-  @Column(name = "content", nullable = false, columnDefinition="TEXT")
+  @Column(name = "content", nullable = false, columnDefinition = "TEXT")
   private String content;
 
   @ManyToOne

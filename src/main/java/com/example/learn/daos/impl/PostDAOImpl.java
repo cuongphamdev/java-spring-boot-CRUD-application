@@ -140,14 +140,14 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
             builder.equal(root.join("tags", JoinType.LEFT).get("id"), tagId) :
             builder.greaterThan(root.get("id"), tagId);
     criteria.where(
-      builder.and(
-              builder.or(
-                      builder.like(builder.lower(root.join("user").get("name")), searchPostQuery),
-                      builder.like(builder.lower(root.get("title")), searchPostQuery),
-                      builder.like(builder.lower(root.get("content")), searchPostQuery)
-              ),
-              checkTagIdQuery
-      )
+            builder.and(
+                    builder.or(
+                            builder.like(builder.lower(root.join("user").get("name")), searchPostQuery),
+                            builder.like(builder.lower(root.get("title")), searchPostQuery),
+                            builder.like(builder.lower(root.get("content")), searchPostQuery)
+                    ),
+                    checkTagIdQuery
+            )
     );
 
     switch (order) {

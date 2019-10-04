@@ -343,3 +343,7 @@
 .media {
     align-items: unset;
 }
+
+.search-user-form {
+    padding-top: 1rem;
+}
