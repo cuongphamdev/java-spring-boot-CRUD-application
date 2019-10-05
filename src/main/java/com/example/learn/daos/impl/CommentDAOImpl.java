@@ -1,7 +1,9 @@
 package com.example.learn.daos.impl;
 
 import com.example.learn.daos.CommentDAO;
+import com.example.learn.daos.PostDAO;
 import com.example.learn.models.Comment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -15,6 +17,9 @@ public class CommentDAOImpl extends CrudDAOImpl<Comment> implements CommentDAO {
   @PersistenceContext
   private EntityManager entityManager;
 
+  @Autowired
+  PostDAO postDAO;
+
   public CommentDAOImpl() {
     super("Comment");
   }
@@ -22,6 +27,7 @@ public class CommentDAOImpl extends CrudDAOImpl<Comment> implements CommentDAO {
   @Override
   public List<Comment> listRootCommentByPostId(long postId) {
     try {
+      if (postDAO.findById(postId) == null) throw new Exception("Post not found");
       String hql = "FROM Comment WHERE parentId = null AND postId = :postId ORDER BY id DESC";
       List<Comment> comments = entityManager.createQuery(hql)
               .setParameter("postId", postId).getResultList();

@@ -1,108 +1,258 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Hello Spring boot</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.11/dist/css/bootstrap-select.min.css">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" >
-</head>
-<body>
-<header th:replace="header.html :: header"> </header>
-<div class="container">
-    <div th:if="${session.loginSession == null}" class="wellcome-anonymous text--center">
-        <h2>Hi there, If you first time come to our website, please create the new user by go <a th:href="@{/register}">There</a></h2>
-        <h2>You can also click <a th:href="@{/login}">here</a> to login by your account</h2>
-    </div>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.11/dist/css/bootstrap-select.min.css"
+    />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <header th:replace="header.html :: header"></header>
+    <div class="container">
+      <div
+        th:if="${session.loginSession == null}"
+        class="wellcome-anonymous text--center"
+      >
+        <h2>
+          Hi there, If you first time come to our website, please create the new
+          user by go <a th:href="@{/register}">There</a>
+        </h2>
+        <h2>
+          You can also click <a th:href="@{/login}">here</a> to login by your
+          account
+        </h2>
+      </div>
 
-    <div th:if="${session.loginSession != null}" class="wellcome-anonymous text--center" >
+      <div
+        th:if="${session.loginSession != null}"
+        class="wellcome-anonymous text--center"
+      >
         <h2 th:text="${'Hello ' + session.loginSession.name}">Name of user</h2>
-    </div>
-    <div class="home-wrap">
-        <form action="/posts" method="post" th:if="${session.loginSession != null}" id="create-post-form"  class="form create-post">
-     <span class="form-title">
-       Create a post
-    </span>
-            <input type="text" name="title" id="form-post-title" class="input input--fullwidth" placeholder="Enter the title of your post">
-            <div class="post-content">
-      <textarea class="textarea" id="form-post-content" name="content">
-</textarea>
-            </div>
-            <div class="form-group">
-                <select name="tagIds" class="selectpicker" data-live-search="true" multiple data-max-options="3" data-size="5">
-                    <option th:if="${tags != null}" th:each="tag : ${tags}" th:attr="value=${tag.id}" th:text="${tag.name}">Tag name</option>
-                </select>                          
-            </div>
-            <div class="form-footer">
-                <button class="btn btn-primary" id="post-create-submit" type="submit">
-                    Post
-                </button>
-            </div>
+      </div>
+      <div class="home-wrap">
+        <form
+          action="/posts"
+          method="post"
+          th:if="${session.loginSession != null}"
+          id="create-post-form"
+          class="form create-post"
+        >
+          <span class="form-title">
+            Create a post
+          </span>
+          <input
+            type="text"
+            name="title"
+            id="form-post-title"
+            class="input input--fullwidth"
+            placeholder="Enter the title of your post"
+          />
+          <div class="post-content">
+            <textarea
+              class="textarea"
+              id="form-post-content"
+              name="content"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <select
+              name="tagIds"
+              class="selectpicker"
+              data-live-search="true"
+              multiple
+              data-max-options="3"
+              data-size="5"
+            >
+              <option
+                th:if="${tags != null}"
+                th:each="tag : ${tags}"
+                th:attr="value=${tag.id}"
+                th:text="${tag.name}"
+                >Tag name</option
+              >
+            </select>
+          </div>
+          <div class="form-footer">
+            <button
+              class="btn btn-primary"
+              id="post-create-submit"
+              type="submit"
+            >
+              Post
+            </button>
+          </div>
         </form>
 
-        <section class="post-lists" id="post-lists" th:if="${posts != null}" >
-            <div class="post" th:attr="id=${'post-' + post.id}" th:each="post : ${posts}">
-                <div class="title-header">
-                    <div class="title-header-left">
-                        <h5 class="author" th:text="${post.user.name}">Author</h5>
-
-                    </div>
-                    <p th:if="${post.tags != null}"  class="created-at">
-                        <span th:each="tag: ${post.tags}" th:text="${'  #' + tag.name}">tag</span>
-                    </p>
-                    <div class="title-header-right"   th:attr="post-id=${post.id}" post-id="1">
-                        <span th:if="${session.loginSession != null && session.loginSession.id == post.user.id}" id="action-more-btn">▼</span>
-                    </div>
-                    <p class="created-at" th:text="${post.createdAt}">
-                        16/2/2018
-                    </p>
-                </div>
-                <h3 class="title" id="title" ><a th:href="@{'/posts/'+ ${post.id}}" th:text="${post.title}" class="link">This is title</a></h3>
-                <div id="content" class="content" th:text="${post.content}">
-                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                </div>
-                <div class="popup" id="popup" th:if="${session.loginSession != null && session.loginSession.id == post.user.id}" >
-                    <ul class="list-action" id="list-action">
-                        <span class="inner" id="inner">X</span>
-                        <li class="action" id="update-post" th:attr="post-id=${post.id}">Update</li>
-                        <li class="action" id="remove-post" th:attr="post-id=${post.id}">Remove</li>
-                    </ul>
-                </div>
+        <section class="post-lists" id="post-lists" th:if="${posts != null}">
+          <div
+            class="post"
+            th:attr="id=${'post-' + post.id}"
+            th:each="post : ${posts}"
+          >
+            <div class="title-header">
+              <div class="title-header-left">
+                <h5 class="author" th:text="${post.user.name}">Author</h5>
+              </div>
+              <p class="created-at" th:text="${post.createdAt}">
+                16/2/2018
+              </p>
+              <div
+                class="title-header-right"
+                th:attr="post-id=${post.id}"
+                post-id="1"
+              >
+                <span
+                  th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
+                  id="action-more-btn"
+                  >▼</span
+                >
+              </div>
             </div>
+            <h3 class="title" id="title">
+              <a
+                th:href="@{'/posts/'+ ${post.id}}"
+                th:text="${post.title}"
+                class="link"
+                >This is title</a
+              >
+            </h3>
+            <div id="content" class="content" th:text="${post.content}">
+              It is a long established fact that a reader will be distracted by
+              the readable content of a page when looking at its layout. The
+              point of using Lorem Ipsum is that it has a more-or-less normal
+              distribution of letters, as opposed to using 'Content here,
+              content here', making it look like readable English. Many desktop
+              publishing packages and web page editors now use Lorem Ipsum as
+              their default model text, and a search for 'lorem ipsum' will
+              uncover many web sites still in their infancy. Various versions
+              have evolved over the years, sometimes by accident, sometimes on
+              purpose (injected humour and the like).
+            </div>
+            <p th:if="${post.tags != null}" class="tags">
+              <small
+                ><span
+                  th:each="tag: ${post.tags}"
+                  th:attr="tag-id=${tag.id}"
+                  th:text="${'#' + tag.name}"
+                  >tag</span
+                ></small
+              >
+            </p>
+            <div
+              class="popup"
+              id="popup"
+              th:if="${session.loginSession != null && session.loginSession.id == post.user.id}"
+            >
+              <ul class="list-action" id="list-action">
+                <span class="inner" id="inner">X</span>
+                <li
+                  class="action"
+                  id="update-post"
+                  th:attr="post-id=${post.id}"
+                >
+                  Update
+                </li>
+                <li
+                  class="action"
+                  id="remove-post"
+                  th:attr="post-id=${post.id}"
+                >
+                  Remove
+                </li>
+              </ul>
+            </div>
+          </div>
         </section>
         <div class="pagination">
-            <a th:if="${currentPage > 1}" th:href="${'/pages/' + (currentPage - 1)}">❮</a>
-            <a th:if="${posts!=null && posts.size() > 0}" th:href="${'/pages/' + (currentPage + 1)}">❯</a>
+          <a
+            th:if="${currentPage > 1}"
+            th:href="${'/pages/' + (currentPage - 1)}"
+            >❮</a
+          >
+          <a
+            th:if="${posts!=null && posts.size() > 0}"
+            th:href="${'/pages/' + (currentPage + 1)}"
+            >❯</a
+          >
         </div>
-    </div>
-    <section class="modal" id="modal-update" >
-        <form  th:if="${session.loginSession != null}" id="update-post-form"  class="form create-post">
-     <span class="form-title">
-       Update a post
-    </span>
-            <input type="text" name="title" id="update-post-title" class="input input--fullwidth" placeholder="Enter the title of your post">
-            <input type="hidden" name="postId" id="update-post-id">
-            <div class="post-content">
-      <textarea class="textarea" id="update-post-content" name="content">
-</textarea>
-            </div>
-<!--            <select name="tagIds" class="selectpicker" data-live-search="true" multiple data-max-options="3" data-size="5">-->
-<!--                <option th:if="${tags != null}" th:each="tag : ${tags}" th:attr="value=${tag.id}" th:text="${tag.name}">Tag name</option>-->
-<!--            </select>-->
-            <div class="form-footer">
-                <button class="btn btn-primary" id="post-update-submit" type="button">
-                    Update
-                </button>
-            </div>
+      </div>
+      <section class="modal" id="modal-update">
+        <form
+          th:if="${session.loginSession != null}"
+          id="update-post-form"
+          class="form create-post"
+        >
+          <span class="form-title">
+            Update a post
+          </span>
+          <input
+            type="text"
+            name="title"
+            id="update-post-title"
+            class="input input--fullwidth"
+            placeholder="Enter the title of your post"
+          />
+          <input type="hidden" name="postId" id="update-post-id" />
+          <div class="post-content">
+            <textarea
+              class="textarea"
+              id="update-post-content"
+              name="content"
+            ></textarea>
+          </div>
+          <select
+            name="tagIds"
+            class="selectpicker"
+            data-live-search="true"
+            multiple
+            data-max-options="3"
+            data-size="5"
+            id="update-tags-list"
+          >
+            <option
+              th:if="${tags != null}"
+              th:each="tag : ${tags}"
+              th:attr="value=${tag.id}"
+              th:text="${tag.name}"
+              >Tag name</option
+            >
+          </select>
+          <div class="form-footer">
+            <button
+              class="btn btn-primary"
+              id="post-update-submit"
+              type="button"
+            >
+              Update
+            </button>
+          </div>
         </form>
-        <button class="btn btn--full btn-warning" id="close-update-modal">Close</button>
-    </section>
-
-</div>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.11/dist/js/bootstrap-select.min.js"></script>
-<script th:src="@{/js/main.js}"></script>
-</body>
+        <button class="btn btn--full btn-warning" id="close-update-modal">
+          Close
+        </button>
+      </section>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.11/dist/js/bootstrap-select.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+  </body>
 </html>

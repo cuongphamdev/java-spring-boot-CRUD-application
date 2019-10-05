@@ -1,5 +1,6 @@
 package com.example.learn.services;
 
+import com.example.learn.Utils;
 import com.example.learn.daos.PostDAO;
 import com.example.learn.daos.UserDAO;
 import com.example.learn.models.Post;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -41,9 +43,17 @@ public class PostServiceTest {
   public void setupEach() {
     when(postDAO.findAll()).thenReturn(Arrays.asList(ServiceDataTest.dummyPostList));
 
-    when(postDAO.findById(0)).thenReturn(null);
+    when (postDAO.countPostByUserId(0)).thenReturn((long) 0);
+    when (postDAO.countPostByUserId(1)).thenReturn((long) ServiceDataTest.dummyPostList.length);
 
-    when(postDAO.findById(1)).thenReturn(ServiceDataTest.dummyPost);
+    when(postDAO.findById(anyLong())).thenAnswer(invocation -> {
+      long postId = invocation.getArgument(0);
+
+      if (Utils.checkValidBetween(postId, 0, ServiceDataTest.dummyPostList.length)) {
+        return ServiceDataTest.dummyPostList[(int) postId - 1];
+      }
+      return null;
+    });
 
     when (userDAO.findById(0)).thenReturn(null);
     when (userDAO.findById(1)).thenReturn(ServiceDataTest.dummyUser);
@@ -100,8 +110,6 @@ public class PostServiceTest {
     );
 
 
-    when (postDAO.countPostByUserId(0)).thenReturn((long) 0);
-    when (postDAO.countPostByUserId(1)).thenReturn((long) ServiceDataTest.dummyPostList.length);
 
   }
 
@@ -115,15 +123,16 @@ public class PostServiceTest {
   @DisplayName("findPostByIdSuccess return a post")
   @Test
   void findPostByIdSuccess () {
-    Post result = postService.findPostById(1);
-    assertEquals( ServiceDataTest.dummyPost, result);
+    long input = 1;
+    Post result = postService.findPostById(input);
+    assertEquals( ServiceDataTest.dummyPostList[(int) input - 1], result);
   }
 
   @DisplayName("findPostByIdFail return null")
   @Test
   void findPostByIdFail () {
     Post result = postService.findPostById(0);
-    assertEquals(null, result);
+    assertNull(result);
   }
 
   @DisplayName("createNewPostSuccess success and return an new post data")

@@ -10,8 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +33,21 @@ public class UserServiceTest {
   @Mock
   private UserDAO userDAO;
 
+  @Mock
+  private EntityManager entityManager;
+
+  @Mock
+  private CriteriaBuilder builder;
+
+  @Mock
+  private CriteriaQuery<User> criteria;
+
+  @Spy
+  private HttpSession session;
+
+  @Mock
+  private HttpServletRequest request;
+
   @InjectMocks
   private UserService userService = new UserServiceImpl();
 
@@ -37,6 +58,8 @@ public class UserServiceTest {
 
   @BeforeEach
   private void setupEach() {
+
+    when(request.getSession(true)).thenReturn(session);
     when(userDAO.findById(1)).thenReturn(ServiceDataTest.dummyUser);
     when(userDAO.findById(2)).thenReturn(null);
     when(userDAO.create(any())).thenAnswer(
@@ -83,6 +106,17 @@ public class UserServiceTest {
     );
 
     when(userDAO.findAll()).thenReturn(Arrays.asList(ServiceDataTest.dummyUserList));
+    // when(userDAO.searchByPaginationAndOrderByName(anyString(), anyString(), anyInt())).thenAnswer(invocation -> {
+    //   String query = invocation.getArgument(0);
+    //   String order = invocation.getArgument(1);
+    //   int page = invocation.getArgument(2);
+    //   List<User> userList = new ArrayList<>();
+    //   for (User user: ServiceDataTest.dummyUserList) {
+    //     if (user.getName().contains(query.trim())) {
+    //       userList.add(user);
+    //     }
+    //   }
+    // })
   }
 
   @DisplayName("Find user by valid id and return valid user data")
@@ -173,4 +207,68 @@ public class UserServiceTest {
     assertEquals(Arrays.asList(ServiceDataTest.dummyUserList), result);
   }
 
+  @DisplayName("checkAuthentication if user has loggedin")
+  @Test
+  public void checkAuthenticationSuccessReturnTrue () {
+    when(session.getAttribute("loginSession")).thenReturn(ServiceDataTest.dummyUser);
+    boolean result = userService.checkAuthentication(request);
+    assertTrue(result);
+  }
+
+  @DisplayName("checkAuthentication if user hasn't loggedin")
+  @Test
+  public void checkAuthenticationSuccessReturnFalse () {
+    when(session.getAttribute("loginSession")).thenReturn(null);
+    boolean result = userService.checkAuthentication(request);
+    assertFalse(result);
+  }
+
+  @DisplayName("setAuthentication success")
+  @Test
+  public void setAuthenticationSuccess () {
+    userService.setAuthenticate(request, ServiceDataTest.dummyUser);
+    verify(session).setAttribute("loginSession", ServiceDataTest.dummyUser);
+  }
+
+  @DisplayName("removeAuthenticate success")
+  @Test
+  public void removeAuthenticateSuccess () {
+    userService.removeAuthenticate(request);
+    verify(session).removeAttribute("loginSession");
+  }
+
+  @DisplayName("getCurrentUser after login success")
+  @Test
+  public void getCurrentUserSuccess () {
+    when(session.getAttribute("loginSession")).thenReturn(ServiceDataTest.dummyUser);
+    User result = userService.getCurrentUser(request);
+    verify(session).getAttribute("loginSession");
+    assertEquals(ServiceDataTest.dummyUser, result);
+  }
+
+  @DisplayName("getCurrentUser if user hasn't login")
+  @Test
+  public void getCurrentUserSuccessReturnNull () {
+    User result = userService.getCurrentUser(request);
+    verify(session).getAttribute("loginSession");
+    assertNull(result);
+  }
+
+  @DisplayName("")
+  @Test
+  public void getCurrentUserIdIfUserLogin () {
+    User loginUser = new User (ServiceDataTest.dummyUser.getName(), ServiceDataTest.dummyUser.getEmail(), ServiceDataTest.dummyUser.getPassword());
+    loginUser.setId(1);
+    when (session.getAttribute("loginSession")).thenReturn(loginUser);
+    long result = userService.getCurrentUserId(request);
+    assertEquals(1, result);
+  }
+
+  @DisplayName("")
+  @Test
+  public void getCurrentUserIdIfUserNotLogin () {
+    when (session.getAttribute("loginSession")).thenReturn(null);
+    long result = userService.getCurrentUserId(request);
+    assertEquals(0, result);
+  }
 }
