@@ -75,7 +75,7 @@ public class PostController {
       tagDeleted.setPosts(postList);
       tagService.updateTagPost(tagDeleted);
     }
-    if (tagIds != null) {
+    if (tagIds != null && tagIds.size() > 0) {
       for (long tagId : tagIds) {
         Tag tag = tagService.getTagById(tagId);
         Set<Post> newPosts = tag.getPosts();
@@ -84,10 +84,13 @@ public class PostController {
         tagService.updateTagPost(tag);
         tagsUpdateList.add(tag);
       }
+    } else {
+      tagsUpdateList.removeAll(tagsUpdateList);
     }
 
     Post postUpdated = postService.updatePost(postId, title, content);
-    return postService.findPostById(postUpdated.getId());
+    postUpdated.setTags(tagsUpdateList);
+    return postUpdated;
   }
 
   @RequestMapping(value = "/{id}")

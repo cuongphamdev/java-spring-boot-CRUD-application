@@ -4,10 +4,7 @@ import com.example.learn.models.Comment;
 import com.example.learn.models.Post;
 import com.example.learn.models.Tag;
 import com.example.learn.models.User;
-import com.example.learn.services.CommentService;
-import com.example.learn.services.PostService;
-import com.example.learn.services.TagService;
-import com.example.learn.services.UserService;
+import com.example.learn.services.*;
 import com.example.learn.utils.CommonUtils;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +30,16 @@ public class ApiController {
   @Autowired
   private TagService tagService;
 
+  @Autowired
+  private RoleService roleService;
+
   private boolean checkUserDataBlank(String name, String email, String password) {
-    if ((name == null && email == null && password == null) || (name.equals("") && email.equals("") && password.equals("")))
+    if (name == null ||
+            email == null ||
+            password == null ||
+            name.trim().equals("") ||
+            email.trim().equals("") ||
+            password.equals(""))
       return false;
     return true;
   }
@@ -56,13 +61,26 @@ public class ApiController {
 
   @RequestMapping(value = "/users", method = RequestMethod.POST)
   private ResponseEntity<Object> createUser(@RequestBody User user) {
-    user.setRoleId(1);
     try {
-      if (!this.checkUserDataBlank(user.getName(), user.getEmail(), user.getPassword())) {
+      String name = user.getName();
+      String email = user.getEmail();
+      String pass = user.getPassword();
+      long roleId = user.getRoleId() != 0 ? user.getRoleId() : 1;
+
+      if (roleService.findById(roleId) == null) {
+        throw new Exception("Role not found with id = [" + roleId + "]");
+      }
+
+      if (!this.checkUserDataBlank(name, email, pass)) {
         throw new Exception("User data is required");
       }
-      ;
-      User newUser = userService.createNewUser(user.getName(), user.getEmail().toLowerCase(), user.getPassword(), user.getRoleId());
+
+      if (userService.findUserByEmail(email) != null) {
+        throw new Exception("The email is existed! Please try with other email.");
+      }
+
+      User newUser = userService.createNewUser(name, email, pass, roleId);
+
       return ResponseEntity.status(HttpStatus.OK)
               .body(newUser);
     } catch (Exception e) {
@@ -86,17 +104,20 @@ public class ApiController {
 
   @RequestMapping(value = "/users/{userId}", method = RequestMethod.PUT)
   private ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable(value = "userId") long userId) {
-    if (!this.checkUserDataBlank(user.getName(), user.getEmail(), user.getPassword())) return null;
+    String name = user.getName();
+    String email = user.getEmail();
+    String password = user.getPassword();
     try {
       User updateUser = userService.findUserById(userId);
       if (updateUser == null) throw new Exception("User not found for id = [" + userId + "]");
-      if (user.getName() != null && !user.getName().equals("")) {
+      if (name != null && !name.trim().equals("")) {
         updateUser.setName(user.getName());
       }
-      if (user.getPassword() != null && !user.getPassword().equals("")) {
+      if (password != null && !password.trim().equals("")) {
         updateUser.setPassword(user.getPassword());
       }
-      if (user.getEmail() != null && !user.getEmail().equals("")) {
+      if (email != null && !email.trim().equals("")) {
+        if(userService.findUserByEmail(email) != null) throw new Exception("The email is existed! Please choose another email");
         updateUser.setEmail(user.getEmail());
       }
 
