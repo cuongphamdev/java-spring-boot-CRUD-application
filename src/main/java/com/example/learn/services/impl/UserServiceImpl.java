@@ -4,6 +4,7 @@ import com.example.learn.daos.UserDAO;
 import com.example.learn.models.Search;
 import com.example.learn.models.User;
 import com.example.learn.services.UserService;
+import com.example.learn.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
     User user = new User();
     user.setEmail(email.trim().toLowerCase());
     user.setName(name.trim());
-    user.setPassword(password.trim());
+    user.setPassword(CommonUtils.getHashPassword(password.trim()));
     user.setRoleId(roleId);
     User createUser = userDAO.create(user);
     return createUser;
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User loginByEmailAndPassword(String email, String password) {
-    return userDAO.findByEmailAndPassword(email, password);
+    return userDAO.findByEmailAndPassword(email, CommonUtils.getHashPassword(password));
   }
 
   @Override
