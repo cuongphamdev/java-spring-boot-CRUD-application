@@ -56,7 +56,7 @@ public class PostController {
     String tags = request.getParameter("tags");
     List<String> tagIdsString = tags == null ? new ArrayList<>() : Arrays.asList((tags.split(",")));
     List<Integer> tagIds = new ArrayList<>();
-    for (String tag: tagIdsString) {
+    for (String tag : tagIdsString) {
       if (!tag.equals("")) {
         tagIds.add(Integer.valueOf(tag));
       }

@@ -117,7 +117,8 @@ public class ApiController {
         updateUser.setPassword(user.getPassword());
       }
       if (email != null && !email.trim().equals("")) {
-        if(userService.findUserByEmail(email) != null) throw new Exception("The email is existed! Please choose another email");
+        if (userService.findUserByEmail(email) != null)
+          throw new Exception("The email is existed! Please choose another email");
         updateUser.setEmail(user.getEmail());
       }
 
@@ -263,7 +264,7 @@ public class ApiController {
 
   private void deleteTags(Post post) {
     try {
-     if (post.getTags() != null) {
+      if (post.getTags() != null) {
         for (Tag tagRemove : post.getTags()) {
           Set<Post> newPosts = tagRemove.getPosts();
           newPosts.remove(post);
@@ -347,10 +348,10 @@ public class ApiController {
       if (!checkCommentDataValid(content, postId, userId, parentId)) {
         throw new Exception("Data input is invalid");
       }
-        Comment createdComment = commentService.createComment(content, postId, userId, parentId);
-        createdComment.setUser(userService.findUserById(createdComment.getUserId()));
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(createdComment);
+      Comment createdComment = commentService.createComment(content, postId, userId, parentId);
+      createdComment.setUser(userService.findUserById(createdComment.getUserId()));
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(createdComment);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
               .body(CommonUtils.getMapErrors(e, "Create comment fail"));

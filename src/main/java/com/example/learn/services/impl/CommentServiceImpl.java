@@ -35,15 +35,15 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public Comment createComment(String content, long postId, long userId, long parentId) {
-      Comment comment = new Comment(content, postId, userId);
-      if (userService.findUserById(userId) == null ||
-            postService.findPostById(postId) == null )  {
-        return null;
-      }
-      if (parentId != 0) {
-        comment.setParentId(parentId);
-      }
-      return commentDAO.create(comment);
+    Comment comment = new Comment(content, postId, userId);
+    if (userService.findUserById(userId) == null ||
+            postService.findPostById(postId) == null) {
+      return null;
+    }
+    if (parentId != 0) {
+      comment.setParentId(parentId);
+    }
+    return commentDAO.create(comment);
   }
 
   @Override

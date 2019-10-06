@@ -19,7 +19,7 @@ public class CommonUtils {
     return errors;
   }
 
-  public static String getHashPassword (String password) {
+  public static String getHashPassword(String password) {
     MessageDigest messageDigest = null;
     try {
       messageDigest = MessageDigest.getInstance("MD5");
