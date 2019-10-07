@@ -79,7 +79,6 @@ public class UserServiceImpl implements UserService {
     return userDAO.searchUserByNameOrEmail(query);
   }
 
-  //todo: UT
   @Override
   public Search<User> searchUserInOrderAndPagination(String query, String order, int page) {
     return userDAO.searchByPaginationAndOrderByName(query, order, page);
@@ -95,13 +94,11 @@ public class UserServiceImpl implements UserService {
     return userDAO.findAll();
   }
 
-  //TODO: UT
   @Override
   public long deleteUser(long userId) {
     return userDAO.delete(userId);
   }
 
-  //TODO: UT
   @Override
   public User findUserByEmail(String email) {
     return userDAO.searchUserEqualEmail(email);

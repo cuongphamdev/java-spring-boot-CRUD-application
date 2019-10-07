@@ -12,7 +12,6 @@ public class RoleServiceImpl implements RoleService {
   @Autowired
   RoleDAO roleDAO;
 
-  //todo:
   @Override
   public Role createRole(Role role) {
     return roleDAO.create(role);

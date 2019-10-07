@@ -4,6 +4,7 @@ import com.example.learn.Utils;
 import com.example.learn.daos.PostDAO;
 import com.example.learn.daos.UserDAO;
 import com.example.learn.models.Post;
+import com.example.learn.models.Search;
 import com.example.learn.services.impl.PostServiceImpl;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,11 +15,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -109,6 +111,64 @@ public class PostServiceTest {
             }
     );
 
+    when(userDAO.findAll()).thenReturn(Arrays.asList(ServiceDataTest.dummyUserList));
+    when(postDAO.searchPostByTitleAndContentAndTagNameWithUserId(anyString(), anyLong(),  anyString(), anyInt())).thenAnswer(invocation -> {
+      String query = invocation.getArgument(0);
+      long userId = invocation.getArgument(1);
+      String order = invocation.getArgument(2);
+      int page = invocation.getArgument(3);
+      List<Post> postList = new ArrayList<>();
+
+      for (Post eachPost: ServiceDataTest.dummyPostList) {
+        if (eachPost.getTitle().contains(query) || eachPost.getContent().contains(query)) {
+          postList.add(eachPost);
+        }
+      }
+
+      if (order.equals("a2z")) {
+        Collections.sort(postList, Utils.comparePostByTitleASC);
+      } else {
+        Collections.sort(postList, Utils.comparePostByTitleDESC);
+      }
+      if (page > 1 || userId == 0) {
+        postList.removeAll(postList);
+      }
+      Search<Post> response = new Search<>(postList, postList.size(), 1, query, 1);
+      return response;
+    });
+
+    when(postDAO.searchPostByTitleAndContentAndNameUserWithSortAndPageBreak(anyString(), anyString(), anyInt(), anyInt(), anyInt())).thenAnswer(invocation -> {
+      String query = invocation.getArgument(0);
+      String order = invocation.getArgument(1);
+      int page = invocation.getArgument(2);
+      int pageBreak = invocation.getArgument(3);
+      int tagId = invocation.getArgument(4);
+      List<Post> postList = new ArrayList<>();
+
+      for (Post eachPost: ServiceDataTest.dummyPostList) {
+        if (eachPost.getTitle().contains(query) || eachPost.getContent().contains(query)) {
+          postList.add(eachPost);
+        }
+        if (postList.size() >= pageBreak) {
+          break;
+        }
+      }
+
+      if (order.equals("a2z")) {
+        Collections.sort(postList, Utils.comparePostByTitleASC);
+      } else {
+        Collections.sort(postList, Utils.comparePostByTitleDESC);
+      }
+      if (page > 1 || tagId > 10) {
+        postList.removeAll(postList);
+      }
+
+      if (page != 1) {
+        postList.removeAll(postList);
+      }
+      Search<Post> response = new Search<>(postList, (postList.size() - pageBreak) * 1, 1, query, 1);
+      return response;
+    });
 
 
   }
@@ -232,5 +292,40 @@ public class PostServiceTest {
   void countPostByUserIdFail () {
     long result = postService.countPostByUserId(0);
     assertEquals(0, result );
+  }
+
+  @DisplayName("findPostByTitleAndContentAndTagNameWithUserId success")
+  @Test
+  void findPostByTitleAndContentAndTagNameWithUserIdSuccess () {
+    Search<Post> result = postService.findPostByTitleAndContentAndTagNameWithUserId("title", 1, "a2z", 1);
+    assertNotEquals(0, result.getListItems().size() );
+  }
+
+  @DisplayName("findPostByTitleAndContentAndTagNameWithUserId fail with wrong userId")
+  @Test
+  void findPostByTitleAndContentAndTagNameWithUserIdFailWithWrongUserId () {
+    Search<Post> result = postService.findPostByTitleAndContentAndTagNameWithUserId("title", 0, "a2z", 1);
+    assertEquals(0, result.getListItems().size() );
+  }
+
+  @DisplayName("searchPostByTitleAndContentAndNameUserWithSortAndPageBreak success")
+  @Test
+  void searchPostByTitleAndContentAndNameUserWithSortAndPageBreakSuccess () {
+    Search<Post> result = postService.searchPostByTitleAndContentAndNameUserWithSortAndPageBreak("title", "a2z", 1, 4, 0);
+    assertEquals(4, result.getListItems().size() );
+  }
+
+  @DisplayName("searchPostByTitleAndContentAndNameUserWithSortAndPageBreak success")
+  @Test
+  void searchPostByTitleAndContentAndNameUserWithSortAndPageBreakSuccessWithPageBreak () {
+    Search<Post> result = postService.searchPostByTitleAndContentAndNameUserWithSortAndPageBreak("title", "a2z", 1, 2, 0);
+    assertEquals(2, result.getListItems().size() );
+  }
+
+  @DisplayName("searchPostByTitleAndContentAndNameUserWithSortAndPageBreak fail with wrong tagId")
+  @Test
+  void searchPostByTitleAndContentAndNameUserWithSortAndPageBreakFailWithWrongTagId () {
+    Search<Post> result = postService.searchPostByTitleAndContentAndNameUserWithSortAndPageBreak("wrong", "a2z", 1, 1, 11);
+    assertEquals(0, result.getListItems().size() );
   }
 }
