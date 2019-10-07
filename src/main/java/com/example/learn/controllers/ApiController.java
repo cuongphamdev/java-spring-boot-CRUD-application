@@ -114,7 +114,7 @@ public class ApiController {
         updateUser.setName(user.getName());
       }
       if (password != null && !password.trim().equals("")) {
-        updateUser.setPassword(user.getPassword());
+        updateUser.setPassword(CommonUtils.getHashPassword(user.getPassword()));
       }
       if (email != null && !email.trim().equals("")) {
         if (userService.findUserByEmail(email) != null)

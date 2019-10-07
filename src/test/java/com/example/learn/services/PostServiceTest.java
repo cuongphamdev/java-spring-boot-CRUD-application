@@ -308,6 +308,13 @@ public class PostServiceTest {
     assertEquals(0, result.getListItems().size() );
   }
 
+  @DisplayName("findPostByTitleAndContentAndTagNameWithUserId fail with wrong queryString")
+  @Test
+  void findPostByTitleAndContentAndTagNameWithUserIdFailWithWrongQuery (){
+    Search<Post> result = postService.findPostByTitleAndContentAndTagNameWithUserId("title-11", 1, "a2z", 1);
+    assertEquals(0, result.getListItems().size() );
+  }
+
   @DisplayName("searchPostByTitleAndContentAndNameUserWithSortAndPageBreak success")
   @Test
   void searchPostByTitleAndContentAndNameUserWithSortAndPageBreakSuccess () {
@@ -325,7 +332,14 @@ public class PostServiceTest {
   @DisplayName("searchPostByTitleAndContentAndNameUserWithSortAndPageBreak fail with wrong tagId")
   @Test
   void searchPostByTitleAndContentAndNameUserWithSortAndPageBreakFailWithWrongTagId () {
-    Search<Post> result = postService.searchPostByTitleAndContentAndNameUserWithSortAndPageBreak("wrong", "a2z", 1, 1, 11);
+    Search<Post> result = postService.searchPostByTitleAndContentAndNameUserWithSortAndPageBreak("title", "a2z", 1, 1, 11);
+    assertEquals(0, result.getListItems().size() );
+  }
+
+  @DisplayName("searchPostByTitleAndContentAndNameUserWithSortAndPageBreak fail with wrong string q")
+  @Test
+  void searchPostByTitleAndContentAndNameUserWithSortAndPageBreakFailWithWrongQueryString () {
+    Search<Post> result = postService.searchPostByTitleAndContentAndNameUserWithSortAndPageBreak("wrong", "a2z", 1, 1, 0);
     assertEquals(0, result.getListItems().size() );
   }
 }
