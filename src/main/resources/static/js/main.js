@@ -295,38 +295,43 @@ if (document.getElementById("post-detail")) {
       let commentId = $("#update-comment-comment-id").val();
       let content = $("#update-comment-content").val();
 
-      sendAjax(`/posts/${postId}/comments/${commentId}`, {content}, "PUT",  (response) => {
-        let commentEl = document.getElementById(`comment${commentId}`);
-        // for (let i = 0; i < commentEl.childNodes.length; i++) {
-        //   if (commentEl.childNodes[i].className == 'media-body') {
-        //     for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) { 
-        //       if (commentEl.childNodes[i].childNodes[j].className == 'content') {
-        //         commentEl.childNodes[i].childNodes[j].innerHTML = response.content;
-        //       } 
-        //     }
-        //   }
-        // }
+      if (content.trim() === '') {
+        alert("Cannot leave blank");
+      } else {
+        sendAjax(`/posts/${postId}/comments/${commentId}`, {content}, "PUT",  (response) => {
+          let commentEl = document.getElementById(`comment${commentId}`);
+          // for (let i = 0; i < commentEl.childNodes.length; i++) {
+          //   if (commentEl.childNodes[i].className == 'media-body') {
+          //     for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) {
+          //       if (commentEl.childNodes[i].childNodes[j].className == 'content') {
+          //         commentEl.childNodes[i].childNodes[j].innerHTML = response.content;
+          //       }
+          //     }
+          //   }
+          // }
 
-        for (let i = 0; i < commentEl.childNodes.length; i++) {
-              
-          if (commentEl.childNodes[i].className == 'comment-item__wrap') {
-            for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) { 
-              if (commentEl.childNodes[i].childNodes[j].className == 'media-body') {
-                for (let k = 0; k < commentEl.childNodes[i].childNodes[j].childNodes.length; k++) { 
-                  if (commentEl.childNodes[i].childNodes[j].childNodes[k].className == 'content') {
-                    commentEl.childNodes[i].childNodes[j].childNodes[k].innerHTML = response.content;
-                  } 
+          for (let i = 0; i < commentEl.childNodes.length; i++) {
+
+            if (commentEl.childNodes[i].className == 'comment-item__wrap') {
+              for (let j = 0; j < commentEl.childNodes[i].childNodes.length; j++) {
+                if (commentEl.childNodes[i].childNodes[j].className == 'media-body') {
+                  for (let k = 0; k < commentEl.childNodes[i].childNodes[j].childNodes.length; k++) {
+                    if (commentEl.childNodes[i].childNodes[j].childNodes[k].className == 'content') {
+                      commentEl.childNodes[i].childNodes[j].childNodes[k].innerHTML = response.content;
+                    }
+                  }
                 }
-              } 
-            }
-            
-          }
-        }
+              }
 
-        $(`#comment${commentId}`).animate({background:'#f55a2e40'},'slow');
-        $(`#comment${commentId}`).animate({background:'transparent'},'slow');
-        document.getElementById("modal-update-comment").classList.remove("show");
-      });
+            }
+          }
+
+          $(`#comment${commentId}`).animate({background:'#f55a2e40'},'slow');
+          $(`#comment${commentId}`).animate({background:'transparent'},'slow');
+          document.getElementById("modal-update-comment").classList.remove("show");
+        });
+      }
+
     })
  
     let listActionRemoveNodes = document.querySelectorAll('#comment-delete-button');
@@ -367,6 +372,15 @@ if (document.getElementById("post-detail")) {
       }
     }, 500);
   });
+
+
+$(document).on("click", "#comment-box-submit-btn", (e) => {
+  if($("#comment-create-content").val().trim() === '') {
+    alert("Cannot leave blank");
+  } else {
+    $("#comment-form-new").submit()
+  }
+})
 
 $( "#input-post-search" )
   .focusout(function() {
@@ -435,8 +449,10 @@ $(document).on("click","#btn-close-reply-comment-form",function(e) {
 
 $(document).on("click","#submit-reply-form",function(e) {
   console.log(e.target.parentNode.parentNode.querySelector(".form-group > textarea").value);
-  if (e.target.parentNode.parentNode.querySelector(".form-group > textarea").value) {
+  if (e.target.parentNode.parentNode.querySelector(".form-group > textarea").value.trim() !== '') {
     e.target.parentNode.parentNode.submit();
+  } else {
+    alert("Cannot leave blank")
   }
 });
 

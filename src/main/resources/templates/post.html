@@ -92,6 +92,7 @@
                   th:attr="action='/posts/' + ${post.id} + '/comments'"
                   class="form"
                   method="post"
+                  id="comment-form-new"
                 >
                   <div class="form-group">
                     <textarea
@@ -99,11 +100,12 @@
                       placeholder="write a comment..."
                       rows="3"
                       name="content"
+                      id="comment-create-content"
                     ></textarea>
                     <input type="hidden" value="0" name="parentId" />
                   </div>
                   <div class="form-group d-flex flex-x--end">
-                    <button type="submit" class="btn btn-info pull-right">
+                    <button type="button" id="comment-box-submit-btn" class="btn btn-info pull-right">
                       Comment
                     </button>
                   </div>
