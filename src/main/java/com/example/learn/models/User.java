@@ -1,6 +1,7 @@
 package com.example.learn.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class User {
   private String email;
 
   @Column(name = "password", nullable = false)
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String password;
 
   @JsonIgnore
@@ -86,6 +87,7 @@ public class User {
     this.email = email;
   }
 
+  @JsonIgnore
   public String getPassword() {
     return password;
   }

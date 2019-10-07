@@ -32,8 +32,8 @@ public class SearchController<T> {
   private ModelAndView getSearchUserPage(@RequestParam(value = "q", required = false) String queryString,
                                          @RequestParam(value = "sortBy", required = false) String sortBy,
                                          @RequestParam(value = "page", required = false) Integer page) {
-    queryString = queryString != null ? queryString : "";
-    sortBy = sortBy != null ? sortBy : "a2z";
+    queryString = queryString != null ? queryString.trim() : "";
+    sortBy = sortBy != null ? sortBy.trim() : "a2z";
     page = page != null ? page : 1;
     Search<User> pagination = userService.searchUserInOrderAndPagination(queryString, sortBy, page);
     ModelAndView modelAndView = new ModelAndView("user-search");
@@ -48,8 +48,8 @@ public class SearchController<T> {
                                         @RequestParam(value = "tagId", required = false) Integer tagId,
                                         @RequestParam(value = "break", required = false) Integer pageBreak) {
 
-    postQuery = postQuery != null ? postQuery : "";
-    sortBy = sortBy != null ? sortBy : "a2z";
+    postQuery = postQuery != null ? postQuery.trim() : "";
+    sortBy = sortBy != null ? sortBy.trim() : "a2z";
     page = page != null ? page : 1;
     pageBreak = pageBreak != null ? pageBreak : 5;
     tagId = tagId != null ? tagId : 0;

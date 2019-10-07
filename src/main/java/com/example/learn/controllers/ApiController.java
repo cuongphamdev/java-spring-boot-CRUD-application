@@ -4,10 +4,7 @@ import com.example.learn.models.Comment;
 import com.example.learn.models.Post;
 import com.example.learn.models.Tag;
 import com.example.learn.models.User;
-import com.example.learn.services.CommentService;
-import com.example.learn.services.PostService;
-import com.example.learn.services.TagService;
-import com.example.learn.services.UserService;
+import com.example.learn.services.*;
 import com.example.learn.utils.CommonUtils;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +30,16 @@ public class ApiController {
   @Autowired
   private TagService tagService;
 
+  @Autowired
+  private RoleService roleService;
+
   private boolean checkUserDataBlank(String name, String email, String password) {
-    if ((name == null && email == null && password == null) || (name.equals("") && email.equals("") && password.equals("")))
+    if (name == null ||
+            email == null ||
+            password == null ||
+            name.trim().equals("") ||
+            email.trim().equals("") ||
+            password.equals(""))
       return false;
     return true;
   }
@@ -56,13 +61,26 @@ public class ApiController {
 
   @RequestMapping(value = "/users", method = RequestMethod.POST)
   private ResponseEntity<Object> createUser(@RequestBody User user) {
-    user.setRoleId(1);
     try {
-      if (!this.checkUserDataBlank(user.getName(), user.getEmail(), user.getPassword())) {
+      String name = user.getName();
+      String email = user.getEmail();
+      String pass = user.getPassword();
+      long roleId = user.getRoleId() != 0 ? user.getRoleId() : 1;
+
+      if (roleService.findById(roleId) == null) {
+        throw new Exception("Role not found with id = [" + roleId + "]");
+      }
+
+      if (!this.checkUserDataBlank(name, email, pass)) {
         throw new Exception("User data is required");
       }
-      ;
-      User newUser = userService.createNewUser(user.getName(), user.getEmail().toLowerCase(), user.getPassword(), user.getRoleId());
+
+      if (userService.findUserByEmail(email) != null) {
+        throw new Exception("The email is existed! Please try with other email.");
+      }
+
+      User newUser = userService.createNewUser(name, email, pass, roleId);
+
       return ResponseEntity.status(HttpStatus.OK)
               .body(newUser);
     } catch (Exception e) {
@@ -86,17 +104,21 @@ public class ApiController {
 
   @RequestMapping(value = "/users/{userId}", method = RequestMethod.PUT)
   private ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable(value = "userId") long userId) {
-    if (!this.checkUserDataBlank(user.getName(), user.getEmail(), user.getPassword())) return null;
+    String name = user.getName();
+    String email = user.getEmail();
+    String password = user.getPassword();
     try {
       User updateUser = userService.findUserById(userId);
       if (updateUser == null) throw new Exception("User not found for id = [" + userId + "]");
-      if (user.getName() != null && !user.getName().equals("")) {
+      if (name != null && !name.trim().equals("")) {
         updateUser.setName(user.getName());
       }
-      if (user.getPassword() != null && !user.getPassword().equals("")) {
+      if (password != null && !password.trim().equals("")) {
         updateUser.setPassword(user.getPassword());
       }
-      if (user.getEmail() != null && !user.getEmail().equals("")) {
+      if (email != null && !email.trim().equals("")) {
+        if (userService.findUserByEmail(email) != null)
+          throw new Exception("The email is existed! Please choose another email");
         updateUser.setEmail(user.getEmail());
       }
 
@@ -116,7 +138,7 @@ public class ApiController {
       if (user == null) throw new Exception("User not found for id = [" + userId + "]");
 
       for (Post post : user.getPosts()) {
-        this.deleteTags(post.getId());
+        this.deleteTags(post);
       }
 
       long deletedId = userService.deleteUser(userId);
@@ -202,28 +224,34 @@ public class ApiController {
         newPost.setTitle(title);
       }
       if (content != null && !content.trim().equals("")) {
-        newPost.setContent(title);
+        newPost.setContent(content);
       }
       Set<Tag> tagsUpdateList = newPost.getTags();
       Post updatedPost = postService.updatePost(newPost.getId(), newPost.getTitle(), newPost.getContent());
-      for (Tag tagDeleted : newPost.getTags()) {
-        Set<Post> postList = tagDeleted.getPosts();
-        postList.remove(updatedPost);
-        tagDeleted.setPosts(postList);
-        tagService.updateTagPost(tagDeleted);
-      }
-
       if (tagIds != null) {
-        for (long tagId : tagIds) {
-          Tag tag = tagService.getTagById(tagId);
-          Set<Post> newPosts = tag.getPosts();
-          newPosts.add(updatedPost);
-          tag.setPosts(newPosts);
-          tagService.updateTagPost(tag);
-          tagsUpdateList.add(tag);
+        for (Tag tagDeleted : newPost.getTags()) {
+          Set<Post> postList = tagDeleted.getPosts();
+          postList.remove(updatedPost);
+          tagDeleted.setPosts(postList);
+          tagService.updateTagPost(tagDeleted);
+          if (tagsUpdateList.contains(tagDeleted)) {
+            tagsUpdateList.remove(tagDeleted);
+          }
         }
-      } else {
-        tagsUpdateList = null;
+
+        if (tagIds.size() > 0) {
+          for (long tagId : tagIds) {
+            Tag tag = tagService.getTagById(tagId);
+            if (tag == null) continue;
+            Set<Post> newPosts = tag.getPosts();
+            newPosts.add(updatedPost);
+            tag.setPosts(newPosts);
+            tagService.updateTagPost(tag);
+            tagsUpdateList.add(tag);
+          }
+        } else {
+          tagsUpdateList.removeAll(tagsUpdateList);
+        }
       }
       newPost.setTags(tagsUpdateList);
       return ResponseEntity.status(HttpStatus.OK)
@@ -234,15 +262,12 @@ public class ApiController {
     }
   }
 
-  private void deleteTags(long postId) {
+  private void deleteTags(Post post) {
     try {
-      Post foundPost = postService.findPostById(postId);
-      if (foundPost == null) {
-        throw new NotFoundException("Post is not found with id [" + postId + "]");
-      } else if (foundPost.getTags() != null) {
-        for (Tag tagRemove : foundPost.getTags()) {
+      if (post.getTags() != null) {
+        for (Tag tagRemove : post.getTags()) {
           Set<Post> newPosts = tagRemove.getPosts();
-          newPosts.remove(foundPost);
+          newPosts.remove(post);
           tagRemove.setPosts(newPosts);
           tagService.updateTagPost(tagRemove);
         }
@@ -255,7 +280,11 @@ public class ApiController {
   @RequestMapping(value = "/posts/{postId}", method = RequestMethod.DELETE)
   private ResponseEntity<Object> deletePost(@PathVariable(value = "postId") long postId) {
     try {
-      this.deleteTags(postId);
+      Post foundPost = postService.findPostById(postId);
+      if (foundPost == null) {
+        throw new NotFoundException("Post is not found with id [" + postId + "]");
+      }
+      this.deleteTags(foundPost);
       long deletedPostId = postService.deletePost(postId);
       Map<String, Long> response = new HashMap<>();
       response.put("id", deletedPostId);
@@ -316,13 +345,13 @@ public class ApiController {
       Long postId = comment.getPostId();
       Long userId = comment.getUserId();
       Long parentId = comment.getParentId() == null ? 0 : comment.getParentId();
-      if (checkCommentDataValid(content, postId, userId, parentId)) {
-        Comment createdComment = commentService.createComment(content, postId, userId, parentId);
-        createdComment.setUser(userService.findUserById(createdComment.getUserId()));
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(createdComment);
+      if (!checkCommentDataValid(content, postId, userId, parentId)) {
+        throw new Exception("Data input is invalid");
       }
-      return null;
+      Comment createdComment = commentService.createComment(content, postId, userId, parentId);
+      createdComment.setUser(userService.findUserById(createdComment.getUserId()));
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(createdComment);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
               .body(CommonUtils.getMapErrors(e, "Create comment fail"));
@@ -333,15 +362,12 @@ public class ApiController {
   private ResponseEntity<Object> updateComment(@RequestBody Comment comment, @PathVariable("commentId") long commentId) {
     try {
       String content = comment.getContent();
-      long userId = comment.getUserId();
       Comment updateComment = commentService.findCommentById(commentId);
-      if (updateComment != null &&
-              content != null &&
-              !content.trim().equals("") &&
-              userId != 0 &&
-              userId == updateComment.getUserId()
+      if (updateComment == null) throw new Exception("Comment not found with id = [" + commentId + "]");
+      if (content != null &&
+              !content.trim().equals("")
       ) {
-        Comment updatedComment = commentService.updateComment(commentId, content);
+        Comment updatedComment = commentService.updateComment(commentId, content.trim());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(updatedComment);
       } else {

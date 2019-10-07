@@ -13,19 +13,24 @@ if (document.getElementById('register-form')) {
     );
     let isError = false;
 
-    if (email.value === '') {
+    if (email.value.trim() === '') {
       isError = true;
       setError(emailError, 'Email cannot be empty', email);
     }
 
-    if (name.value === '') {
+    if (name.value.trim() === '') {
       isError = true;
       setError(nameError, 'Name cannot be empty', name);
     }
 
-    if (password.value === '') {
+    if (password.value.trim() === '') {
       isError = true;
       setError(passwordError, 'Password cannot be empty', password);
+    }
+
+    if (password.value.length < 6) {
+      isError = true;
+      setError(passwordError, 'Password should be more than 6 characters', password);
     }
 
     if (
@@ -83,12 +88,12 @@ if (document.getElementById('login-form')) {
     let passwordError = document.getElementById('password-error');
     let isError = false;
 
-    if (email.value === '') {
+    if (email.value.trim() === '') {
       isError = true;
       setError(emailError, 'Email cannot be empty', email);
     }
 
-    if (password.value === '') {
+    if (password.value.trim() === '') {
       isError = true;
       setError(passwordError, 'Password cannot be empty', password);
     }
@@ -161,9 +166,18 @@ if (
       let postId = item.getAttribute('post-id');
       let postData = event.target.parentNode.parentNode.parentNode;
       let title = postData.querySelector('.title').textContent;
+      console.log(postData.querySelector('.tags small').childNodes);
       let content = postData.querySelector('.content').textContent;
+      let tags = postData.querySelector('.tags small').childNodes;
+      tagIds = [];
+      postData.querySelector('.tags small').childNodes.forEach(tag => {
+        let tagId = tag.getAttribute("tag-id");
+        tagIds.push(tagId);
+      })
+      $('#update-tags-list').val(tagIds);
+      $('#update-tags-list').selectpicker('refresh')
       $("#modal-update").addClass("show");
-      $("#update-post-title").val(title);
+      $("#update-post-title").val(title.trim());
       $("#update-post-content").val(content);
       $("#update-post-id").val(postId);
       event.target.parentNode.parentNode.classList.remove('show');
@@ -175,20 +189,46 @@ if (
   });
 
   $('#post-update-submit').on('click', async e => {
-    let title = document.getElementById('update-post-title').value;
-    let content = document.getElementById('update-post-content').value;
+    let title = document.getElementById('update-post-title').value.trim();
+    let content = document.getElementById('update-post-content').value.trim();
     let postId = document.getElementById('update-post-id').value;
-    let data = {
-      title,
-      content
-    };
-    document.getElementById('modal-update').classList.remove('show');
-    await sendAjax(`/posts/${postId}`, data, 'PUT', data => {});
+    let tagIds = $("#update-tags-list").val();
 
-    let postItem = document.getElementById(`post-${postId}`);
-    postItem.querySelector('.title').innerHTML = data.title;
-    postItem.querySelector('.content').innerHTML = data.content;
-    e.target.parentNode.parentNode.classList.remove('show');
+    if (title === '' || content === '') {
+      alert("Title and content cannot leave blank");
+    } else {
+      let tags = "";
+      tagIds.forEach(item => {
+        tags += `,${item}`
+      })
+      let data = {
+        title,
+        content,
+        tags
+      };
+      document.getElementById('modal-update').classList.remove('show');
+      await sendAjax(`/posts/${postId}`, data, 'PUT', data => {
+        let postItem = document.getElementById(`post-${postId}`);
+        let htmlTitle = `
+      <h3 class="title" id="title">
+      <a href="/posts/${data.id}" class="link">${data.title}</a>
+    </h3>
+    `;
+        postItem.querySelector('.title ').innerHTML = htmlTitle;
+        postItem.querySelector('.content').innerHTML = data.content;
+
+        let tagString = "<small>"
+
+        data.tags != null && data.tags.forEach(item => {
+          tagString += `<span tag-id="${item.id}">#${item.name}</span>`
+        })
+        tagString += "</small>";
+        postItem.querySelector('.tags').innerHTML = tagString;
+        e.target.parentNode.parentNode.classList.remove('show');
+      });
+    }
+
+
 });
 
   //  TODO: show update post model
@@ -209,8 +249,10 @@ document.getElementById('post-create-submit').onclick = function(event) {
   let postForm = document.getElementById('create-post-form');
   let title = document.getElementById('form-post-title');
   let content = document.getElementById('form-post-content');
-  if ((content.value !== '' && title.value !== '')) {
+  if ((content.value.trim() !== '' && title.value.trim() !== '')) {
     postForm.submit();
+  } else {
+    alert("You shouldn't leave title or content blank")
   }
 }
 }

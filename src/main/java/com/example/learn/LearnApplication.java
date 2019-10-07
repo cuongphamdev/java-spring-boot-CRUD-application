@@ -92,6 +92,8 @@ public class LearnApplication implements CommandLineRunner {
 //        System.out.println("Error: " + e);
 //      }
 //    }
-
+//
+//    System.out.println("Application is ready!");
+//
   }
 }

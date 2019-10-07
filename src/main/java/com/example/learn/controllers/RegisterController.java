@@ -24,10 +24,10 @@ public class RegisterController {
 
   @RequestMapping(value = "/register", method = RequestMethod.POST)
   public Object createNewUser(@ModelAttribute User user, HttpServletRequest request) {
-    String name = user.getName();
-    String email = user.getEmail();
-    String password = user.getPassword();
-    long roleId = 2;
+    String name = user.getName().trim();
+    String email = user.getEmail().trim();
+    String password = user.getPassword().trim();
+    long roleId = 1;
     try {
       User loginUser = userService.createNewUser(name, email, password, roleId);
       userService.setAuthenticate(request, loginUser);

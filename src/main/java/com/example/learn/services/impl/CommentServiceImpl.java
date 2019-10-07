@@ -3,6 +3,8 @@ package com.example.learn.services.impl;
 import com.example.learn.daos.CommentDAO;
 import com.example.learn.models.Comment;
 import com.example.learn.services.CommentService;
+import com.example.learn.services.PostService;
+import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,12 @@ public class CommentServiceImpl implements CommentService {
 
   @Autowired
   private CommentDAO commentDAO;
+
+  @Autowired
+  private UserService userService;
+
+  @Autowired
+  private PostService postService;
 
   @Override
   public List<Comment> findAllRootCommentByPostId(long postId) {
@@ -28,6 +36,10 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public Comment createComment(String content, long postId, long userId, long parentId) {
     Comment comment = new Comment(content, postId, userId);
+    if (userService.findUserById(userId) == null ||
+            postService.findPostById(postId) == null) {
+      return null;
+    }
     if (parentId != 0) {
       comment.setParentId(parentId);
     }
@@ -59,7 +71,6 @@ public class CommentServiceImpl implements CommentService {
     return commentDAO.findCommentByUserId(userId);
   }
 
-  // todo: UT
   @Override
   public List<Comment> findAllComment() {
     return commentDAO.findAll();
