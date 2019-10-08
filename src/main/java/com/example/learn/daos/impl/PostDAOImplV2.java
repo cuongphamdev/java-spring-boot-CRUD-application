@@ -2,6 +2,7 @@ package com.example.learn.daos.impl;
 
 import com.example.learn.daos.PostDAOV2;
 import com.example.learn.models.Post;
+import com.example.learn.utils.CommonUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -88,12 +89,13 @@ public class PostDAOImplV2 extends CrudDAOImpl<Post> implements PostDAOV2 {
     CriteriaBuilder builder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
     Root<Post> root = criteria.from(Post.class);
+    String queryString = CommonUtils.getSearchString(query);
     criteria.select(root);
     criteria.where(
             builder.and(builder.or(
-                    this.getPredicateLike(query, "title", builder, root),
-                    this.getPredicateLike(query, "content", builder, root),
-                    this.getPredicateLikeJoinTag(query, "name", "tags", builder, root)
+                    this.getPredicateLike(queryString, "title", builder, root),
+                    this.getPredicateLike(queryString, "content", builder, root),
+                    this.getPredicateLikeJoinTag(queryString, "name", "tags", builder, root)
                     ),
                     builder.equal(root.get("userId"), userId)
             )
@@ -114,6 +116,7 @@ public class PostDAOImplV2 extends CrudDAOImpl<Post> implements PostDAOV2 {
     CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
     Root<Post> root = criteria.from(Post.class);
     criteria.select(root);
+    String queryString = "%" + query.toLowerCase() + "%";
 
     Expression<Boolean> checkTagIdQuery = tagId > 0 ?
             builder.equal(root.join("tags", JoinType.LEFT).get("id"), tagId) :
@@ -121,9 +124,9 @@ public class PostDAOImplV2 extends CrudDAOImpl<Post> implements PostDAOV2 {
     criteria.where(
             builder.and(
                     builder.or(
-                            this.getPredicateLike(query, "title", builder, root),
-                            this.getPredicateLike(query, "content", builder, root),
-                            this.getPredicateLikeJoinTag(query, "name", "user", builder, root)
+                            this.getPredicateLike(queryString, "title", builder, root),
+                            this.getPredicateLike(queryString, "content", builder, root),
+                            this.getPredicateLikeJoinTag(queryString, "name", "user", builder, root)
                     ),
                     checkTagIdQuery
             )

@@ -121,7 +121,7 @@ public class PostServiceImplV2 implements PostService {
           String query, String order, int page, int pageBreak, int tagId
   ) {
     try {
-      String searchQuery = CommonUtils.getSearchString(query);
+      String searchQuery = CommonUtils.getSearchString(query).toLowerCase();
       CriteriaQuery<Post> criteriaQuery = postDAO.searchPostByTitleAndContentAndNameUserWithSortAndPageBreakQuery(query, order, tagId);
       Search<Post> result = searchPost(searchQuery, criteriaQuery, page, pageBreak);
       result.setSortBy(order);

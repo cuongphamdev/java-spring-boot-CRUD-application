@@ -18,12 +18,18 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static junit.framework.TestCase.assertNull;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,19 +43,19 @@ public class PostServiceV2Test {
   @Mock
   PostDAOV2 postDAO = new PostDAOImplV2();
 
-  @Spy
+  @Mock
   CriteriaQuery<Post> criteriaQuery;
-//
-//  @Spy
-//  EntityManager entityManager;
-//
-//  @Spy
-//  Root<Post> root;
-//
-//  @Spy
-//  CriteriaBuilder builder;
 
   @Mock
+  EntityManager entityManager;
+
+  @Mock
+  Root<Post> root;
+
+  @Mock
+  CriteriaBuilder builder;
+
+  @Spy
   UserDAO userDAO;
 
   @InjectMocks
@@ -271,6 +277,5 @@ public class PostServiceV2Test {
     assertEquals(10, result.getTotalItems());
     assertEquals(2, result.getMaxPages());
   }
-
 
 }
