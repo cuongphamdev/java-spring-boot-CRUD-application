@@ -1,8 +1,6 @@
 package com.example.learn.daos.impl;
 
 import com.example.learn.daos.CrudDAO;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,17 +9,14 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
-public class CrudDAOImpl<T> implements CrudDAO<T> {
-
-  private String tableName;
-
-  private final Log log = LogFactory.getLog(CrudDAO.class);
+public class CrudDAOImplV2<T> implements CrudDAO<T> {
 
   @PersistenceContext
   private EntityManager entityManager;
 
+  private String tableName;
 
-  public CrudDAOImpl(String tableName) {
+  public CrudDAOImplV2(String tableName) {
     this.tableName = tableName;
   }
 
@@ -31,7 +26,7 @@ public class CrudDAOImpl<T> implements CrudDAO<T> {
       String hql = "FROM " + tableName + " ORDER BY id DESC";
       return entityManager.createQuery(hql).getResultList();
     } catch (Exception e) {
-      log.warn("error: " + e.toString());
+      e.printStackTrace();
       return null;
     }
   }
@@ -39,12 +34,12 @@ public class CrudDAOImpl<T> implements CrudDAO<T> {
   @Override
   public T findById(long id) {
     try {
-      java.lang.String hql = "FROM " + tableName + " WHERE id = :id";
+      String hql = "FROM " + tableName + " WHERE id = :id";
       Query query = entityManager.createQuery(hql)
               .setParameter("id", id);
       return (T) query.getSingleResult();
     } catch (Exception e) {
-      log.warn("error: " + e.toString());
+      e.printStackTrace();
       return null;
     }
   }
@@ -57,7 +52,7 @@ public class CrudDAOImpl<T> implements CrudDAO<T> {
       session.save(t);
       return t;
     } catch (Exception e) {
-      log.warn("error: " + e.toString());
+      e.printStackTrace();
       return null;
     }
   }
@@ -70,7 +65,7 @@ public class CrudDAOImpl<T> implements CrudDAO<T> {
       session.update(t);
       return t;
     } catch (Exception e) {
-      log.warn("error: " + e.toString());
+      e.printStackTrace();
       return null;
     }
   }
@@ -83,7 +78,6 @@ public class CrudDAOImpl<T> implements CrudDAO<T> {
       entityManager.remove(deleteItem);
       return id;
     } catch (Exception e) {
-      log.warn("error: " + e.toString());
       return 0;
     }
   }

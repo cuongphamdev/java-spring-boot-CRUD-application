@@ -2,6 +2,7 @@ package com.example.learn;
 
 import com.example.learn.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,6 +16,7 @@ public class LearnApplication implements CommandLineRunner {
   private UserService userService;
 
   @Autowired
+  @Qualifier("PostService2")
   private PostService postService;
 
   @Autowired
@@ -94,6 +96,6 @@ public class LearnApplication implements CommandLineRunner {
 //    }
 //
 //    System.out.println("Application is ready!");
-//
+
   }
 }

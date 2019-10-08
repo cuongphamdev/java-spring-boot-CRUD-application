@@ -48,21 +48,21 @@ public class RoleServiceTest {
 
   @Test
   @DisplayName("createRole success")
-  public void createRoleSuccess () {
+  public void createRoleSuccess() {
     Role result = roleService.createRole(ServiceDataTest.dummyRole);
     assertEquals(result, ServiceDataTest.dummyRole);
   }
 
   @Test
   @DisplayName("findById success")
-  public void findByIdSuccess () {
+  public void findByIdSuccess() {
     Role result = roleService.findById(1);
     assertEquals(ServiceDataTest.dummyRoleList[0], result);
   }
 
   @Test
   @DisplayName("findById fail")
-  public void findByIdFail () {
+  public void findByIdFail() {
     Role result = roleService.findById(ServiceDataTest.dummyRoleList.length);
     assertNull(result);
   }

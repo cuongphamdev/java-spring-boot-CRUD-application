@@ -24,7 +24,7 @@ public class TagDAOImpl extends CrudDAOImpl<Tag> implements TagDAO {
     try {
       String hql = "FROM Tag WHERE name LIKE %:name%";
       Query query = entityManager.createQuery(hql);
-      query.setParameter("name", queryString).setMaxResults(5);
+      query.setParameter("name", queryString).setMaxResults(5);//todo: move to service
       return query.getResultList();
     } catch (Exception e) {
       return null;

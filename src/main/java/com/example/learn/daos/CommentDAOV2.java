@@ -1,0 +1,13 @@
+package com.example.learn.daos;
+
+import com.example.learn.models.Comment;
+
+import java.util.List;
+
+public interface CommentDAOV2 extends CrudDAO<Comment> {
+  public List<Comment> listRootCommentByPostId(long postId);
+
+  public long countCommentByUserId(long userId);
+
+  public List<Comment> findCommentByUserId(long userId);
+}

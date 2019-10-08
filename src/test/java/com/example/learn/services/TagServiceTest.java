@@ -64,8 +64,8 @@ public class TagServiceTest {
             invocation -> {
               String searchNameString = (String) invocation.getArgument(0);
               List<Tag> tagListFound = new ArrayList<>();
-              for (Tag tag: ServiceDataTest.dummyTagList) {
-                if(tag.getName().contains(searchNameString)) tagListFound.add(tag);
+              for (Tag tag : ServiceDataTest.dummyTagList) {
+                if (tag.getName().contains(searchNameString)) tagListFound.add(tag);
               }
               return tagListFound;
             }
@@ -75,84 +75,84 @@ public class TagServiceTest {
   @DisplayName("createNewTag success")
   @Test
   void createNewTagSuccess() {
-  Tag result = tagService.createNewTag("test");
-  assertEquals(ServiceDataTest.dummyTag, result );
+    Tag result = tagService.createNewTag("test");
+    assertEquals(ServiceDataTest.dummyTag, result);
   }
 
   @DisplayName("createNewTag fail")
   @Test
   void createNewTagFail() {
     Tag result = tagService.createNewTag("");
-    assertEquals(null, result );
+    assertEquals(null, result);
   }
 
   @DisplayName("getAllTags success")
   @Test
   void getAllTagsSuccess() {
     List<Tag> result = tagService.getAllTags();
-    assertEquals(Arrays.asList(ServiceDataTest.dummyTagList), result );
+    assertEquals(Arrays.asList(ServiceDataTest.dummyTagList), result);
   }
 
   @DisplayName("deleteTag success")
   @Test
   void deleteTagSuccess() {
     long result = tagService.deleteTag(1);
-    assertEquals(1, result );
+    assertEquals(1, result);
   }
 
   @DisplayName("deleteTag fail")
   @Test
   void deleteTagFail() {
     long result = tagService.deleteTag(0);
-    assertEquals(0, result );
+    assertEquals(0, result);
   }
 
   @DisplayName("searchTags success")
   @Test
   void searchTagSuccess() {
     List<Tag> result = tagService.searchTags("");
-    assertEquals(Arrays.asList(ServiceDataTest.dummyTagList), result );
+    assertEquals(Arrays.asList(ServiceDataTest.dummyTagList), result);
   }
 
   @DisplayName("searchTags fail")
   @Test
   void searchTagFail() {
     List<Tag> result = tagService.searchTags("wrong-input");
-    assertEquals(0, result.size() );
+    assertEquals(0, result.size());
   }
 
   @DisplayName("getTagById success")
   @Test
   void getTagByIdSuccess() {
     Tag result = tagService.getTagById(1);
-    assertEquals(ServiceDataTest.dummyTag, result );
+    assertEquals(ServiceDataTest.dummyTag, result);
   }
 
   @DisplayName("getTagById fail")
   @Test
   void getTagByIdTagFail() {
     Tag result = tagService.getTagById(0);
-    assertEquals(null, result );
+    assertEquals(null, result);
   }
 
   @DisplayName("updateTagPost success")
   @Test
   void updateTagPostSuccess() {
     Tag result = tagService.updateTagPost(ServiceDataTest.dummyTag);
-    assertEquals(ServiceDataTest.dummyTag, result );
+    assertEquals(ServiceDataTest.dummyTag, result);
   }
 
   @DisplayName("updateTag success")
   @Test
   void updateTagSuccess() {
     Tag result = tagService.updateTag(1, ServiceDataTest.dummyTag.getName());
-    assertEquals(ServiceDataTest.dummyTag, result );
+    assertEquals(ServiceDataTest.dummyTag, result);
   }
 
   @DisplayName("updateTag fail")
   @Test
   void updateTagFail() {
-    Tag result = tagService.updateTag(0,  ServiceDataTest.dummyTag.getName());
-    assertEquals(null, result );
+    Tag result = tagService.updateTag(0, ServiceDataTest.dummyTag.getName());
+    assertEquals(null, result);
   }
 }

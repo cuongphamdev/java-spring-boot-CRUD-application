@@ -8,6 +8,7 @@ import com.example.learn.services.CommentService;
 import com.example.learn.services.PostService;
 import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,14 +29,15 @@ public class UserProfileController {
   CommentService commentService;
 
   @Autowired
-  PostService postService;
+  @Qualifier("PostService2")
+  PostService postService2;
 
   private ModelAndView getSummaryProfile(int userId, int pageNumber) {
     ModelAndView modelAndView = new ModelAndView("profile");
-    long countPosts = postService.countPostByUserId(userId);
+    long countPosts = postService2.countPostByUserId(userId);
     long countComments = commentService.countCommentByUserId(userId);
     User userProfile = userService.findUserById(userId);
-    List<Post> listPosts = postService.findAllPostByUserIdAndPagination(userId, pageNumber);
+    List<Post> listPosts = postService2.findAllPostByUserIdAndPagination(userId, pageNumber);
     modelAndView.addObject("countPosts", countPosts);
     modelAndView.addObject("countComments", countComments);
     modelAndView.addObject("userProfile", userProfile);
@@ -54,7 +56,7 @@ public class UserProfileController {
     page = page != null ? page : DEFAULT_PAGE_NUMBER;
     order = order != null ? order : "a2z";
     ModelAndView modelAndView = new ModelAndView("profile");
-    Search<Post> searchResult = postService.findPostByTitleAndContentAndTagNameWithUserId(queryParam, userId, order, page);
+    Search<Post> searchResult = postService2.findPostByTitleAndContentAndTagNameWithUserId(queryParam, userId, order, page);
     User currentUser = userService.findUserById(userId);
     if (currentUser != null) {
       List<Comment> comments = commentService.findCommentsByUserId(userId);

@@ -8,6 +8,7 @@ import com.example.learn.services.PostService;
 import com.example.learn.services.TagService;
 import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ public class SearchController<T> {
   UserService userService;
 
   @Autowired
+  @Qualifier("PostService2")
   PostService postService;
 
   @Autowired

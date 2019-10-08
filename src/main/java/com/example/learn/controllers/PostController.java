@@ -8,6 +8,7 @@ import com.example.learn.services.PostService;
 import com.example.learn.services.TagService;
 import com.example.learn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,6 +23,7 @@ import java.util.Set;
 public class PostController {
 
   @Autowired
+  @Qualifier("PostService2")
   private PostService postService;
 
   @Autowired
@@ -99,8 +101,7 @@ public class PostController {
     List<Comment> commentLists = commentService.findAllRootCommentByPostId(postId);
     ModelAndView modelAndView = new ModelAndView("post");
     modelAndView.addObject("post", currentPost);
-    modelAndView.addObject("comments", commentLists.size() > 0 ? commentLists : null);
-
+    modelAndView.addObject("comments", commentLists != null && commentLists.size() > 0 ? commentLists : null);
     return modelAndView;
   }
 

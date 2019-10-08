@@ -89,15 +89,15 @@ public class UserServiceTest {
     );
 
     when(userDAO.searchUserByNameOrEmail(anyString())).thenAnswer(invocation -> {
-      String searchQuery = invocation.getArgument(0);
-      List<User> userList = new ArrayList<>();
-      for (User user : ServiceDataTest.dummyUserList) {
-        if (user.getEmail().contains(searchQuery)) {
-          userList.add(user);
-        }
-      }
-      return userList;
-    }
+              String searchQuery = invocation.getArgument(0);
+              List<User> userList = new ArrayList<>();
+              for (User user : ServiceDataTest.dummyUserList) {
+                if (user.getEmail().contains(searchQuery)) {
+                  userList.add(user);
+                }
+              }
+              return userList;
+            }
     );
 
     when(userDAO.update(any())).thenAnswer(invocation -> {
@@ -110,28 +110,28 @@ public class UserServiceTest {
     );
 
     when(userDAO.findAll()).thenReturn(Arrays.asList(ServiceDataTest.dummyUserList));
-     when(userDAO.searchByPaginationAndOrderByName(anyString(), anyString(), anyInt())).thenAnswer(invocation -> {
-       String query = invocation.getArgument(0);
-       String order = invocation.getArgument(1);
-       int page = invocation.getArgument(2);
-       List<User> userList = new ArrayList<>();
-       if (page > 1) {
-         return null;
-       }
-       for (User eachUser: ServiceDataTest.dummyUserList) {
-         if (eachUser.getName().contains(query)) {
-           userList.add(eachUser);
-         }
-       }
+    when(userDAO.searchByPaginationAndOrderByName(anyString(), anyString(), anyInt())).thenAnswer(invocation -> {
+      String query = invocation.getArgument(0);
+      String order = invocation.getArgument(1);
+      int page = invocation.getArgument(2);
+      List<User> userList = new ArrayList<>();
+      if (page > 1) {
+        return null;
+      }
+      for (User eachUser : ServiceDataTest.dummyUserList) {
+        if (eachUser.getName().contains(query)) {
+          userList.add(eachUser);
+        }
+      }
 
-       if (order.equals("a2z")) {
-         Collections.sort(userList, Utils.compareUserByNameASC);
-       } else {
-         Collections.sort(userList, Utils.compareUserByNameDESC);
-       }
-       Search<User> response = new Search<>(userList, userList.size(), 1, query, 1);
-       return response;
-     });
+      if (order.equals("a2z")) {
+        Collections.sort(userList, Utils.compareUserByNameASC);
+      } else {
+        Collections.sort(userList, Utils.compareUserByNameDESC);
+      }
+      Search<User> response = new Search<>(userList, userList.size(), 1, query, 1);
+      return response;
+    });
 
     when(userDAO.delete(anyLong())).thenAnswer(invocation -> {
       long userId = invocation.getArgument(0);
@@ -141,7 +141,7 @@ public class UserServiceTest {
 
     when(userDAO.searchUserEqualEmail(anyString())).thenAnswer(invocation -> {
       String query = invocation.getArgument(0);
-      for (User eachUser: ServiceDataTest.dummyUserList) {
+      for (User eachUser : ServiceDataTest.dummyUserList) {
         if (eachUser.getEmail().equals(query)) return eachUser;
       }
       return null;
@@ -182,7 +182,7 @@ public class UserServiceTest {
 
   @DisplayName("loginByEmailAndPassword return valid user data")
   @Test
-  void loginWithValidEmailAndPassword () {
+  void loginWithValidEmailAndPassword() {
     User result = userService.loginByEmailAndPassword(ServiceDataTest.dummyUserList[1].getEmail(), "123456");
     assertEquals(ServiceDataTest.dummyUserList[1], result);
     verify(userDAO).findByEmailAndPassword(ServiceDataTest.dummyUserList[1].getEmail(), "e10adc3949ba59abbe56e057f20f883e");
@@ -190,7 +190,7 @@ public class UserServiceTest {
 
   @DisplayName("loginByEmailAndPassword return invalid user data")
   @Test
-  void loginWithInvalidEmailAndPassword () {
+  void loginWithInvalidEmailAndPassword() {
     User result = userService.loginByEmailAndPassword(ServiceDataTest.dummyUserList[1].getEmail() + "wrong", ServiceDataTest.dummyUserList[1].getPassword());
     assertEquals(null, result);
     verify(userDAO).findByEmailAndPassword(ServiceDataTest.dummyUserList[1].getEmail() + "wrong", CommonUtils.getHashPassword(ServiceDataTest.dummyUserList[1].getPassword()));
@@ -198,7 +198,7 @@ public class UserServiceTest {
 
   @DisplayName("searchUserByNameOrEmail valid search query")
   @Test
-  void searchUserByNameOrEmailValidQuery () {
+  void searchUserByNameOrEmailValidQuery() {
     String queryString = "test";
     List<User> result = userService.searchUserByNameOrEmail(queryString);
     assertNotEquals(null, result);
@@ -207,7 +207,7 @@ public class UserServiceTest {
 
   @DisplayName("searchUserByNameOrEmail valid search query")
   @Test
-  void searchUserByNameOrEmailInvalidQuery () {
+  void searchUserByNameOrEmailInvalidQuery() {
     String searchString = "wrong data";
     List<User> result = userService.searchUserByNameOrEmail(searchString);
     assertEquals(0, result.size());
@@ -216,14 +216,14 @@ public class UserServiceTest {
 
   @DisplayName("update success")
   @Test
-  void update () {
+  void update() {
     User result = userService.updateUser(ServiceDataTest.dummyUser);
     assertEquals(ServiceDataTest.dummyUser, result);
   }
 
   @DisplayName("update fail")
   @Test
-  void updateFail () {
+  void updateFail() {
     User user = new User(ServiceDataTest.dummyUser.getName(), "wrongemail@dot.com", ServiceDataTest.dummyUser.getPassword());
     User result = userService.updateUser(user);
     assertEquals(null, result);
@@ -231,14 +231,14 @@ public class UserServiceTest {
 
   @DisplayName("findAllUser success")
   @Test
-  void findAll () {
+  void findAll() {
     List<User> result = userService.findAllUser();
     assertEquals(Arrays.asList(ServiceDataTest.dummyUserList), result);
   }
 
   @DisplayName("checkAuthentication if user has loggedin")
   @Test
-  public void checkAuthenticationSuccessReturnTrue () {
+  public void checkAuthenticationSuccessReturnTrue() {
     when(session.getAttribute("loginSession")).thenReturn(ServiceDataTest.dummyUser);
     boolean result = userService.checkAuthentication(request);
     assertTrue(result);
@@ -246,7 +246,7 @@ public class UserServiceTest {
 
   @DisplayName("checkAuthentication if user hasn't loggedin")
   @Test
-  public void checkAuthenticationSuccessReturnFalse () {
+  public void checkAuthenticationSuccessReturnFalse() {
     when(session.getAttribute("loginSession")).thenReturn(null);
     boolean result = userService.checkAuthentication(request);
     assertFalse(result);
@@ -254,21 +254,21 @@ public class UserServiceTest {
 
   @DisplayName("setAuthentication success")
   @Test
-  public void setAuthenticationSuccess () {
+  public void setAuthenticationSuccess() {
     userService.setAuthenticate(request, ServiceDataTest.dummyUser);
     verify(session).setAttribute("loginSession", ServiceDataTest.dummyUser);
   }
 
   @DisplayName("removeAuthenticate success")
   @Test
-  public void removeAuthenticateSuccess () {
+  public void removeAuthenticateSuccess() {
     userService.removeAuthenticate(request);
     verify(session).removeAttribute("loginSession");
   }
 
   @DisplayName("getCurrentUser after login success")
   @Test
-  public void getCurrentUserSuccess () {
+  public void getCurrentUserSuccess() {
     when(session.getAttribute("loginSession")).thenReturn(ServiceDataTest.dummyUser);
     User result = userService.getCurrentUser(request);
     verify(session).getAttribute("loginSession");
@@ -277,7 +277,7 @@ public class UserServiceTest {
 
   @DisplayName("getCurrentUser if user hasn't login")
   @Test
-  public void getCurrentUserSuccessReturnNull () {
+  public void getCurrentUserSuccessReturnNull() {
     User result = userService.getCurrentUser(request);
     verify(session).getAttribute("loginSession");
     assertNull(result);
@@ -285,18 +285,18 @@ public class UserServiceTest {
 
   @DisplayName("getCurrentUserId and return 1")
   @Test
-  public void getCurrentUserIdIfUserLogin () {
-    User loginUser = new User (ServiceDataTest.dummyUser.getName(), ServiceDataTest.dummyUser.getEmail(), ServiceDataTest.dummyUser.getPassword());
+  public void getCurrentUserIdIfUserLogin() {
+    User loginUser = new User(ServiceDataTest.dummyUser.getName(), ServiceDataTest.dummyUser.getEmail(), ServiceDataTest.dummyUser.getPassword());
     loginUser.setId(1);
-    when (session.getAttribute("loginSession")).thenReturn(loginUser);
+    when(session.getAttribute("loginSession")).thenReturn(loginUser);
     long result = userService.getCurrentUserId(request);
     assertEquals(1, result);
   }
 
   @DisplayName("getCurrentUserId not login and return 0")
   @Test
-  public void getCurrentUserIdIfUserNotLogin () {
-    when (session.getAttribute("loginSession")).thenReturn(null);
+  public void getCurrentUserIdIfUserNotLogin() {
+    when(session.getAttribute("loginSession")).thenReturn(null);
     long result = userService.getCurrentUserId(request);
     assertEquals(0, result);
   }

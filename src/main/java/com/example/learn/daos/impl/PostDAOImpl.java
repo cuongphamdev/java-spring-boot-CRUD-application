@@ -52,8 +52,8 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
       String hql = "FROM Post p WHERE userId = :userId";
       Query query = entityManager.createQuery(hql);
       query.setParameter("userId", (long) userId);
-      query.setFirstResult((page - 1) * 1);
-      query.setMaxResults(5);
+      query.setFirstResult((page - 1) * 1);//todo: move to service
+      query.setMaxResults(5);//todo: move to service
       return query.getResultList();
     } catch (Exception e) {
       return null;
@@ -75,7 +75,7 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
 
   @Override
   public List<Post> findPostByTitleAndContent(String queryString) {
-    queryString = "%" + queryString.toLowerCase() + "%";
+    queryString = "%" + queryString.toLowerCase() + "%";//todo: move to service
     CriteriaBuilder builder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
     Root<Post> root = criteria.from(Post.class);
@@ -83,10 +83,13 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
     criteria.where(builder.or(builder.like(root.get("title"), queryString), builder.like(root.get("content"), queryString)));
     return entityManager.createQuery(criteria).setMaxResults(5).getResultList();
   }
+//  private void testMethod(String query, CriteriaBuilder builder, CriteriaQuery<Post> criteria, Root<Post> root) {
+//    criteria.where(builder.or(builder.like(root.get("title"), query), builder.like(root.get("content"), query)));
+//  }
 
   @Override
   public List<Post> findPostByTitleAndContentAndTagName(String query) {
-    query = "%" + query.toLowerCase() + "%";
+    query = "%" + query.toLowerCase() + "%";//todo: move to service
     CriteriaBuilder builder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Post> criteria = builder.createQuery(Post.class);
     Root<Post> root = criteria.from(Post.class);
@@ -102,6 +105,9 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
     return entityManager.createQuery(criteria).setMaxResults(5).getResultList();
   }
 
+  //todo:
+  //Make it just return the list of posts
+  //Move logic to Service
   @Override
   public Search<Post> searchPostByTitleAndContentAndTagNameWithUserId(String query, long userId, String order, int page) {
     String searchQuery = "%" + query.toLowerCase() + "%";
@@ -129,6 +135,9 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
     return result;
   }
 
+  //todo:
+  //Make it just return the list of posts
+  //Move logic to Service
   @Override
   public Search<Post> searchPostByTitleAndContentAndNameUserWithSortAndPageBreak(String postQuery, String order, int page, int pageBreak, int tagId) {
     String searchPostQuery = CommonUtils.getSearchString(postQuery);
@@ -177,9 +186,21 @@ public class PostDAOImpl extends CrudDAOImpl<Post> implements PostDAO {
     List<Post> postList = entityManager.createQuery(criteria).setFirstResult((page - 1) * pageBreak).setMaxResults(pageBreak).getResultList();
     int maxPages = countItems / pageBreak + (countItems % pageBreak != 0 ? 1 : 0);
     Search<Post> result = new Search<Post>(postList, countItems, maxPages, postQuery, page);
+
     result.setSortBy(order);
     result.setPageBreak(pageBreak);
     result.setAnotherDataId(tagId);
     return result;
+  }
+
+  //todo: move to search dao
+
+  private void orderBy(CriteriaBuilder builder, CriteriaQuery<Post> criteria, Root<Post> root, String type, String fieldName) {
+    criteria.groupBy(root.get("id"));
+    if (type.equals("asc")) {
+      criteria.orderBy(builder.asc(root.get(fieldName)));
+    } else {
+      criteria.orderBy(builder.desc(root.get(fieldName)));
+    }
   }
 }
