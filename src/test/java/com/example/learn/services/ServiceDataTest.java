@@ -10,7 +10,7 @@ public class ServiceDataTest {
   public static final Comment dummyComment = new Comment("comment content", 1, 1, 0);
   public static final Comment[] dummyCommentList = {new Comment("comment content", 1, 1, 0), new Comment("comment content", 1, 1, 0), new Comment("comment content", 1, 1, 0)};
   public static final Tag dummyTag = new Tag("tag 1");
-  public static final Tag[] dummyTagList = {new Tag("tag 1"), new Tag("tag 2"), new Tag("tag 3"),new Tag("tag 4"), new Tag("tag 5")};
+  public static final Tag[] dummyTagList = {new Tag("tag 1"), new Tag("tag 2"), new Tag("tag 3"), new Tag("tag 4"), new Tag("tag 5")};
   public static final Role dummyRole = new Role("user");
   public static final Role[] dummyRoleList = {new Role("user"), new Role("admin")};
 }

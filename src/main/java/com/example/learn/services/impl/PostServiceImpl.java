@@ -7,12 +7,16 @@ import com.example.learn.models.Search;
 import com.example.learn.models.User;
 import com.example.learn.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Qualifier("PostService1")
+@Primary
 public class PostServiceImpl implements PostService {
 
   @Autowired

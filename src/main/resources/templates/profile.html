@@ -60,7 +60,7 @@
       <div class="tab-content">
         <div id="posts" class="tab-pane fade in active show">
           <section class="post-lists-pagination">
-            <div class="post" th:if="${searchPostData!=null && searchPostData.listItems.size() == 0}" th:text="${searchPostData.searchQuery != null ? 'No data for ' + searchPostData.searchQuery : 'User dont have any post'}">
+            <div class="post" th:if="${searchPostData!=null && (searchPostData.listItems == null ||searchPostData.listItems.size() == 0)}" th:text="${searchPostData.searchQuery != null ? 'No data for ' + searchPostData.searchQuery : 'User dont have any post'}">
 
             </div>
             <div class="post-lists" th:if="${searchPostData != null}">
@@ -186,14 +186,14 @@
 
                   <button
                           class="reply btn btn-default btn-warning comment-update-button"
-                          th:attr="[comment-id=${comment.id}, post-id=${post.id}]"
+                          th:attr="comment-id=${comment.id}, post-id=${comment.postId}"
                           id="comment-update-button"
                   >
                     Update
                   </button>
                   <button
                           class="reply btn btn-default btn-danger comment-delete-button"
-                          th:attr="[comment-id=${comment.id}, post-id=${post.id}]"
+                          th:attr="comment-id=${comment.id}, post-id=${comment.postId}"
                           id="comment-delete-button"
                   >
                     Delete

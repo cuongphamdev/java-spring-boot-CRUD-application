@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CommonUtils {
+
+  public static final int PAGE_BREAK_DEFAULT = 5;
+
   public static String getSearchString(String searchString) {
     return "%" + searchString.toLowerCase() + "%";
   }
@@ -34,4 +37,13 @@ public class CommonUtils {
             .printHexBinary(digest).toLowerCase();
     return myHashPassword;
   }
+
+  public static int getMaxPage(int totalItems, int pageBreak) {
+    return totalItems / pageBreak + (totalItems % 5 != 0 ? 1 : 0);
+  }
+
+  public static int getFirstResult(int page, int pageBreak) {
+    return (page - 1) * pageBreak;
+  }
+
 }

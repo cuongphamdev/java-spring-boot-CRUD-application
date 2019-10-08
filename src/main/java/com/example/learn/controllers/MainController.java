@@ -5,6 +5,7 @@ import com.example.learn.models.Tag;
 import com.example.learn.services.PostService;
 import com.example.learn.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import java.util.List;
 public class MainController {
 
   @Autowired
+  @Qualifier("PostService2")
   private PostService postService;
 
   @Autowired

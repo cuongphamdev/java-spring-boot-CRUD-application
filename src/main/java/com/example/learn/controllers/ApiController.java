@@ -8,6 +8,7 @@ import com.example.learn.services.*;
 import com.example.learn.utils.CommonUtils;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class ApiController {
   private CommentService commentService;
 
   @Autowired
+  @Qualifier("PostService2")
   private PostService postService;
 
   @Autowired

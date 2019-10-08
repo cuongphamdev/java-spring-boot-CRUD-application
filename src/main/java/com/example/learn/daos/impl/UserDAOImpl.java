@@ -56,15 +56,15 @@ public class UserDAOImpl extends CrudDAOImpl<User> implements UserDAO {
     Root<User> root = criteria.from(User.class);
     criteria.select(root);
     criteria.where(builder.or(builder.like(builder.lower(root.get("name")), "%" + query.toLowerCase() + "%"), builder.like(builder.lower(root.get("email")), "%" + query + "%")));
-    if (order.equals("a2z")) {
+    if (order.equals("a2z")) {//todo: move to service
       criteria.orderBy(builder.asc(root.get("name")));
     } else if (order.equals("z2a")) {
       criteria.orderBy(builder.desc(root.get("name")));
     }
-    countItems = entityManager.createQuery(criteria).getResultList().size();
-    List<User> usersList = entityManager.createQuery(criteria).setFirstResult((page - 1) * 5).setMaxResults(5).getResultList();
-    int maxPages = countItems / 5 + (countItems % 5 != 0 ? 1 : 0);
-    Search<User> result = new Search<User>(usersList, countItems, maxPages, query.toLowerCase(), page);
+    countItems = entityManager.createQuery(criteria).getResultList().size();//todo: move to service
+    List<User> usersList = entityManager.createQuery(criteria).setFirstResult((page - 1) * 5).setMaxResults(5).getResultList();//todo: move to service
+    int maxPages = countItems / 5 + (countItems % 5 != 0 ? 1 : 0);//todo: move to service
+    Search<User> result = new Search<User>(usersList, countItems, maxPages, query.toLowerCase(), page);//todo: move to service
     result.setSortBy(order);
     return result;
   }
